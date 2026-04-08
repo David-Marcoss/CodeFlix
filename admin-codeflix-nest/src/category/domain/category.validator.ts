@@ -1,13 +1,22 @@
-import { IsBoolean, IsOptional, IsString } from "class-validator";
+import {
+  IsBoolean,
+  IsNotEmpty,
+  isNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from "class-validator";
 import { Category } from "./category.entity";
-import { ClassValidatorFields } from "./shared/domain/validators/class-validator-fields";
+import { ClassValidatorFields } from "../../shared/domain/validators/class-validator-fields";
 
 class CategoryRules {
   @IsOptional()
   @IsString()
   category_id?: string;
 
+  @MaxLength(255)
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsOptional()

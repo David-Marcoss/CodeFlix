@@ -1,5 +1,5 @@
 import { CategoryValidatorFactory } from "./category.validator";
-import { EntityValidationError } from "./shared/domain/validators/validation.error";
+import { EntityValidationError } from "../../shared/domain/validators/validation.error";
 
 export type CreateCategoryProps = {
   category_id?: string;
