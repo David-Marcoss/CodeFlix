@@ -33,7 +33,8 @@ const config: Config = {
       },
     ],
   },
-  transformIgnorePatterns: ["/node_modules/", "\\.pnp\\.[^\\/]+$"],
+  // Allow ESM-only deps like `uuid` to be transformed to CJS for Jest.
+  transformIgnorePatterns: ["/node_modules/(?!(uuid)/)", "\\.pnp\\.[^\\/]+$"],
   setupFilesAfterEnv: ["./src/shared/infra/testing/expect-helpers.ts"],
 };
 
