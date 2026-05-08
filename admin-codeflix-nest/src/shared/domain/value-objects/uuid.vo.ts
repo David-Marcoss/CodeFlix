@@ -14,6 +14,10 @@ export class Uuid extends ValueObject {
       throw new UuidValidationError();
     }
   }
+
+  toString() {
+    return this.id;
+  }
 }
 
 export class UuidValidationError extends Error {
