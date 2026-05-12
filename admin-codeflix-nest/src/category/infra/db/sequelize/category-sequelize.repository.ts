@@ -8,7 +8,7 @@ import { NotFoundError } from "../../../../shared/domain/errors/notFoundError";
 import {
   CategorySearchParams,
   CategorySearchResult,
-} from "../../../../category/domain/category.repository";
+} from "../../../domain/category.repository";
 import { Op } from "sequelize";
 import { CategoryModelMapper } from "./category-model-mapper";
 

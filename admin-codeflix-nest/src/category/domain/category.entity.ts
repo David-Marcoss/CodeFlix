@@ -2,7 +2,7 @@ import { CategoryValidatorFactory } from "./category.validator";
 import { EntityValidationError } from "../../shared/domain/validators/validation.error";
 import { Uuid } from "../../shared/domain/value-objects/uuid.vo";
 import { Entity } from "../../shared/domain/entity";
-import { ValueObject } from "src/shared/domain/value-object";
+import { ValueObject } from "../../shared/domain/value-object";
 import { CategoryFakeBuilder } from "./category-fake.builder";
 
 export type CreateCategoryProps = {
