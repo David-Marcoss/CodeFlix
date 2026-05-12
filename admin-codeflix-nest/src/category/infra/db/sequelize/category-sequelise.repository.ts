@@ -1,4 +1,4 @@
-import { Category } from "../../../../category/domain/category.entity";
+import { Category } from "../../../domain/category.entity";
 
 import { ISearchableRepository } from "../../../../shared/domain/repository/repository-interface";
 import { Uuid } from "../../../../shared/domain/value-objects/uuid.vo";

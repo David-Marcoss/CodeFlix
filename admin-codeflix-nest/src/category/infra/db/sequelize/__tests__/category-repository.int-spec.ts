@@ -1,12 +1,12 @@
 import { Sequelize } from "sequelize-typescript";
 import { CategoryModel } from "../category.model";
 import { CategoryFakeBuilder } from "../../../../domain/category-fake.builder";
-import { CategoryRepository } from "../category.sequelise.repository";
-import { Category } from "../../../../../category/domain/category.entity";
+import { CategoryRepository } from "../category-sequelise.repository";
+import { Category } from "../../../../domain/category.entity";
 import {
   CategorySearchParams,
   CategorySearchResult,
-} from "../../../../../category/domain/category.repository";
+} from "../../../../domain/category.repository";
 import { NotFoundError } from "../../../../../shared/domain/errors/notFoundError";
 
 describe("Category repository integration tests", () => {
@@ -141,11 +141,11 @@ describe("Category repository integration tests", () => {
     expect(findCategoryUpdated.toJSON()).toEqual(categoryUpdated.toJSON());
   });
 
-    it("should to throw error when update category is not found", async () => {
-      const category = CategoryFakeBuilder.aCategory().build();
+  it("should to throw error when update category is not found", async () => {
+    const category = CategoryFakeBuilder.aCategory().build();
 
-      await expect(
-        categoryRepository.update(category),
-      ).rejects.toThrow(new NotFoundError(category.category_id, Category));
-    });
+    await expect(categoryRepository.update(category)).rejects.toThrow(
+      new NotFoundError(category.category_id, Category),
+    );
+  });
 });
