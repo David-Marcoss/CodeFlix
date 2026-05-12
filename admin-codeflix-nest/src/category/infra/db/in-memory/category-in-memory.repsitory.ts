@@ -1,6 +1,6 @@
-import { Category } from "../../../category/domain/category.entity";
-import { Uuid } from "../../../shared/domain/value-objects/uuid.vo";
-import { InMemorySearchableRepository } from "../../../shared/infra/db/in-memory.repository";
+import { Category } from "../../../../category/domain/category.entity";
+import { Uuid } from "../../../../shared/domain/value-objects/uuid.vo";
+import { InMemorySearchableRepository } from "../../../../shared/infra/db/in-memory.repository";
 
 export class CategoryInMemoryRepository extends InMemorySearchableRepository<
   Category,

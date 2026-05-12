@@ -3,7 +3,7 @@ import { v4 as uuidv4, validate as uuidValidate } from "uuid";
 
 export class Uuid extends ValueObject {
   id;
-  constructor(readonly value?: string) {
+  constructor(value?: string) {
     super();
     this.id = value || uuidv4();
     this.validate();
