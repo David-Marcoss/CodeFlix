@@ -11,3 +11,5 @@ export type CategoryFilter = string | undefined;
 export class CategorySearchParams extends SearchParams<CategoryFilter> {}
 
 export class CategorySearchResult extends SearchResult<Category> {}
+
+export class CategoryId extends Uuid {}
