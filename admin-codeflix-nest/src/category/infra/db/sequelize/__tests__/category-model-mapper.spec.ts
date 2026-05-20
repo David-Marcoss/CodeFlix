@@ -1,29 +1,33 @@
-import { Sequelize } from "sequelize-typescript";
-import { CategoryModel } from "../category.model";
-import { CategoryRepository } from "../category-sequelize.repository";
+import { EntityValidationError } from "../../../../../shared/domain/validators/validation.error";
+import { Uuid } from "../../../../../shared/domain/value-objects/uuid.vo";
+import { setupSequelize } from "../../../../../shared/infra/testing/helper";
+
 import { Category } from "../../../../domain/category.entity";
 import { CategoryModelMapper } from "../category-model-mapper";
-import { Uuid } from "../../../../../shared/domain/value-objects/uuid.vo";
+import { CategoryModel } from "../category.model";
 
 describe("CategoryModelMapper Integration Tests", () => {
-  let sequelize: Sequelize;
-  let categoryRepository: CategoryRepository;
+  setupSequelize({ models: [CategoryModel] });
 
-  beforeEach(async () => {
-    sequelize = new Sequelize({
-      dialect: "sqlite",
-      storage: ":memory:",
-      logging: false,
-      models: [CategoryModel],
+  it("should throws error when category is invalid", () => {
+    expect.assertions(2);
+    const model = CategoryModel.build({
+      category_id: "9366b7dc-2d71-4799-b91c-c64adb205104",
+      name: "a".repeat(256),
     });
-    categoryRepository = new CategoryRepository(CategoryModel);
-
-    await sequelize.authenticate();
-    await sequelize.sync({ force: true });
-  });
-
-  afterAll(async () => {
-    await sequelize.close();
+    try {
+      CategoryModelMapper.toEntity(model);
+      fail(
+        "The category is valid, but it needs throws a EntityValidationError",
+      );
+    } catch (e) {
+      expect(e).toBeInstanceOf(EntityValidationError);
+      expect((e as EntityValidationError).error).toMatchObject([
+        {
+          name: ["name must be shorter than or equal to 255 characters"],
+        },
+      ]);
+    }
   });
 
   it("should convert a category model to a category aggregate", () => {

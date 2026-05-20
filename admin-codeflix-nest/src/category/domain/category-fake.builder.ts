@@ -4,14 +4,6 @@ import { Uuid } from "../../shared/domain/value-objects/uuid.vo";
 
 type PropOrFactory<T> = T | ((index: number) => T);
 
-// Serve para criar objetos de teste, com dados aleatórios ou personalizados, de forma fácil e fluida.
-//  Ele é especialmente útil para criar instâncias de entidades com propriedades complexas
-//  ou para gerar uma grande quantidade de objetos de teste com variações nos dados. 
-// O builder permite configurar as propriedades do objeto usando métodos encadeados (com prefixo "with") e, [
-// em seguida, construir o objeto final usando o método "build()".
-//  Ele também pode ser usado para criar múltiplos objetos de teste ao mesmo tempo, 
-// especificando a quantidade desejada no momento da criação do builder.
-
 export class CategoryFakeBuilder<TBuild = any> {
   // auto generated in entity
   private _category_id: PropOrFactory<Uuid> | undefined = undefined;
@@ -92,10 +84,10 @@ export class CategoryFakeBuilder<TBuild = any> {
             created_at: this.callFactory(this._created_at, index),
           }),
         });
-        Category.validate(category);
+        category.validate();
         return category;
       });
-    return (this.countObjs === 1 ? categories[0] : categories) as TBuild;
+    return this.countObjs === 1 ? (categories[0] as any) : categories as any;
   }
 
   get category_id() {

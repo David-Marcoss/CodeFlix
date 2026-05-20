@@ -1,5 +1,6 @@
 import { IUseCase } from "../../../../shared/application/use-case.interface";
 import { NotFoundError } from "../../../../shared/domain/errors/notFoundError";
+import { EntityValidationError } from "../../../../shared/domain/validators/validation.error";
 import { Category } from "../../../domain/category.entity";
 import { CategoryId } from "../../../domain/category.repository";
 import { CategoryRepository } from "../../../infra/db/sequelize/category-sequelize.repository";
@@ -34,6 +35,13 @@ export class UpdateCategoryUseCase implements IUseCase<
     }
     if (input.is_active === false) {
       existingCategory.deactivate();
+    }
+
+    if (existingCategory.notification.hasErrors()) {
+
+      console.log(existingCategory.notification.errors);
+      
+      throw new EntityValidationError(existingCategory.notification.toJSON());
     }
 
     this.categoryRepo.update(existingCategory);
