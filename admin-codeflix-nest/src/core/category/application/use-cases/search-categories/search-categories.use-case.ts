@@ -5,7 +5,7 @@ import {
   CategoryFilter,
   CategorySearchParams,
 } from '../../../domain/category.repository';
-import { CategoryRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
+import { CategorySequelizeRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
 import {
   CategoryOutput,
   CategoryOutputMapper,
@@ -15,7 +15,7 @@ export class SearchCategoriesUseCase implements IUseCase<
   undefined,
   SearchCategoryOutput
 > {
-  constructor(private categoryRepo: CategoryRepository) {}
+  constructor(private categoryRepo: CategorySequelizeRepository) {}
 
   async execute(filters?: SearchInput): Promise<SearchCategoryOutput> {
     const searchParams = new CategorySearchParams(filters);

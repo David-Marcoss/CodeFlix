@@ -1,6 +1,6 @@
 import { CategoryModel } from '../category.model';
 import { CategoryFakeBuilder } from '../../../../domain/category-fake.builder';
-import { CategoryRepository } from '../category-sequelize.repository';
+import { CategorySequelizeRepository } from '../category-sequelize.repository';
 import { Category } from '../../../../domain/category.entity';
 import {
   CategorySearchParams,
@@ -10,13 +10,13 @@ import { NotFoundError } from '../../../../../shared/domain/errors/notFoundError
 import { setupSequelize } from '../../../../../shared/infra/testing/helper';
 
 describe('Category repository integration tests', () => {
-  let categoryRepository: CategoryRepository;
+  let categoryRepository: CategorySequelizeRepository;
   setupSequelize({
     models: [CategoryModel],
   });
 
   beforeEach(async () => {
-    categoryRepository = new CategoryRepository(CategoryModel);
+    categoryRepository = new CategorySequelizeRepository(CategoryModel);
   });
 
   it('should create a new category', async () => {

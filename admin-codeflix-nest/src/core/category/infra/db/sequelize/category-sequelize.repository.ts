@@ -12,11 +12,11 @@ import {
 import { Op, Order } from 'sequelize';
 import { CategoryModelMapper } from './category-model-mapper';
 
-export class CategoryRepository implements ISearchableRepository<
+export class CategorySequelizeRepository implements ISearchableRepository<
   Category,
   Uuid
 > {
-  sortableFields: string[];
+  sortableFields: string[] = [];
 
   constructor(private categoryModel: typeof CategoryModel) {}
 

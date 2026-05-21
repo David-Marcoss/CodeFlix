@@ -1,5 +1,5 @@
 import { IUseCase } from '../../../../shared/application/use-case.interface';
-import { CategoryRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
+import { CategorySequelizeRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
 import {
   CategoryOutput,
   CategoryOutputMapper,
@@ -9,7 +9,7 @@ export class FindAllCategoriesUseCase implements IUseCase<
   undefined,
   CategoryOutput[]
 > {
-  constructor(private categoryRepo: CategoryRepository) {}
+  constructor(private categoryRepo: CategorySequelizeRepository) {}
 
   async execute(): Promise<CategoryOutput[]> {
     const categories = await this.categoryRepo.getAll();

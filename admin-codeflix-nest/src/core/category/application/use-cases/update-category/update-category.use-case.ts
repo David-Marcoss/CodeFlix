@@ -3,7 +3,7 @@ import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
 import { EntityValidationError } from '../../../../shared/domain/validators/validation.error';
 import { Category } from '../../../domain/category.entity';
 import { CategoryId } from '../../../domain/category.repository';
-import { CategoryRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
+import { CategorySequelizeRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
 import {
   CategoryOutput,
   CategoryOutputMapper,
@@ -13,7 +13,7 @@ export class UpdateCategoryUseCase implements IUseCase<
   UpdateCategoryInput,
   CategoryOutput
 > {
-  constructor(private categoryRepo: CategoryRepository) {}
+  constructor(private categoryRepo: CategorySequelizeRepository) {}
 
   async execute(input: UpdateCategoryInput): Promise<CategoryOutput> {
     const category_id = new CategoryId(input.category_id);
