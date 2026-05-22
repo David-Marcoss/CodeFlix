@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { ConfigService } from '@nestjs/config';
 
-import { CategoryModel } from '../core/category/infra/db/sequelize/category.model';
-import { CONFIG_DB_SCHEMA_TYPES } from '../config/config.module';
+import { CategoryModel } from '../../core/category/infra/db/sequelize/category.model';
+import { CONFIG_DB_SCHEMA_TYPES } from '../config-module/config.module';
 
 const models = [CategoryModel];
 
