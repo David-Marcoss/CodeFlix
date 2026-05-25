@@ -1,6 +1,5 @@
 import { Category } from '../../../domain/category.entity';
 
-import { ISearchableRepository } from '../../../../shared/domain/repository/repository-interface';
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { SearchResult } from '../../../../shared/domain/repository/search-result';
 import { CategoryModel } from './category.model';
@@ -8,14 +7,12 @@ import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
 import {
   CategorySearchParams,
   CategorySearchResult,
+  ICategoryRepository,
 } from '../../../domain/category.repository';
 import { Op, Order } from 'sequelize';
 import { CategoryModelMapper } from './category-model-mapper';
 
-export class CategorySequelizeRepository implements ISearchableRepository<
-  Category,
-  Uuid
-> {
+export class CategorySequelizeRepository implements ICategoryRepository {
   sortableFields: string[] = [];
 
   constructor(private categoryModel: typeof CategoryModel) {}

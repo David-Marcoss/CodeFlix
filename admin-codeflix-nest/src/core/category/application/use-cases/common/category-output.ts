@@ -3,7 +3,7 @@ import { Category } from '../../../domain/category.entity';
 export type CategoryOutput = {
   category_id: string;
   name: string;
-  description?: string;
+  description?: string | null;
   is_active: boolean;
   created_at: Date;
 };

@@ -21,7 +21,7 @@ export type CreateCategoryComand = {
 export class Category extends Entity {
   category_id: Uuid;
   name: string;
-  description: string | undefined;
+  description?: string | null;
   is_active: boolean;
   created_at: Date;
 
@@ -46,7 +46,7 @@ export class Category extends Entity {
     this.validate(['name']);
   }
 
-  changeDescription(description: string): void {
+  changeDescription(description: string | null): void {
     this.description = description;
   }
 

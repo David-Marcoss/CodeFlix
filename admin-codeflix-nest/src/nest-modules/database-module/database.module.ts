@@ -3,7 +3,10 @@ import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { ConfigService } from '@nestjs/config';
 
 import { CategoryModel } from '../../core/category/infra/db/sequelize/category.model';
-import { CONFIG_DB_SCHEMA_TYPES } from '../config-module/config.module';
+import {
+  CONFIG_DB_SCHEMA_TYPES,
+  ConfigModule,
+} from '../config-module/config.module';
 
 const models = [CategoryModel];
 
@@ -42,6 +45,7 @@ export function getSequelizeOptions(
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
+      imports: [ConfigModule],
       useFactory: getSequelizeOptions,
       inject: [ConfigService],
     }),

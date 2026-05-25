@@ -2,18 +2,21 @@ import { IUseCase } from '../../../../shared/application/use-case.interface';
 import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
 import { EntityValidationError } from '../../../../shared/domain/validators/validation.error';
 import { Category } from '../../../domain/category.entity';
-import { CategoryId } from '../../../domain/category.repository';
-import { CategorySequelizeRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
+import {
+  CategoryId,
+  ICategoryRepository,
+} from '../../../domain/category.repository';
 import {
   CategoryOutput,
   CategoryOutputMapper,
 } from '../common/category-output';
+import { UpdateCategoryInput } from './update-category.input';
 
 export class UpdateCategoryUseCase implements IUseCase<
   UpdateCategoryInput,
   CategoryOutput
 > {
-  constructor(private categoryRepo: CategorySequelizeRepository) {}
+  constructor(private categoryRepo: ICategoryRepository) {}
 
   async execute(input: UpdateCategoryInput): Promise<CategoryOutput> {
     const category_id = new CategoryId(input.category_id);
@@ -24,7 +27,9 @@ export class UpdateCategoryUseCase implements IUseCase<
       throw new NotFoundError(input.category_id, Category);
     }
 
-    existingCategory.changeName(input.name);
+    if (input.name) {
+      existingCategory.changeName(input.name);
+    }
 
     if (input.description !== undefined) {
       existingCategory.changeDescription(input.description);
@@ -45,11 +50,4 @@ export class UpdateCategoryUseCase implements IUseCase<
 
     return CategoryOutputMapper.toOutput(existingCategory);
   }
-}
-
-export interface UpdateCategoryInput {
-  category_id: string;
-  name: string;
-  description?: string;
-  is_active?: boolean;
 }

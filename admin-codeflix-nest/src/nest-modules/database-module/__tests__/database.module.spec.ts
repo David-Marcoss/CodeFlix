@@ -3,8 +3,11 @@ import { getConnectionToken } from '@nestjs/sequelize';
 
 import { DatabaseModule, getSequelizeOptions } from '../database.module';
 import { Sequelize } from 'sequelize-typescript';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CONFIG_DB_SCHEMA_TYPES } from '../../config-module/config.module';
+import { ConfigService } from '@nestjs/config';
+import {
+  ConfigModule,
+  CONFIG_DB_SCHEMA_TYPES,
+} from '../../config-module/config.module';
 
 const CONFIG_ENV_KEYS = [
   'DB_VENDOR',

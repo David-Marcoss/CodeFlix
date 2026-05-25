@@ -1,9 +1,11 @@
 import { IUseCase } from '../../../../shared/application/use-case.interface';
-import { CategoryId } from '../../../domain/category.repository';
-import { CategorySequelizeRepository } from '../../../infra/db/sequelize/category-sequelize.repository';
+import {
+  CategoryId,
+  ICategoryRepository,
+} from '../../../domain/category.repository';
 
 export class DeleteCategoryUseCase implements IUseCase<CategoryInput, void> {
-  constructor(private categoryRepo: CategorySequelizeRepository) {}
+  constructor(private categoryRepo: ICategoryRepository) {}
 
   async execute(input: CategoryInput): Promise<void> {
     const categoryId = new CategoryId(input.category_id);
