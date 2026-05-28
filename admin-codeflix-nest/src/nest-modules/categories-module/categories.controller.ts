@@ -17,57 +17,73 @@ import { UpdateCategoryUseCase } from '../../core/category/application/use-cases
 import { FindCategoryUseCase } from '../../core/category/application/use-cases/find-category/find-category.use-case';
 import { SearchCategoriesUseCase } from '../../core/category/application/use-cases/search-categories/search-categories.use-case';
 import { DeleteCategoryUseCase } from '../../core/category/application/use-cases/delete-category/delete-category.use-case';
-import { CategoryCollectionPresenter } from './categories.presenter';
+import {
+  CategoryCollectionPresenter,
+  CategoryPresenter,
+} from './categories.presenter';
 import { SearchCategoriesDto } from './dto/search-category.dto';
+import { CategoryOutput } from '../../core/category/application/use-cases/common/category-output';
 
 @Controller('categories')
 export class CategoriesController {
   @Inject(CreateCategoryUseCase)
-  private createUsecase!: CreateCategoryUseCase;
+  private createUseCase!: CreateCategoryUseCase;
 
   @Inject(FindCategoryUseCase)
-  private findUsecase!: FindCategoryUseCase;
+  private findUseCase!: FindCategoryUseCase;
 
   @Inject(UpdateCategoryUseCase)
-  private updateUsecase!: UpdateCategoryUseCase;
+  private updateUseCase!: UpdateCategoryUseCase;
 
   @Inject(SearchCategoriesUseCase)
-  private searchUsecase!: SearchCategoriesUseCase;
+  private searchUseCase!: SearchCategoriesUseCase;
 
   @Inject(DeleteCategoryUseCase)
-  private deleteUsecase!: DeleteCategoryUseCase;
+  private deleteUseCase!: DeleteCategoryUseCase;
 
   constructor() {}
 
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return await this.createUsecase.execute(createCategoryDto);
+    return await this.createUseCase.execute(createCategoryDto);
   }
 
   @Get()
   async search(@Query() searchParamsDto: SearchCategoriesDto) {
-    const output = await this.searchUsecase.execute(searchParamsDto);
+    const output = await this.searchUseCase.execute(searchParamsDto);
     return new CategoryCollectionPresenter(output);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.findUsecase.execute({ category_id: id });
+  async findOne(@Param('id') id: string) {
+    const result = await this.findUseCase.execute({ category_id: id });
+
+    if (!result) {
+      return null;
+    }
+
+    return CategoriesController.serialize(result);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.updateUsecase.execute({
+    const result = await this.updateUseCase.execute({
       ...updateCategoryDto,
       category_id: id,
     });
+
+    return CategoriesController.serialize(result);
   }
 
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.deleteUsecase.execute({ category_id: id });
+  delete(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.deleteUseCase.execute({ category_id: id });
+  }
+
+  static serialize(output: CategoryOutput) {
+    return new CategoryPresenter(output);
   }
 }
