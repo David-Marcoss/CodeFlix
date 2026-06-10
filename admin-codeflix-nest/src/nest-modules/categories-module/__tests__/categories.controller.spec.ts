@@ -49,7 +49,7 @@ describe('CategoriesController', () => {
     const result = await controller.create(input);
 
     expect(mockCreateUseCase.execute).toHaveBeenCalledWith(input);
-    expect(result).toStrictEqual(output);
+    expect(result).toStrictEqual(new CategoryPresenter(output));
   });
 
   it('should find a category', async () => {
@@ -87,9 +87,9 @@ describe('CategoriesController', () => {
     //@ts-expect-error defined part of methods
     controller['findUseCase'] = mockFindUseCase;
 
-    const result = await controller.findOne(category_id);
-
-    expect(result).toBeNull();
+    await expect(controller.findOne(category_id)).rejects.toThrow(
+      new NotFoundError(category_id, Category),
+    );
   });
 
   it('should search categories', async () => {
@@ -184,6 +184,9 @@ describe('CategoriesController', () => {
       category_id,
       ...input,
     });
+
+    console.log('Presenter returned from update:', presenter);
+
     expect(presenter).toBeInstanceOf(CategoryPresenter);
     expect(presenter).toStrictEqual(new CategoryPresenter(output));
   });

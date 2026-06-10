@@ -19,7 +19,7 @@ export class CategoryPresenter {
   constructor(output: CategoryOutput) {
     this.category_id = output.category_id;
     this.name = output.name;
-    this.description = output.description;
+    this.description = output.description || null;
     this.is_active = output.is_active;
     this.created_at = output.created_at;
   }

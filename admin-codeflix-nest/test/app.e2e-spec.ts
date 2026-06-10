@@ -1,10 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { Reflector } from '@nestjs/core';
+import { WrapperDataInterceptor } from '../src/nest-modules/shared-module/interceptors/wrapper-data/wrapper-data.interceptor';
+import { NotFoundErrorFilter } from '../src/nest-modules/shared-module/filters/not-found-error.filter';
+import { EntityValidationErrorFilter } from '../src/nest-modules/shared-module/filters/entity-validation-error.filter';
 
-describe('AppController (e2e)', () => {
+describe('AppModule (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
@@ -13,17 +21,28 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        errorHttpStatusCode: 422,
+        transform: true,
+      }),
+    );
+    app.useGlobalInterceptors(
+      new WrapperDataInterceptor(),
+      new ClassSerializerInterceptor(app.get(Reflector)),
+    );
+    app.useGlobalFilters(
+      new NotFoundErrorFilter(),
+      new EntityValidationErrorFilter(),
+    );
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('/categories (GET)', () => {
+    return request(app.getHttpServer()).get('/categories').expect(200);
   });
 
   afterEach(async () => {
-    await app.close();
+    await app?.close();
   });
 });

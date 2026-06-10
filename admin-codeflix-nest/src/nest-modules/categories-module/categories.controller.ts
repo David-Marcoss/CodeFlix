@@ -9,6 +9,8 @@ import {
   Inject,
   ParseUUIDPipe,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -23,6 +25,8 @@ import {
 } from './categories.presenter';
 import { SearchCategoriesDto } from './dto/search-category.dto';
 import { CategoryOutput } from '../../core/category/application/use-cases/common/category-output';
+import { NotFoundError } from '../../core/shared/domain/errors/notFoundError';
+import { Category } from '../../core/category/domain/category.entity';
 
 @Controller('categories')
 export class CategoriesController {
@@ -45,7 +49,8 @@ export class CategoriesController {
 
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return await this.createUseCase.execute(createCategoryDto);
+    const output = await this.createUseCase.execute(createCategoryDto);
+    return CategoriesController.serialize(output);
   }
 
   @Get()
@@ -59,7 +64,7 @@ export class CategoriesController {
     const result = await this.findUseCase.execute({ category_id: id });
 
     if (!result) {
-      return null;
+      throw new NotFoundError(id, Category);
     }
 
     return CategoriesController.serialize(result);
@@ -67,7 +72,7 @@ export class CategoriesController {
 
   @Patch(':id')
   async update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     const result = await this.updateUseCase.execute({
@@ -78,6 +83,7 @@ export class CategoriesController {
     return CategoriesController.serialize(result);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   delete(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.deleteUseCase.execute({ category_id: id });

@@ -9,11 +9,18 @@ import {
   CategorySearchResult,
   ICategoryRepository,
 } from '../../../domain/category.repository';
-import { Op, Order } from 'sequelize';
+import { literal, Op, Order } from 'sequelize';
 import { CategoryModelMapper } from './category-model-mapper';
+import { SortDirection } from '../../../../shared/domain/repository/search-params';
 
 export class CategorySequelizeRepository implements ICategoryRepository {
   sortableFields: string[] = [];
+
+  orderBy = {
+    mysql: {
+      name: (sort_dir: SortDirection) => literal(`binary name ${sort_dir}`), //ascii
+    },
+  };
 
   constructor(private categoryModel: typeof CategoryModel) {}
 
@@ -22,7 +29,9 @@ export class CategorySequelizeRepository implements ICategoryRepository {
     const offseat = (page - 1) * per_page;
     const limit = per_page;
     const order: Order =
-      sort && sort_dir ? [[sort, sort_dir]] : [['created_at', 'DESC']];
+      sort && sort_dir
+        ? this.formatSort(sort, sort_dir)
+        : [['created_at', 'DESC']];
 
     const { rows, count } = await this.categoryModel.findAndCountAll({
       where: filter
@@ -103,5 +112,13 @@ export class CategorySequelizeRepository implements ICategoryRepository {
 
   getEntity(): new (...args: any[]) => Category {
     throw new Error('Method not implemented.');
+  }
+
+  private formatSort(sort: string, sort_dir: SortDirection) {
+    const dialect = this.categoryModel.sequelize!.getDialect() as 'mysql';
+    if (this.orderBy[dialect] && this.orderBy[dialect][sort]) {
+      return this.orderBy[dialect][sort](sort_dir);
+    }
+    return [[sort, sort_dir]];
   }
 }
