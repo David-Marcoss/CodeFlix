@@ -1,4 +1,4 @@
-import { Category } from '../../../core/category/domain/category.entity';
+import { Category } from '../../../core/category/domain/category.aggregate';
 
 // Fixures: Mapeia conjunto de dados a serem usados para a execulção dos testes
 

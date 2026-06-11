@@ -27,7 +27,7 @@ describe('Update Category use-case integration tests', () => {
 
     const categoryModel = await CategoryModel.findByPk(output.category_id);
 
-    expect(categoryModel.toJSON()).toStrictEqual({
+    expect(categoryModel!.toJSON()).toStrictEqual({
       category_id: output.category_id,
       name: output.name,
       description: output.description,

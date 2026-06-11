@@ -26,7 +26,7 @@ import {
 import { SearchCategoriesDto } from './dto/search-category.dto';
 import { CategoryOutput } from '../../core/category/application/use-cases/common/category-output';
 import { NotFoundError } from '../../core/shared/domain/errors/notFoundError';
-import { Category } from '../../core/category/domain/category.entity';
+import { Category } from '../../core/category/domain/category.aggregate';
 
 @Controller('categories')
 export class CategoriesController {

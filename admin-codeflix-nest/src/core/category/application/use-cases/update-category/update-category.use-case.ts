@@ -1,11 +1,8 @@
 import { IUseCase } from '../../../../shared/application/use-case.interface';
 import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
 import { EntityValidationError } from '../../../../shared/domain/validators/validation.error';
-import { Category } from '../../../domain/category.entity';
-import {
-  CategoryId,
-  ICategoryRepository,
-} from '../../../domain/category.repository';
+import { Category, CategoryId } from '../../../domain/category.aggregate';
+import { ICategoryRepository } from '../../../domain/category.repository';
 import {
   CategoryOutput,
   CategoryOutputMapper,

@@ -2,7 +2,7 @@ import request from 'supertest';
 import { ICategoryRepository } from '../../src/core/category/domain/category.repository';
 import { startApp } from '../../src/nest-modules/shared-module/testing/helpers';
 import { CATEGORY_PROVIDERS } from '../../src/nest-modules/categories-module/categories.provider';
-import { Category } from '../../src/core/category/domain/category.entity';
+import { Category } from '../../src/core/category/domain/category.aggregate';
 
 describe('CategoriesController (e2e)', () => {
   describe('/delete/:id (DELETE)', () => {

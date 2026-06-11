@@ -1,4 +1,4 @@
-import { Category } from '../../../../category/domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { InMemorySearchableRepository } from '../../../../shared/infra/db/in-memory.repository';
 import { ICategoryRepository } from '../../../domain/category.repository';

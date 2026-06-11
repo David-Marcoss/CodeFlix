@@ -2,7 +2,7 @@ import { CategoriesController } from '../categories.controller';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { Uuid } from '../../../core/shared/domain/value-objects/uuid.vo';
 import { NotFoundError } from '../../../core/shared/domain/errors/notFoundError';
-import { Category } from '../../../core/category/domain/category.entity';
+import { Category } from '../../../core/category/domain/category.aggregate';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { CategoryOutput } from '../../../core/category/application/use-cases/common/category-output';
 import { SearchCategoryOutput } from '../../../core/category/application/use-cases/search-categories/search-categories.use-case';

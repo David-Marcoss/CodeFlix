@@ -1,4 +1,4 @@
-import { Category } from '../../../domain/category.entity';
+import { Category } from '../../../domain/category.aggregate';
 
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { SearchResult } from '../../../../shared/domain/repository/search-result';

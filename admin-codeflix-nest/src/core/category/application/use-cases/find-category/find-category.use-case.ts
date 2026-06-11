@@ -1,8 +1,6 @@
 import { IUseCase } from '../../../../shared/application/use-case.interface';
-import {
-  CategoryId,
-  ICategoryRepository,
-} from '../../../domain/category.repository';
+import { CategoryId } from '../../../domain/category.aggregate';
+import { ICategoryRepository } from '../../../domain/category.repository';
 import {
   CategoryOutput,
   CategoryOutputMapper,

@@ -1,7 +1,7 @@
 import { CategoryModel } from '../category.model';
 import { CategoryFakeBuilder } from '../../../../domain/category-fake.builder';
 import { CategorySequelizeRepository } from '../category-sequelize.repository';
-import { Category } from '../../../../domain/category.entity';
+import { Category } from '../../../../domain/category.aggregate';
 import {
   CategorySearchParams,
   CategorySearchResult,
