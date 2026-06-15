@@ -3,6 +3,7 @@ import { ValueObject } from '../../shared/domain/value-object';
 import { Uuid } from '../../shared/domain/value-objects/uuid.vo';
 import { CastMemberType } from './cast-member-type.vo';
 import { CastMemberValidatorFactory } from './cast-member.validator';
+import { CastMemberFakeBuilder } from './category-fake.builder';
 
 export class CastMemberId extends Uuid {}
 
@@ -50,6 +51,10 @@ export class CastMember extends AggregateRoot {
 
   get entity_id(): ValueObject {
     return this.cast_member_id;
+  }
+
+  static fake() {
+    return CastMemberFakeBuilder;
   }
 
   toJSON() {
