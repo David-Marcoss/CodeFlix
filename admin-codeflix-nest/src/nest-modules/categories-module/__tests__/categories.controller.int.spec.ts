@@ -58,9 +58,10 @@ describe('CategoriesController', () => {
 
   it('should not find a category', async () => {
     const category_id = new Uuid().toString();
-    const result = await controller.findOne(category_id);
 
-    expect(result).toBeNull();
+    await expect(controller.findOne(category_id)).rejects.toThrow(
+      new NotFoundError(category_id, Category),
+    );
   });
 
   it('should search categories', async () => {
@@ -105,9 +106,9 @@ describe('CategoriesController', () => {
 
     expect(result).toBeUndefined();
 
-    const findResult = await controller.findOne(created.category_id);
-
-    expect(findResult).toBeNull();
+    await expect(controller.findOne(created.category_id)).rejects.toThrow(
+      new NotFoundError(created.category_id, Category),
+    );
   });
 
   it('should not delete a category when it does not exist', async () => {
