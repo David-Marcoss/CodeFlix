@@ -11,7 +11,7 @@ import {
   CastMemberOutputMapper,
 } from '../common/cast-member-output';
 
-export class SearchCategoriesUseCase implements IUseCase<
+export class SearchCastMembersUseCase implements IUseCase<
   undefined,
   SearchCastMemberOutput
 > {

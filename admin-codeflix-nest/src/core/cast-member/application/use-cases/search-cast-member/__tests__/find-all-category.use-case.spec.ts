@@ -6,7 +6,7 @@ import {
   CreateCastMemberInput,
 } from '../../create-cast-member/create-cast-member.input';
 import { CreateCastMemberUseCase } from '../../create-cast-member/create-cast-member.use-case';
-import { SearchCategoriesUseCase } from '../search-cast-member.use-case';
+import { SearchCastMembersUseCase } from '../search-cast-member.use-case';
 
 describe('Find all CastMember use-case integration tests', () => {
   let castMemberRepository: CastMemberSequelizeRepository;
@@ -34,9 +34,11 @@ describe('Find all CastMember use-case integration tests', () => {
     await createUseCase.execute(castMember1);
     await createUseCase.execute(castMember2);
 
-    const findAllUseCase = new SearchCategoriesUseCase(castMemberRepository);
+    const findAllUseCase = new SearchCastMembersUseCase(castMemberRepository);
 
-    const result = await findAllUseCase.execute({ filter: 'caregoria 1' });
+    const result = await findAllUseCase.execute({
+      filter: 'Test CastMember 1',
+    });
 
     expect(result.items).toHaveLength(1);
     expect(result.total).toBe(1);
