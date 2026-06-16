@@ -1,0 +1,57 @@
+import request from 'supertest';
+import { startApp } from '../../src/nest-modules/shared-module/testing/helpers';
+import { ICastMemberRepository } from '../../src/core/cast-member/domain/cast-member.repository';
+import { CastMember } from '../../src/core/cast-member/domain/cast-member.aggregate';
+import { CAST_MEMBER_PROVIDERS } from '../../src/nest-modules/cast-members-module/cast-members.provider';
+import { GetCastMemberFixture } from '../../src/nest-modules/cast-members-module/testing/cast-member.fixure';
+
+describe('CastMemberController (e2e)', () => {
+  const nestApp = startApp();
+  describe('/cast-member/:id (GET)', () => {
+    describe('should a response error when id is invalid or not found', () => {
+      const arrange = [
+        {
+          id: '88ff2587-ce5a-4769-a8c6-1d63d29c5f7a',
+          expected: {
+            message:
+              'CastMember Not Found using ID 88ff2587-ce5a-4769-a8c6-1d63d29c5f7a',
+            statusCode: 404,
+            error: 'Not Found',
+          },
+        },
+        {
+          id: 'fake id',
+          expected: {
+            statusCode: 422,
+            message: 'Validation failed (uuid is expected)',
+            error: 'Unprocessable Entity',
+          },
+        },
+      ];
+
+      test.each(arrange)('when id is $id', async ({ id, expected }) => {
+        return request(nestApp.app.getHttpServer())
+          .get(`/cast-member/${id}`)
+
+          .expect(expected.statusCode)
+          .expect(expected);
+      });
+    });
+
+    it('should return a castMember ', async () => {
+      const castMemberRepo = nestApp.app.get<ICastMemberRepository>(
+        CAST_MEMBER_PROVIDERS.REPOSITORIES.CAST_MEMBER_REPOSITORY.provide,
+      );
+      const castMember = CastMember.fake().aCastMember().build();
+      await castMemberRepo.create(castMember);
+
+      const res = await request(nestApp.app.getHttpServer())
+        .get(`/cast-member/${castMember.cast_member_id.id}`)
+
+        .expect(200);
+      const keyInResponse = GetCastMemberFixture.keysInResponse;
+      expect(Object.keys(res.body)).toStrictEqual(['data']);
+      expect(Object.keys(res.body.data)).toStrictEqual(keyInResponse);
+    });
+  });
+});

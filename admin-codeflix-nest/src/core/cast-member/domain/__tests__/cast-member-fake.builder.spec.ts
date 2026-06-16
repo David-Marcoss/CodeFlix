@@ -109,14 +109,6 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
       expect(typeof faker['_type']).toBe('function');
     });
 
-    test('should call the paragraph method', () => {
-      const chance = Chance();
-      const spyParagraphMethod = jest.spyOn(chance, 'paragraph');
-      faker['chance'] = chance;
-      faker.build();
-      expect(spyParagraphMethod).toHaveBeenCalled();
-    });
-
     test('withType', () => {
       const type = new CastMemberType('actor');
       const $this = faker.withType(type);
@@ -191,7 +183,7 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
 
     expect(castMember.cast_member_id).toBeInstanceOf(CastMemberId);
     expect(typeof castMember.name === 'string').toBeTruthy();
-    expect(typeof castMember.type === 'string').toBeTruthy();
+    expect(castMember.type instanceof CastMemberType).toBeTruthy();
     expect(castMember.created_at).toBeInstanceOf(Date);
 
     const created_at = new Date();
@@ -218,7 +210,7 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
     categories.forEach((castMember) => {
       expect(castMember.cast_member_id).toBeInstanceOf(CastMemberId);
       expect(typeof castMember.name === 'string').toBeTruthy();
-      expect(typeof castMember.type === 'string').toBeTruthy();
+      expect(castMember.type instanceof CastMemberType).toBeTruthy();
       expect(castMember.created_at).toBeInstanceOf(Date);
     });
 

@@ -22,6 +22,7 @@ export class UpdateCastMemberInput {
   @IsOptional()
   name?: string;
 
+  @IsOptional()
   @IsEnum(CastMenberTypeEnum)
   type?: CastMenberTypeEnum;
 

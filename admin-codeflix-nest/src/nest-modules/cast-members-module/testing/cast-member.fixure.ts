@@ -3,7 +3,7 @@
 import { CastMemberType } from '../../../core/cast-member/domain/cast-member-type.vo';
 import { CastMember } from '../../../core/cast-member/domain/cast-member.aggregate';
 
-const _keysInResponse = ['category_id', 'name', 'type', 'created_at'];
+const _keysInResponse = ['cast_member_id', 'name', 'type', 'created_at'];
 
 export class GetCastMemberFixture {
   static keysInResponse = _keysInResponse;
@@ -21,48 +21,51 @@ export class CreateCastMemberFixture {
       {
         send_data: {
           name: faker.name,
+          type: faker.type.type,
         },
         expected: {
           name: faker.name,
-          type: null,
+          type: faker.type.type,
         },
       },
       {
         send_data: {
           name: faker.name,
-          type: faker.type,
+          type: faker.type.type,
         },
         expected: {
           name: faker.name,
-          type: faker.type,
+          type: faker.type.type,
         },
       },
       {
         send_data: {
           name: faker.name,
+          type: faker.type.type,
         },
         expected: {
           name: faker.name,
-          type: null,
+          type: faker.type.type,
         },
       },
       {
         send_data: {
           name: faker.name,
+          type: faker.type.type,
         },
         expected: {
           name: faker.name,
-          type: null,
+          type: faker.type.type,
         },
       },
       {
         send_data: {
           name: faker.name,
-          type: faker.type,
+          type: faker.type.type,
         },
         expected: {
           name: faker.name,
-          type: faker.type,
+          type: faker.type.type,
         },
       },
     ];
@@ -78,13 +81,18 @@ export class CreateCastMemberFixture {
       EMPTY: {
         send_data: {},
         expected: {
-          message: ['name should not be empty', 'name must be a string'],
+          message: [
+            'name should not be empty',
+            'name must be a string',
+            'type must be one of the following values: actor, director',
+          ],
           ...defaultExpected,
         },
       },
       NAME_UNDEFINED: {
         send_data: {
           name: undefined,
+          type: 'actor',
         },
         expected: {
           message: ['name should not be empty', 'name must be a string'],
@@ -94,6 +102,7 @@ export class CreateCastMemberFixture {
       NAME_NULL: {
         send_data: {
           name: null,
+          type: 'actor',
         },
         expected: {
           message: ['name should not be empty', 'name must be a string'],
@@ -103,34 +112,20 @@ export class CreateCastMemberFixture {
       NAME_EMPTY: {
         send_data: {
           name: '',
+          type: 'actor',
         },
         expected: {
           message: ['name should not be empty'],
           ...defaultExpected,
         },
       },
-      DESCRIPTION_NOT_A_STRING: {
+      TYPE_INVALID: {
         send_data: {
-          type: 5,
+          name: 'joaá',
         },
         expected: {
           message: [
-            'name should not be empty',
-            'name must be a string',
-            'type must be a string',
-          ],
-          ...defaultExpected,
-        },
-      },
-      IS_ACTIVE_NOT_A_BOOLEAN: {
-        send_data: {
-          is_active: 'a',
-        },
-        expected: {
-          message: [
-            'name should not be empty',
-            'name must be a string',
-            'is_active must be a boolean value',
+            'type must be one of the following values: actor, director',
           ],
           ...defaultExpected,
         },
@@ -171,21 +166,21 @@ export class UpdateCastMemberFixture {
       {
         send_data: {
           name: faker.name,
-          type: null,
+          type: faker.type.type,
         },
         expected: {
           name: faker.name,
-          type: null,
+          type: faker.type.type,
         },
       },
       {
         send_data: {
           name: faker.name,
-          type: faker.type,
+          type: faker.type.type,
         },
         expected: {
           name: faker.name,
-          type: faker.type,
+          type: faker.type.type,
         },
       },
       {
@@ -194,6 +189,7 @@ export class UpdateCastMemberFixture {
         },
         expected: {
           name: faker.name,
+          type: faker.type.type,
         },
       },
     ];
@@ -211,7 +207,9 @@ export class UpdateCastMemberFixture {
           type: 5,
         },
         expected: {
-          message: ['type must be a string'],
+          message: [
+            'type must be one of the following values: actor, director',
+          ],
           ...defaultExpected,
         },
       },
@@ -245,6 +243,7 @@ export class ListCategoriesFixture {
     const _entities = CastMember.fake()
       .theCategories(4)
       .withName((i) => i + '')
+      .withType(new CastMemberType('actor'))
       .withCreatedAt((i) => new Date(baseDate.getTime() + i * 2000))
       .build();
 

@@ -11,7 +11,7 @@ export class CastMemberFakeBuilder<TBuild = any> {
   private _name: PropOrFactory<string> = (_index) => this.chance.word();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _type: PropOrFactory<CastMemberType | null> = (_index) =>
-    this.chance.paragraph();
+    new CastMemberType('actor');
 
   // auto generated in entity
   private _created_at: PropOrFactory<Date> | undefined = undefined;

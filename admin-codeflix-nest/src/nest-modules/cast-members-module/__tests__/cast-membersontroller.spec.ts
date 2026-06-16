@@ -107,6 +107,7 @@ describe('CastMembersController', () => {
     const mockSearchUseCase = {
       execute: jest.fn().mockReturnValue(Promise.resolve(output)),
     };
+
     //@ts-expect-error defined part of methods
     controller['searchUseCase'] = mockSearchUseCase;
     const searchParams = {
