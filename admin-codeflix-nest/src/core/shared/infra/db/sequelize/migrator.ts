@@ -2,6 +2,8 @@ import { join } from 'path';
 import { Sequelize } from 'sequelize';
 import { SequelizeStorage, Umzug, UmzugOptions } from 'umzug';
 
+// responsavel por gerenciar as migrações do banco de dados
+
 export function migrator(
   sequelize: Sequelize,
   options: Partial<UmzugOptions<Sequelize>> = {},

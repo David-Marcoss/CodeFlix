@@ -71,7 +71,7 @@ export class Genre extends AggregateRoot {
   }
 
   syncCategoriesId(catefories_id: CategoryId[]) {
-    if (catefories_id.length) {
+    if (catefories_id.length === 0) {
       return;
     }
 
@@ -87,7 +87,10 @@ export class Genre extends AggregateRoot {
     return {
       genre_id: this.genre_id.id,
       name: this.name,
-      categories_id: this.categories_id.keys(),
+      categories_id: Array.from(this.categories_id.values()).map(
+        (category_id) => category_id.id,
+      ),
+      is_active: this.is_active,
       created_at: this.created_at,
     };
   }
