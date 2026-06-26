@@ -1,6 +1,5 @@
-import { Genre } from '../../../domain/genre.aggregate';
+import { Genre, GenreId } from '../../../domain/genre.aggregate';
 
-import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { GenreModel } from './genre-model';
 import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
 import {
@@ -76,7 +75,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
     );
   }
 
-  async delete(entity_id: Uuid): Promise<void> {
+  async delete(entity_id: GenreId): Promise<void> {
     const id = entity_id.id;
     const model = await this._get(id);
 
@@ -100,7 +99,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
     });
   }
 
-  async getById(entity_id: Uuid): Promise<Genre | null> {
+  async getById(entity_id: GenreId): Promise<Genre | null> {
     const model = await this._get(entity_id.id);
 
     return model ? GenreModelMapper.toEntity(model) : null;

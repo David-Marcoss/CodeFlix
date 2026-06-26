@@ -15,4 +15,10 @@ export interface ICategoryRepository extends ISearchableRepository<
   CategoryFilter,
   CategorySearchParams,
   CategorySearchResult
-> {}
+> {
+  findByIds(ids: CategoryId[]): Promise<Category[]>;
+  existsById(ids: CategoryId[]): Promise<{
+    exists: CategoryId[];
+    not_exists: CategoryId[];
+  }>;
+}

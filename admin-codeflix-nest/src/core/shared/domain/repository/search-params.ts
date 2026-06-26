@@ -15,7 +15,7 @@ export class SearchParams<Filter = string> extends ValueObject {
   protected _per_page: number = 15;
   protected _sort: string | null;
   protected _sort_dir: SortDirection | null;
-  protected _filter: Filter | null;
+  protected _filter?: Filter | null;
 
   constructor(props: SearchParamsConstructorProps<Filter> = {}) {
     super();
@@ -23,7 +23,7 @@ export class SearchParams<Filter = string> extends ValueObject {
     this.per_page = props.per_page!;
     this.sort = props.sort!;
     this.sort_dir = props.sort_dir!;
-    this.filter = props.filter!;
+    this.filter = props.filter;
   }
 
   get page() {
@@ -80,11 +80,11 @@ export class SearchParams<Filter = string> extends ValueObject {
     this._sort_dir = dir !== 'asc' && dir !== 'desc' ? 'asc' : dir;
   }
 
-  get filter(): Filter | null {
-    return this._filter;
+  get filter(): Filter | null | undefined {
+    return this._filter || null;
   }
 
-  protected set filter(value: Filter | null) {
+  protected set filter(value: Filter | null | undefined) {
     this._filter =
       value === null || value === undefined || (value as unknown) === ''
         ? null

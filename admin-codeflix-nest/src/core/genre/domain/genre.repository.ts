@@ -19,10 +19,7 @@ export class GenreSearchParams extends SearchParams<GenreFilter> {
 
   static create(
     props: Omit<SearchParamsConstructorProps<GenreFilter>, 'filter'> & {
-      filter?: {
-        name?: string;
-        categories_id?: CategoryId[] | string[];
-      };
+      filter?: GenreFilter;
     } = {},
   ) {
     const categories_id = props.filter?.categories_id?.map((c) => {
