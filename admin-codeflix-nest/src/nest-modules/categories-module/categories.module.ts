@@ -12,5 +12,6 @@ import { CATEGORY_PROVIDERS } from './categories.provider';
     ...Object.values(CATEGORY_PROVIDERS.REPOSITORIES),
     ...Object.values(CATEGORY_PROVIDERS.USE_CASES),
   ],
+  exports: [CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide],
 })
 export class CategoriesModule {}

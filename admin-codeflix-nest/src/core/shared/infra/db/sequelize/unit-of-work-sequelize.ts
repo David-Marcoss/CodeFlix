@@ -3,7 +3,7 @@
 import { Sequelize, Transaction } from 'sequelize';
 import { IUnitOfWork } from '../../../domain/repository/unit-of-work-interface';
 
-export class UnitOfWorkSequelise implements IUnitOfWork {
+export class UnitOfWorkSequelize implements IUnitOfWork {
   private transaction: Transaction | null = null;
   constructor(private sequelize: Sequelize) {}
 

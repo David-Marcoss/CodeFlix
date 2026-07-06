@@ -12,8 +12,8 @@ export type GenreOutput = {
   name: string;
   categories_id: string[];
   categories: GenreCategoryOutput[];
-  is_active?: boolean;
-  created_at?: Date;
+  is_active: boolean;
+  created_at: Date;
 };
 
 export class GenreOutputMapper {

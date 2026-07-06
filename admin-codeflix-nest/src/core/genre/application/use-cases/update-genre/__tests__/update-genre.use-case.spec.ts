@@ -4,7 +4,7 @@ import { CategorySequelizeRepository } from '../../../../../category/infra/db/se
 import { CategoryModel } from '../../../../../category/infra/db/sequelize/category.model';
 import { NotFoundError } from '../../../../../shared/domain/errors/notFoundError';
 import { EntityValidationError } from '../../../../../shared/domain/validators/validation.error';
-import { UnitOfWorkSequelise } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
+import { UnitOfWorkSequelize } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
 import { setupSequelize } from '../../../../../shared/infra/testing/helper';
 import { Genre, GenreId } from '../../../../domain/genre.aggregate';
 import {
@@ -22,7 +22,7 @@ import { UpdateGenreUseCase } from '../update-genre.use-case';
 describe('Update Genre use-case integration tests', () => {
   let genreRepository: GenreSequelizeRepository;
   let categoryRepository: CategorySequelizeRepository;
-  let unitOfWork: UnitOfWorkSequelise;
+  let unitOfWork: UnitOfWorkSequelize;
   let createUseCase: CreateGenreUseCase;
   let updateUseCase: UpdateGenreUseCase;
   let validateCategoriesIds: ValidateCategoriesIdsExistsInDatabaseUseCase;
@@ -32,7 +32,7 @@ describe('Update Genre use-case integration tests', () => {
   });
 
   beforeEach(async () => {
-    unitOfWork = new UnitOfWorkSequelise(setup.sequelize);
+    unitOfWork = new UnitOfWorkSequelize(setup.sequelize);
     categoryRepository = new CategorySequelizeRepository(CategoryModel);
     genreRepository = new GenreSequelizeRepository(GenreModel, unitOfWork);
     validateCategoriesIds = new ValidateCategoriesIdsExistsInDatabaseUseCase(

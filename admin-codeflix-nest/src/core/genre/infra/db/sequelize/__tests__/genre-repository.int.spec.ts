@@ -2,7 +2,7 @@ import { Category } from '../../../../../category/domain/category.aggregate';
 import { CategorySequelizeRepository } from '../../../../../category/infra/db/sequelize/category-sequelize.repository';
 import { CategoryModel } from '../../../../../category/infra/db/sequelize/category.model';
 import { NotFoundError } from '../../../../../shared/domain/errors/notFoundError';
-import { UnitOfWorkSequelise } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
+import { UnitOfWorkSequelize } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
 import { setupSequelize } from '../../../../../shared/infra/testing/helper';
 
 import { Genre, GenreId } from '../../../../domain/genre.aggregate';
@@ -21,10 +21,10 @@ describe('GenreSequelizeRepository Integration Tests', () => {
 
   let genreRepo: GenreSequelizeRepository;
   let categoryRepo: CategorySequelizeRepository;
-  let uow: UnitOfWorkSequelise;
+  let uow: UnitOfWorkSequelize;
 
   beforeEach(async () => {
-    uow = new UnitOfWorkSequelise(sequelizeHelper.sequelize);
+    uow = new UnitOfWorkSequelize(sequelizeHelper.sequelize);
     genreRepo = new GenreSequelizeRepository(GenreModel, uow);
     categoryRepo = new CategorySequelizeRepository(CategoryModel);
   });

@@ -36,7 +36,7 @@ export class GenreSearchParams extends SearchParams<GenreFilter> {
   }
 
   get filter(): GenreFilter | null {
-    return this._filter;
+    return this._filter ?? null;
   }
 
   protected set filter(value: GenreFilter | null) {

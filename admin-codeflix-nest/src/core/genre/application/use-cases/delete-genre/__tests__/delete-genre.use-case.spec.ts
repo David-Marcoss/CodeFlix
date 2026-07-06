@@ -5,7 +5,7 @@ import {
   GenreModel,
 } from '../../../../infra/db/sequelize/genre-model';
 import { CategorySequelizeRepository } from '../../../../../category/infra/db/sequelize/category-sequelize.repository';
-import { UnitOfWorkSequelise } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
+import { UnitOfWorkSequelize } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
 import { CategoryModel } from '../../../../../category/infra/db/sequelize/category.model';
 import { CategoryFakeBuilder } from '../../../../../category/domain/category-fake.builder';
 import { GenreFakeBuilder } from '../../../../domain/genre-fake.builder';
@@ -16,14 +16,14 @@ import { NotFoundError } from '../../../../../shared/domain/errors/notFoundError
 describe('Delete Category use-case integration tests', () => {
   let genreRepository: GenreSequelizeRepository;
   let categoryRepository: CategorySequelizeRepository;
-  let unitOfWOrk: UnitOfWorkSequelise;
+  let unitOfWOrk: UnitOfWorkSequelize;
 
   const setup = setupSequelize({
     models: [GenreModel, GenreCategoryModel, CategoryModel],
   });
 
   beforeEach(async () => {
-    unitOfWOrk = new UnitOfWorkSequelise(setup.sequelize);
+    unitOfWOrk = new UnitOfWorkSequelize(setup.sequelize);
     categoryRepository = new CategorySequelizeRepository(CategoryModel);
     genreRepository = new GenreSequelizeRepository(GenreModel, unitOfWOrk);
   });

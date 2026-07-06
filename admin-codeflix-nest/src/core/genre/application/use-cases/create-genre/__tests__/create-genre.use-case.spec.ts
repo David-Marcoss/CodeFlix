@@ -6,7 +6,7 @@ import {
 } from '../../../../infra/db/sequelize/genre-model';
 import { CreateGenreInput, CreateGenreUseCase } from '../create-genre.use-case';
 import { CategorySequelizeRepository } from '../../../../../category/infra/db/sequelize/category-sequelize.repository';
-import { UnitOfWorkSequelise } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
+import { UnitOfWorkSequelize } from '../../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
 import { CategoryModel } from '../../../../../category/infra/db/sequelize/category.model';
 import { CategoryFakeBuilder } from '../../../../../category/domain/category-fake.builder';
 import { GenreId } from '../../../../domain/genre.aggregate';
@@ -17,7 +17,7 @@ import { Category } from '../../../../../category/domain/category.aggregate';
 describe('Create Genre use-case integration tests', () => {
   let genreRepository: GenreSequelizeRepository;
   let categoryRepository: CategorySequelizeRepository;
-  let unitOfWOrk: UnitOfWorkSequelise;
+  let unitOfWOrk: UnitOfWorkSequelize;
   let validateCategoriesIds: ValidateCategoriesIdsExistsInDatabaseUseCase;
 
   const setup = setupSequelize({
@@ -25,7 +25,7 @@ describe('Create Genre use-case integration tests', () => {
   });
 
   beforeEach(async () => {
-    unitOfWOrk = new UnitOfWorkSequelise(setup.sequelize);
+    unitOfWOrk = new UnitOfWorkSequelize(setup.sequelize);
     categoryRepository = new CategorySequelizeRepository(CategoryModel);
     genreRepository = new GenreSequelizeRepository(GenreModel, unitOfWOrk);
     validateCategoriesIds = new ValidateCategoriesIdsExistsInDatabaseUseCase(
