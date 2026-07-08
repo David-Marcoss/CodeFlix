@@ -10,6 +10,8 @@ import { NotFoundErrorFilter } from './shared-module/filters/not-found-error.fil
 import { UuidValidationErrorFilter } from './shared-module/filters/uuid-validation-error.filter';
 
 export function applyGlobalConfig(app: INestApplication) {
+  app.getHttpAdapter().getInstance().set('query parser', 'extended');
+
   app.useGlobalPipes(
     new ValidationPipe({
       errorHttpStatusCode: 422,

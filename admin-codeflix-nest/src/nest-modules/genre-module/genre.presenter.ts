@@ -1,13 +1,32 @@
 import { Transform } from 'class-transformer';
-import { GenreOutput } from '../../core/genre/application/use-cases/common/genre-output';
+import {
+  GenreCategoryOutput,
+  GenreOutput,
+} from '../../core/genre/application/use-cases/common/genre-output';
 import { CollectionPresenter } from '../shared-module/collection.presenter';
 import { SearchGenreOutput } from '../../core/genre/application/use-cases/search-genres/search-genres.use-case';
+
+export class GenreCategoryPresenter {
+  id: string;
+  name: string;
+  @Transform(({ value }: { value: Date }) => {
+    return value.toISOString();
+  })
+  created_at: Date;
+
+  constructor(output: GenreCategoryOutput) {
+    this.id = output.id;
+    this.name = output.name;
+    this.created_at = output.created_at;
+  }
+}
 
 export class GenrePresenter {
   genre_id: string;
   name: string;
   categories_id: string[];
   is_active: boolean;
+  categories: GenreCategoryPresenter[];
   @Transform(({ value }: { value: Date }) => value.toISOString())
   created_at: Date;
 
@@ -16,6 +35,9 @@ export class GenrePresenter {
     this.name = output.name;
     this.categories_id = output.categories_id;
     this.is_active = output.is_active;
+    this.categories = output.categories.map(
+      (c) => new GenreCategoryPresenter(c),
+    );
     this.created_at = output.created_at;
   }
 }
