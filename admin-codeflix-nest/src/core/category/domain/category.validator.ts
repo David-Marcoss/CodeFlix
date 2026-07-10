@@ -6,7 +6,7 @@ import { Notification } from '../../shared/domain/validators/notification';
 //criar um testes que verifique os decorators
 export class CategoryRules {
   @MaxLength(255, { groups: ['name'] })
-  name: string;
+  name!: string;
 
   constructor(entity: Category) {
     Object.assign(this, entity);
