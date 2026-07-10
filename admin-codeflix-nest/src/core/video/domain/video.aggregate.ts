@@ -12,6 +12,9 @@ import { VideoMedia } from './video-media.vo';
 import { Trailer } from './trailer.vo';
 import { VideoValidatorFactory } from './video.validator';
 import { AudioVideoMediaStatus } from '../../shared/domain/value-objects/audio-video-media.vo';
+import { VideoCreatedEvent } from './domain-events/video-created.event';
+import { VideoAudioMediaReplaced } from './domain-events/audio-video-media-replaced.event';
+import { VideoFakeBuilder } from './video-fake-builder';
 
 export class VideoId extends Uuid {}
 
@@ -104,6 +107,18 @@ export class Video extends AggregateRoot {
     this.genres_id = props.genres_id;
     this.cast_members_id = props.cast_members_id;
     this.created_at = props.created_at ?? new Date();
+
+    // Registra evento de criação do vídeo
+    this.registerHandler(
+      VideoCreatedEvent.name,
+      this.onVideoCreated.bind(this),
+    );
+
+    // Registra evento de substituição de mídia de áudio/vídeo
+    this.registerHandler(
+      VideoAudioMediaReplaced.name,
+      this.onAudioMediaReplaced.bind(this),
+    );
   }
 
   static create(props: CreateVideoComand) {
@@ -120,7 +135,28 @@ export class Video extends AggregateRoot {
     });
     instance.validate();
 
-    instance.markVideoAsPublished();
+    // Dispara o evento de criação do vídeo
+    instance.applyEvent(
+      new VideoCreatedEvent({
+        video_id: instance.video_id,
+        title: instance.title,
+        description: instance.description,
+        year_launched: instance.year_launched,
+        duration: instance.duration,
+        rating: instance.rating,
+        is_opened: instance.is_opened,
+        is_published: instance.is_published,
+        banner: instance.banner,
+        thumbnail: instance.thumbnail,
+        thumbnail_half: instance.thumbnail_half,
+        trailer: instance.trailer,
+        video: instance.video,
+        categories_id: Array.from(instance.categories_id.values()),
+        genres_id: Array.from(instance.genres_id.values()),
+        cast_members_id: Array.from(instance.cast_members_id.values()),
+        created_at: instance.created_at,
+      }),
+    );
 
     return instance;
   }
@@ -168,15 +204,33 @@ export class Video extends AggregateRoot {
 
   replaceVideo(video: VideoMedia): void {
     this.video = video;
-    this.markVideoAsPublished();
+    this.tryMarkVideoAsPublished();
+
+    // Dispara o evento de substituição de mídia de vídeo
+    this.applyEvent(
+      new VideoAudioMediaReplaced({
+        aggregate_id: this.video_id,
+        media: video,
+        media_type: 'video',
+      }),
+    );
   }
 
   replaceTrailer(trailer: Trailer): void {
     this.trailer = trailer;
-    this.markVideoAsPublished();
+    this.tryMarkVideoAsPublished();
+
+    // Dispara o evento de substituição de mídia de trailer
+    this.applyEvent(
+      new VideoAudioMediaReplaced({
+        aggregate_id: this.video_id,
+        media: trailer,
+        media_type: 'trailer',
+      }),
+    );
   }
 
-  private markVideoAsPublished() {
+  private tryMarkVideoAsPublished() {
     if (
       this.video &&
       this.trailer &&
@@ -237,6 +291,24 @@ export class Video extends AggregateRoot {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onVideoCreated(_event: VideoCreatedEvent) {
+    if (this.is_published) {
+      return;
+    }
+
+    this.tryMarkVideoAsPublished();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onAudioMediaReplaced(_event: VideoAudioMediaReplaced) {
+    if (this.is_published) {
+      return;
+    }
+
+    this.tryMarkVideoAsPublished();
+  }
+
   validate(fields?: string[]) {
     const validator = VideoValidatorFactory.create();
     return validator.validate(this.notification, this, fields);
@@ -271,7 +343,7 @@ export class Video extends AggregateRoot {
   }
 
   static fake() {
-    // return VideoFakeBuilder;
+    return VideoFakeBuilder;
   }
 
   get entity_id(): ValueObject {
