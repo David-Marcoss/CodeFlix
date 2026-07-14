@@ -41,7 +41,7 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
 
       const castMemberId = new CastMemberId();
       mockFactory = jest.fn(() => castMemberId);
-      const fakerMany = CastMemberFakeBuilder.theCategories(2);
+      const fakerMany = CastMemberFakeBuilder.theCastMembers(2);
       fakerMany.withCastMemberId(mockFactory);
       fakerMany.build();
 
@@ -83,7 +83,7 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
       const castMember = faker.build();
       expect(castMember.name).toBe(`test name 0`);
 
-      const fakerMany = CastMemberFakeBuilder.theCategories(2);
+      const fakerMany = CastMemberFakeBuilder.theCastMembers(2);
       fakerMany.withName((index) => `test name ${index}`);
       const categories = fakerMany.build();
 
@@ -127,7 +127,7 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
       const castMember = faker.build();
       expect(castMember.type.toString()).toBe('actor');
 
-      const fakerMany = CastMemberFakeBuilder.theCategories(2);
+      const fakerMany = CastMemberFakeBuilder.theCastMembers(2);
       fakerMany.withType(() => new CastMemberType('director'));
       const categories = fakerMany.build();
 
@@ -168,7 +168,7 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
       const castMember = faker.build();
       expect(castMember.created_at.getTime()).toBe(date.getTime() + 2);
 
-      const fakerMany = CastMemberFakeBuilder.theCategories(2);
+      const fakerMany = CastMemberFakeBuilder.theCastMembers(2);
       fakerMany.withCreatedAt((index) => new Date(date.getTime() + index + 2));
       const categories = fakerMany.build();
 
@@ -204,7 +204,7 @@ describe('CastMemberFakerBuilder Unit Tests', () => {
   });
 
   test('should create many categories', () => {
-    const faker = CastMemberFakeBuilder.theCategories(2);
+    const faker = CastMemberFakeBuilder.theCastMembers(2);
     let categories = faker.build();
 
     categories.forEach((castMember) => {
