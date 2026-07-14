@@ -17,7 +17,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
 
   constructor(
     private genreModel: typeof GenreModel,
-    private unitOfWork: UnitOfWorkSequelize,
+    private unitOfWork?: UnitOfWorkSequelize,
   ) {}
 
   async create(entity: Genre): Promise<void> {
@@ -25,7 +25,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
 
     await this.genreModel.create(data, {
       include: ['categories_id'],
-      transaction: this.unitOfWork.getTransaction(),
+      transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
     });
   }
 
@@ -34,7 +34,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
       entity.map((e) => GenreModelMapper.toModelProps(e)),
       {
         include: ['categories_id'],
-        transaction: this.unitOfWork.getTransaction(),
+        transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
       },
     );
   }
@@ -54,7 +54,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
       'categories',
       model.categories_id.map((item) => item.category_id),
       {
-        transaction: this.unitOfWork.getTransaction(),
+        transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
       },
     );
 
@@ -62,7 +62,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
 
     await this.genreModel.update(updateData, {
       where: { genre_id: entity.genre_id.id },
-      transaction: this.unitOfWork.getTransaction(),
+      transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
     });
 
     // adcionar os novos relacionamentos
@@ -70,7 +70,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
       'categories',
       categories_id.map((item) => item.category_id),
       {
-        transaction: this.unitOfWork.getTransaction(),
+        transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
       },
     );
   }
@@ -90,12 +90,12 @@ export class GenreSequelizeRepository implements IGenreRepository {
     // remove todos items associados ao genre
     await genreCategoryModel.destroy({
       where: { genre_id: entity_id.id },
-      transaction: this.unitOfWork.getTransaction(),
+      transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
     });
 
     await this.genreModel.destroy({
       where: { genre_id: entity_id.id },
-      transaction: this.unitOfWork.getTransaction(),
+      transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
     });
   }
 
@@ -108,14 +108,14 @@ export class GenreSequelizeRepository implements IGenreRepository {
   private async _get(genre_id: string): Promise<GenreModel | null> {
     return await this.genreModel.findByPk(genre_id, {
       include: ['categories_id'],
-      transaction: this.unitOfWork.getTransaction(),
+      transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
     });
   }
 
   async getAll(): Promise<Genre[]> {
     const models = await this.genreModel.findAll({
       include: ['categories_id'],
-      transaction: this.unitOfWork.getTransaction(),
+      transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
     });
 
     return models.map((model) => GenreModelMapper.toEntity(model));
@@ -192,7 +192,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
       ].join(' '),
       {
         replacements,
-        transaction: this.unitOfWork.getTransaction(),
+        transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
         type: QueryTypes.SELECT,
       },
     );
@@ -212,7 +212,7 @@ export class GenreSequelizeRepository implements IGenreRepository {
       ].join(' '),
       {
         replacements,
-        transaction: this.unitOfWork.getTransaction(),
+        transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
         type: QueryTypes.SELECT,
       },
     );
@@ -226,7 +226,9 @@ export class GenreSequelizeRepository implements IGenreRepository {
             },
           },
           include: ['categories_id'],
-          transaction: this.unitOfWork.getTransaction(),
+          transaction: this.unitOfWork
+            ? this.unitOfWork.getTransaction()
+            : null,
         })
       : [];
     const modelsMap = new Map(models.map((model) => [model.genre_id, model]));

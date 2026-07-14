@@ -22,7 +22,7 @@ export class CastMemberFakeBuilder<TBuild = any> {
     return new CastMemberFakeBuilder<CastMember>();
   }
 
-  static theCategories(countObjs: number) {
+  static theCastMembers(countObjs: number) {
     return new CastMemberFakeBuilder<CastMember[]>(countObjs);
   }
 
