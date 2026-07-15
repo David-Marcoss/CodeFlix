@@ -7,7 +7,7 @@ import { EntityValidationError } from '../../../../shared/domain/validators/vali
 import { Genre, GenreId } from '../../../domain/genre.aggregate';
 import { IGenreRepository } from '../../../domain/genre.repository';
 import { GenreOutput, GenreOutputMapper } from '../common/genre-output';
-import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../validations/validate-categories-ids-exists-in-database';
+import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../validations/validate-genres-ids-exists-in-database';
 import { UpdateGenreInput } from './update-genre.input';
 
 export class UpdateGenreUseCase implements IUseCase<

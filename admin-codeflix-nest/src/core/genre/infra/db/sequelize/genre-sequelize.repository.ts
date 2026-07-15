@@ -11,6 +11,7 @@ import { Op, QueryTypes } from 'sequelize';
 import { GenreModelMapper } from './genre-model-mapper';
 import { SortDirection } from '../../../../shared/domain/repository/search-params';
 import { UnitOfWorkSequelize } from '../../../../shared/infra/db/sequelize/unit-of-work-sequelize';
+import { InvalidArgumentError } from '../../../../shared/domain/errors/invalid-argument-error';
 
 export class GenreSequelizeRepository implements IGenreRepository {
   sortableFields: string[] = ['name', 'created_at'];
@@ -242,6 +243,46 @@ export class GenreSequelizeRepository implements IGenreRepository {
       per_page: props.per_page,
       total: Number(countResult?.total ?? 0),
     });
+  }
+
+  async findByIds(ids: GenreId[]): Promise<Genre[]> {
+    const models = await this.genreModel.findAll({
+      where: {
+        genre_id: {
+          [Op.in]: ids.map((id) => id.id),
+        },
+      },
+    });
+    return models.map((m) => GenreModelMapper.toEntity(m));
+  }
+
+  async existsById(
+    ids: GenreId[],
+  ): Promise<{ exists: GenreId[]; not_exists: GenreId[] }> {
+    if (!ids.length) {
+      throw new InvalidArgumentError(
+        'ids must be an array with at least one element',
+      );
+    }
+
+    const existsGenreModels = await this.genreModel.findAll({
+      attributes: ['genre_id'],
+      where: {
+        genre_id: {
+          [Op.in]: ids.map((id) => id.id),
+        },
+      },
+    });
+    const existsGenreIds = existsGenreModels.map(
+      (m) => new GenreId(m.genre_id),
+    );
+    const notExistsGenreIds = ids.filter(
+      (id) => !existsGenreIds.some((e) => e.equals(id)),
+    );
+    return {
+      exists: existsGenreIds,
+      not_exists: notExistsGenreIds,
+    };
   }
 
   private formatSort(

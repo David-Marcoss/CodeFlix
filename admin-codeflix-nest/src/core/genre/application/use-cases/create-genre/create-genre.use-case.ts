@@ -6,7 +6,7 @@ import { EntityValidationError } from '../../../../shared/domain/validators/vali
 import { Genre } from '../../../domain/genre.aggregate';
 import { IGenreRepository } from '../../../domain/genre.repository';
 import { GenreOutput, GenreOutputMapper } from '../common/genre-output';
-import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../validations/validate-categories-ids-exists-in-database';
+import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../validations/validate-genres-ids-exists-in-database';
 import { CreateGenreInput } from './create-genre.input';
 
 export { CreateGenreInput } from './create-genre.input';

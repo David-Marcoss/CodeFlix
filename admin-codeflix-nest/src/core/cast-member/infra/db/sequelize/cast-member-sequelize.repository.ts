@@ -1,4 +1,7 @@
-import { CastMember } from '../../../domain/cast-member.aggregate';
+import {
+  CastMember,
+  CastMemberId,
+} from '../../../domain/cast-member.aggregate';
 
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { SearchResult } from '../../../../shared/domain/repository/search-result';
@@ -10,8 +13,9 @@ import {
   ICastMemberRepository,
 } from '../../../domain/cast-member.repository';
 import { literal, Op, Order } from 'sequelize';
-import { CastMemberModelMapper } from './cast-member-model-mapper';
 import { SortDirection } from '../../../../shared/domain/repository/search-params';
+import { CastMemberModelMapper } from './cast-member-model-mapper';
+import { InvalidArgumentError } from '../../../../shared/domain/errors/invalid-argument-error';
 
 export class CastMemberSequelizeRepository implements ICastMemberRepository {
   sortableFields: string[] = [];
@@ -23,6 +27,46 @@ export class CastMemberSequelizeRepository implements ICastMemberRepository {
   };
 
   constructor(private castMemberModel: typeof CastMemberModel) {}
+
+  async findByIds(ids: CastMemberId[]): Promise<CastMember[]> {
+    const models = await this.castMemberModel.findAll({
+      where: {
+        cast_member_id: {
+          [Op.in]: ids.map((id) => id.id),
+        },
+      },
+    });
+    return models.map((m) => CastMemberModelMapper.toEntity(m));
+  }
+
+  async existsById(
+    ids: CastMemberId[],
+  ): Promise<{ exists: CastMemberId[]; not_exists: CastMemberId[] }> {
+    if (!ids.length) {
+      throw new InvalidArgumentError(
+        'ids must be an array with at least one element',
+      );
+    }
+
+    const existsCastMemberModels = await this.castMemberModel.findAll({
+      attributes: ['cast_member_id'],
+      where: {
+        cast_member_id: {
+          [Op.in]: ids.map((id) => id.id),
+        },
+      },
+    });
+    const existsCastMemberIds = existsCastMemberModels.map(
+      (m) => new CastMemberId(m.cast_member_id),
+    );
+    const notExistsCastMemberIds = ids.filter(
+      (id) => !existsCastMemberIds.some((e) => e.equals(id)),
+    );
+    return {
+      exists: existsCastMemberIds,
+      not_exists: notExistsCastMemberIds,
+    };
+  }
 
   async search(props: CastMemberSearchParams): Promise<CastMemberSearchResult> {
     const { page, per_page, sort, sort_dir, filter } = props;

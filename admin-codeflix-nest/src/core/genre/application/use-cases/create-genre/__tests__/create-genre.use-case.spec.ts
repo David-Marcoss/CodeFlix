@@ -10,9 +10,9 @@ import { UnitOfWorkSequelize } from '../../../../../shared/infra/db/sequelize/un
 import { CategoryModel } from '../../../../../category/infra/db/sequelize/category.model';
 import { CategoryFakeBuilder } from '../../../../../category/domain/category-fake.builder';
 import { GenreId } from '../../../../domain/genre.aggregate';
-import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../../validations/validate-categories-ids-exists-in-database';
 import { NotFoundError } from '../../../../../shared/domain/errors/notFoundError';
 import { Category } from '../../../../../category/domain/category.aggregate';
+import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../../../../../category/application/use-cases/validations/validate-categories-ids-exists-in-database';
 
 describe('Create Genre use-case integration tests', () => {
   let genreRepository: GenreSequelizeRepository;

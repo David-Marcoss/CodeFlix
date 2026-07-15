@@ -1,3 +1,4 @@
+import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../../../../../category/application/use-cases/validations/validate-categories-ids-exists-in-database';
 import { CategoryFakeBuilder } from '../../../../../category/domain/category-fake.builder';
 import { Category } from '../../../../../category/domain/category.aggregate';
 import { CategorySequelizeRepository } from '../../../../../category/infra/db/sequelize/category-sequelize.repository';
@@ -16,7 +17,6 @@ import {
   CreateGenreInput,
   CreateGenreUseCase,
 } from '../../create-genre/create-genre.use-case';
-import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../../validations/validate-categories-ids-exists-in-database';
 import { UpdateGenreUseCase } from '../update-genre.use-case';
 
 describe('Update Genre use-case integration tests', () => {

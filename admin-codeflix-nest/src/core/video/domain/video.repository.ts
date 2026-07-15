@@ -1,5 +1,4 @@
 import { CastMemberId } from '../../cast-member/domain/cast-member.aggregate';
-import { VideoId } from '../../category/domain/category.aggregate';
 import { GenreId } from '../../genre/domain/genre.aggregate';
 import { ISearchableRepository } from '../../shared/domain/repository/repository-interface';
 import {
@@ -85,10 +84,4 @@ export interface IVideoRepository extends ISearchableRepository<
   VideoFilter,
   VideoSearchParams,
   VideoSearchResult
-> {
-  findByIds(ids: VideoId[]): Promise<Video[]>;
-  existsById(ids: VideoId[]): Promise<{
-    exists: VideoId[];
-    not_exists: VideoId[];
-  }>;
-}
+> {}

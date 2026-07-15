@@ -12,6 +12,11 @@ export interface IRepository<E extends Entity, EntityId extends ValueObject> {
   getById(entity_id: EntityId): Promise<E | null>;
   getAll(): Promise<E[]>;
   getEntity(): new (...args: any[]) => E;
+  findByIds(ids: EntityId[]): Promise<E[]>;
+  existsById(ids: EntityId[]): Promise<{
+    exists: EntityId[];
+    not_exists: EntityId[];
+  }>;
 }
 
 export interface ISearchableRepository<
