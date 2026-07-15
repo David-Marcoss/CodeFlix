@@ -161,11 +161,40 @@ export class VideoSequelizeRepository implements IVideoRepository {
     const videoCategoryModel =
       this.videoModel.associations.categories_id.target;
 
-    // remove todos items associados ao video
-    await videoCategoryModel.destroy({
-      where: { video_id: entity_id.id },
-      transaction: this.unitOfWork?.getTransaction(),
-    });
+    // obtem o model associado ao Video
+    const videoCastMemberModel =
+      this.videoModel.associations.cast_members_id.target;
+
+    const videoGenresModel = this.videoModel.associations.genres_id.target;
+    const audioVideoMediaModel =
+      this.videoModel.associations.audio_video_medias.target;
+
+    const imageMediaModel = this.videoModel.associations.image_medias.target;
+
+    // remove todos items associados ao video]
+    await Promise.all([
+      videoCategoryModel.destroy({
+        where: { video_id: entity_id.id },
+        transaction: this.unitOfWork?.getTransaction(),
+      }),
+      videoCastMemberModel.destroy({
+        where: { video_id: entity_id.id },
+        transaction: this.unitOfWork?.getTransaction(),
+      }),
+      videoGenresModel.destroy({
+        where: { video_id: entity_id.id },
+        transaction: this.unitOfWork?.getTransaction(),
+      }),
+      audioVideoMediaModel.destroy({
+        where: { video_id: entity_id.id },
+        transaction: this.unitOfWork?.getTransaction(),
+      }),
+
+      imageMediaModel.destroy({
+        where: { video_id: entity_id.id },
+        transaction: this.unitOfWork?.getTransaction(),
+      }),
+    ]);
 
     await this.videoModel.destroy({
       where: { video_id: entity_id.id },
