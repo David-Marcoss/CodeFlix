@@ -1,12 +1,12 @@
-import { ICategoryRepository } from '../../../../category/domain/category.repository';
 import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
 import {
   CastMember,
   CastMemberId,
 } from '../../../domain/cast-member.aggregate';
+import { ICastMemberRepository } from '../../../domain/cast-member.repository';
 
 export class ValidateCastMembersIdsExistsInDatabaseUseCase {
-  constructor(private castMemberRepo: ICategoryRepository) {}
+  constructor(private castMemberRepo: ICastMemberRepository) {}
 
   async validate(cast_members_id: string[]): Promise<void> {
     const result = await this.castMemberRepo.existsById(

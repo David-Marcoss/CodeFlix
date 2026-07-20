@@ -252,6 +252,8 @@ export class GenreSequelizeRepository implements IGenreRepository {
           [Op.in]: ids.map((id) => id.id),
         },
       },
+      include: ['categories_id'],
+      transaction: this.unitOfWork ? this.unitOfWork.getTransaction() : null,
     });
     return models.map((m) => GenreModelMapper.toEntity(m));
   }
