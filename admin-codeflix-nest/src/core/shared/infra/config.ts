@@ -14,16 +14,20 @@ export class Config {
     };
   }
 
-  static bucketName() {
+  static cloudnaryUploadPath() {
     Config.readEnv();
 
-    return Config.env.GOOGLE_CLOUD_STORAGE_BUCKET_NAME;
+    return Config.env.CLOUDNARY_UPLOAD_PATH;
   }
 
-  static googleCredentials() {
+  static cloudnaryCredentials() {
     Config.readEnv();
 
-    return JSON.parse(Config.env.GOOGLE_CLOUD_CREDENTIALS);
+    return {
+      cloudnary_cloud_name: Config.env.CLOUDINARY_CLOUD_NAME,
+      cloudnary_api_key: Config.env.CLOUDINARY_API_KEY,
+      cloudnary_api_secret: Config.env.CLOUDINARY_API_SECRET,
+    };
   }
 
   static rabbitmqUri() {

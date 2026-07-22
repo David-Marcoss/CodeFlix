@@ -13,7 +13,7 @@ import { EntityValidationError } from '../../../../shared/domain/validators/vali
 import { Rating } from '../../../domain/rating.vo';
 import { Video } from '../../../domain/video.aggregate';
 import { IVideoRepository } from '../../../domain/video.repository';
-import { VideoOutput, VideoOutputMapper } from '../common/video-output';
+import { VideoOutput, VideoOutputMapper } from '../common/video.output';
 
 import { CreateVideoInput } from './create-video.input';
 

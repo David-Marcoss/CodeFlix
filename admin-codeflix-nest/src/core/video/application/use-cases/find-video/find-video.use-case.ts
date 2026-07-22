@@ -4,7 +4,7 @@ import { IGenreRepository } from '../../../../genre/domain/genre.repository';
 import { IUseCase } from '../../../../shared/application/use-case.interface';
 import { VideoId } from '../../../domain/video.aggregate';
 import { IVideoRepository } from '../../../domain/video.repository';
-import { VideoOutput, VideoOutputMapper } from '../common/video-output';
+import { VideoOutput, VideoOutputMapper } from '../common/video.output';
 
 export class FindVideoUseCase implements IUseCase<
   VideoInput,

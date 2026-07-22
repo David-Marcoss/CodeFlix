@@ -14,7 +14,7 @@ import { EntityValidationError } from '../../../../shared/domain/validators/vali
 import { Rating } from '../../../domain/rating.vo';
 import { Video, VideoId } from '../../../domain/video.aggregate';
 import { IVideoRepository } from '../../../domain/video.repository';
-import { VideoOutput, VideoOutputMapper } from '../common/video-output';
+import { VideoOutput, VideoOutputMapper } from '../common/video.output';
 import { UpdateVideoInput } from './update-video.input';
 
 export class UpdateVideoUseCase implements IUseCase<
