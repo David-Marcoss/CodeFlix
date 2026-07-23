@@ -13,9 +13,9 @@ import { GenreInMemoryRepository } from '../../core/genre/infra/db/in-memory/gen
 import { UnitOfWorkSequelize } from '../../core/shared/infra/db/sequelize/unit-of-work-sequelize';
 import { IUnitOfWork } from '../../core/shared/domain/repository/unit-of-work-interface';
 import { CATEGORY_PROVIDERS } from '../categories-module/categories.provider';
-import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../../core/genre/application/use-cases/validations/validate-genres-ids-exists-in-database';
 import { SearchGenresUseCase } from '../../core/genre/application/use-cases/search-genres/search-genres.use-case';
 import { FindGenreUseCase } from '../../core/genre/application/use-cases/find-genre/find-genre.use-case';
+import { ValidateCategoriesIdsExistsInDatabaseUseCase } from '../../core/category/application/use-cases/validations/validate-categories-ids-exists-in-database';
 
 export const REPOSITORIES = {
   GENRE_REPOSITORY: {

@@ -1,4 +1,4 @@
-import { Video } from '../../../domain/video.aggregate';
+import { Video, VideoId } from '../../../domain/video.aggregate';
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { InMemorySearchableRepository } from '../../../../shared/infra/db/in-memory.repository';
 import {
@@ -10,6 +10,15 @@ export class VideoInMemoryRepository
   extends InMemorySearchableRepository<Video, Uuid, VideoFilter>
   implements IVideoRepository
 {
+  findByIds(ids: VideoId[]): Promise<Video[]> {
+    throw new Error('Method not implemented.');
+  }
+  existsById(
+    ids: VideoId[],
+  ): Promise<{ exists: VideoId[]; not_exists: VideoId[] }> {
+    throw new Error('Method not implemented.');
+  }
+
   sortableFields: string[] = ['title', 'created_at'];
 
   protected async applyFilter(

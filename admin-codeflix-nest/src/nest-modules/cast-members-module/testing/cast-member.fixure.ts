@@ -241,7 +241,7 @@ export class ListCategoriesFixture {
   static arrangeIncrementedWithCreatedAt() {
     const baseDate = new Date(Math.floor(Date.now() / 1000) * 1000);
     const _entities = CastMember.fake()
-      .theCategories(4)
+      .theCastMembers(4)
       .withName((i) => i + '')
       .withType(new CastMemberType('actor'))
       .withCreatedAt((i) => new Date(baseDate.getTime() + i * 2000))

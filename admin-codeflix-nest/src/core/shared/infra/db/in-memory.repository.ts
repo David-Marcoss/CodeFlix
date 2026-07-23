@@ -19,6 +19,15 @@ export abstract class InMemoryRepository<
 > implements IRepository<E, EntityId> {
   items: E[] = [];
 
+  findByIds(ids: EntityId[]): Promise<E[]> {
+    throw new Error('Method not implemented.');
+  }
+  existsById(
+    ids: EntityId[],
+  ): Promise<{ exists: EntityId[]; not_exists: EntityId[] }> {
+    throw new Error('Method not implemented.');
+  }
+
   async create(entity: E): Promise<void> {
     this.items.push(entity);
   }
@@ -75,6 +84,15 @@ export abstract class InMemorySearchableRepository<
   implements ISearchableRepository<E, EntityId, Filter>
 {
   sortableFields!: string[];
+
+  findByIds(ids: EntityId[]): Promise<E[]> {
+    throw new Error('Method not implemented.');
+  }
+  existsById(
+    ids: EntityId[],
+  ): Promise<{ exists: EntityId[]; not_exists: EntityId[] }> {
+    throw new Error('Method not implemented.');
+  }
 
   async search(props: SearchParams<Filter>): Promise<SearchResult<E>> {
     const sortItems = await this.applyFilter(this.items, props.filter ?? null);

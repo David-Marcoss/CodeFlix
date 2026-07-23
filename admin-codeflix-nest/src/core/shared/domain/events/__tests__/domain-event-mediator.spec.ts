@@ -35,8 +35,8 @@ class StubIntegrationEvent {
 }
 
 class StubAggregate extends AggregateRoot {
-  id: Uuid;
-  name: string;
+  id!: Uuid;
+  name!: string;
 
   get entity_id(): ValueObject {
     return this.id;
