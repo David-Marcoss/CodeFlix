@@ -34,6 +34,8 @@ export class VideoSequelizeRepository implements IVideoRepository {
       include: this.relations_include,
       transaction: this.unitOfWork?.getTransaction(),
     });
+
+    this.unitOfWork?.addAggregateRoot(entity);
   }
 
   async createMany(entity: Video[]): Promise<void> {
@@ -50,6 +52,8 @@ export class VideoSequelizeRepository implements IVideoRepository {
         transaction: this.unitOfWork?.getTransaction(),
       },
     );
+
+    entity.forEach((e) => this.unitOfWork?.addAggregateRoot(e));
   }
 
   async update(entity: Video): Promise<void> {
@@ -147,6 +151,8 @@ export class VideoSequelizeRepository implements IVideoRepository {
         },
       ),
     ]);
+
+    this.unitOfWork?.addAggregateRoot(entity);
   }
 
   async delete(entity_id: VideoId): Promise<void> {

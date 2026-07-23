@@ -2,10 +2,21 @@
 
 import { Sequelize, Transaction } from 'sequelize';
 import { IUnitOfWork } from '../../../domain/repository/unit-of-work-interface';
+import { AggregateRoot } from '../../../domain/aggregate-root';
 
 export class UnitOfWorkSequelize implements IUnitOfWork {
   private transaction: Transaction | null = null;
+  private agregatesRoot = new Set<AggregateRoot>();
+
   constructor(private sequelize: Sequelize) {}
+
+  addAggregateRoot(aggregate: AggregateRoot) {
+    this.agregatesRoot.add(aggregate);
+  }
+
+  getAggregateRoots() {
+    return Array.from(this.agregatesRoot);
+  }
 
   async start(): Promise<void> {
     if (!this.transaction) {
