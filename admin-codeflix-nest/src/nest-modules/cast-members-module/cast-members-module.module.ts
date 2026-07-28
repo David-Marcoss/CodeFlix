@@ -12,5 +12,6 @@ import { CastMemberModel } from '../../core/cast-member/infra/db/sequelize/cast-
     ...Object.values(CAST_MEMBER_PROVIDERS.REPOSITORIES),
     ...Object.values(CAST_MEMBER_PROVIDERS.USE_CASES),
   ],
+  exports: [CAST_MEMBER_PROVIDERS.REPOSITORIES.CAST_MEMBER_REPOSITORY],
 })
 export class CastMembersModule {}

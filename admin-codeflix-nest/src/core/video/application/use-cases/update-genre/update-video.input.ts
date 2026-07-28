@@ -54,9 +54,11 @@ export class UpdateVideoInput {
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   rating?: RatingValues;
 
   @IsBoolean()
+  @IsOptional()
   @IsNotEmpty()
   is_opened?: boolean;
 
@@ -80,6 +82,7 @@ export class UpdateVideoInput {
 
   constructor(props?: UpdateVideoInputConstructorProps) {
     if (!props) return;
+    this.video_id = props.video_id;
     this.title = props.title;
     this.description = props.description;
     this.year_launched = props.year_launched;

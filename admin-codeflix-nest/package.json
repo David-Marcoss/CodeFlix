@@ -57,6 +57,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.24",
+    "@types/multer": "^2.2.0",
     "@types/node": "^24.0.0",
     "@types/sequelize": "^4.28.20",
     "@types/supertest": "^7.0.0",
