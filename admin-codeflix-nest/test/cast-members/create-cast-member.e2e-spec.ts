@@ -13,9 +13,6 @@ describe('Categories (e2e)', () => {
       test.each(arrange)(
         'Create castMember with $send_data',
         async ({ send_data, expected }) => {
-          console.log('send data:', send_data);
-
-          console.log('expected:', expected);
           const response = await request(helperApp.app.getHttpServer())
             .post('/cast-member')
             .send(send_data)
@@ -34,9 +31,6 @@ describe('Categories (e2e)', () => {
         const { send_data, expected } =
           CreateCastMemberFixture.arrangeForCreate()[0];
 
-        console.log('send data:', send_data);
-
-        console.log('expected:', expected);
         const response = await request(helperApp.app.getHttpServer())
           .post('/cast-member')
           .send(send_data)

@@ -35,6 +35,7 @@ import { ImageMediaModel } from '../../core/video/infra/sequelize/image-media.mo
     ...Object.values(VIDEOS_PROVIDERS.REPOSITORIES),
     ...Object.values(VIDEOS_PROVIDERS.USE_CASES),
     ...Object.values(VIDEOS_PROVIDERS.VALIDATIONS),
+    ...Object.values(VIDEOS_PROVIDERS.HANDLERS),
   ],
   exports: [VIDEOS_PROVIDERS.REPOSITORIES.VIDEO_REPOSITORY.provide],
 })

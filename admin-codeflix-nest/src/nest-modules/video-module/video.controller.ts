@@ -45,7 +45,6 @@ export class VideoController {
 
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {
-    console.log(createVideoDto);
     return this.createUseCase.execute({ ...createVideoDto });
   }
 
@@ -76,9 +75,6 @@ export class VideoController {
       trailer: Express.Multer.File[];
     },
   ) {
-    console.log('data: ', updateVideoDto);
-    console.log('file: ', files);
-
     const hasData = Object.keys(updateVideoDto).length > 0;
     const hasFile = files ? Object.keys(files).length > 0 : false;
 
@@ -100,8 +96,6 @@ export class VideoController {
       );
 
       const input = new UpdateVideoInput({ ...data, video_id: id });
-
-      console.log(input);
 
       return this.updateUseCase.execute(input);
     }

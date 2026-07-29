@@ -6,6 +6,8 @@ import { SharedModule } from './nest-modules/shared-module/shared.module';
 import { CastMembersModule } from './nest-modules/cast-members-module/cast-members-module.module';
 import { GenresModule } from './nest-modules/genre-module/genre.module';
 import { VideosModule } from './nest-modules/video-module/video.module';
+import { UsecaseModule } from './nest-modules/usecase-module/usecase.module';
+import { EventModule } from './nest-modules/event-module/event.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { VideosModule } from './nest-modules/video-module/video.module';
     CastMembersModule,
     GenresModule,
     VideosModule,
+    EventModule,
+    UsecaseModule,
   ],
 })
 export class AppModule {}

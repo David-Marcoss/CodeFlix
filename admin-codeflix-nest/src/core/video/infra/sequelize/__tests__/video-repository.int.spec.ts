@@ -192,11 +192,7 @@ describe('VideoSequelizeRepository Integration Tests', () => {
     video.syncCastMembersId([castMembers[1].cast_member_id]);
     await videoRepo.update(video);
 
-    console.log(video.cast_members_id);
-
     let videoUpdated = await videoRepo.getById(video.video_id);
-
-    console.log(videoUpdated?.cast_members_id);
 
     expect(video.toJSON()).toStrictEqual(videoUpdated!.toJSON());
     await expect(VideoCategoryModel.count()).resolves.toBe(1);

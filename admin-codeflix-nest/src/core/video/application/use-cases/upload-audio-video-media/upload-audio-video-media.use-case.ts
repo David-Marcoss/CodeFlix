@@ -1,7 +1,7 @@
+import { ApplicationService } from '../../../../shared/application/aplication-service';
 import { IStorage } from '../../../../shared/application/storage.interface';
 import { IUseCase } from '../../../../shared/application/use-case.interface';
 import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
-import { IUnitOfWork } from '../../../../shared/domain/repository/unit-of-work-interface';
 import { Trailer } from '../../../domain/trailer.vo';
 import { VideoMedia } from '../../../domain/video-media.vo';
 
@@ -14,7 +14,7 @@ export class UploadAudioVideoMediaUseCase implements IUseCase<
   UploadAudioVideoMediaOutput
 > {
   constructor(
-    private uow: IUnitOfWork,
+    private appService: ApplicationService,
     private videoRepo: IVideoRepository,
     private storage: IStorage,
   ) {}
@@ -49,7 +49,9 @@ export class UploadAudioVideoMediaUseCase implements IUseCase<
       mime_type: input.file.mime_type,
     });
 
-    await this.uow.do(async () => await this.videoRepo.update(existingVideo));
+    await this.appService.run(
+      async () => await this.videoRepo.update(existingVideo),
+    );
   }
 }
 

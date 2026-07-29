@@ -23,6 +23,8 @@ import { CAST_MEMBER_PROVIDERS } from '../cast-members-module/cast-members.provi
 import { UploadAudioVideoMediaUseCase } from '../../core/video/application/use-cases/upload-audio-video-media/upload-audio-video-media.use-case';
 import { IStorage } from '../../core/shared/application/storage.interface';
 import { UploadImageMediaUseCase } from '../../core/video/application/use-cases/upload-image-media/upload-image-media.use-case';
+import { PublishVideoMediaReplacedInQueueHandler } from '../../core/video/application/handlers/publish-video-media-replaced-in-queue.handler';
+import { ApplicationService } from '../../core/shared/application/aplication-service';
 
 export const REPOSITORIES = {
   VIDEO_REPOSITORY: {
@@ -171,13 +173,17 @@ export const USE_CASES = {
   UPLOAD_AUDIO_VIDEO_MEDIA_USE_CASE: {
     provide: UploadAudioVideoMediaUseCase,
     useFactory: (
-      uow: IUnitOfWork,
+      appService: ApplicationService,
       videoRepo: IVideoRepository,
       storage: IStorage,
     ) => {
-      return new UploadAudioVideoMediaUseCase(uow, videoRepo, storage);
+      return new UploadAudioVideoMediaUseCase(appService, videoRepo, storage);
     },
-    inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide, 'IStorage'],
+    inject: [
+      ApplicationService,
+      REPOSITORIES.VIDEO_REPOSITORY.provide,
+      'IStorage',
+    ],
   },
   UPLOAD_IMAGE_MEDIA_USE_CASE: {
     provide: UploadImageMediaUseCase,
@@ -192,9 +198,18 @@ export const USE_CASES = {
   },
 };
 
+// Registra o ouvinte que irar processar o evento de video
+export const HANDLERS = {
+  PUBLISH_VIDEO_MEDIA_REPLACED_IN_QUEUE_HANDLER: {
+    provide: PublishVideoMediaReplacedInQueueHandler,
+    useClass: PublishVideoMediaReplacedInQueueHandler,
+  },
+};
+
 export const VIDEOS_PROVIDERS = {
   REPOSITORIES,
   UNIT_OF_WORK,
   USE_CASES,
   VALIDATIONS,
+  HANDLERS,
 };
