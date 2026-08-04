@@ -1,4 +1,7 @@
-import { IDomainEvent } from '../../../shared/domain/events/domain-events.interface';
+import {
+  IDomainEvent,
+  IIntegrationEvent,
+} from '../../../shared/domain/events/domain-events.interface';
 import { Trailer } from '../trailer.vo';
 import { VideoMedia } from '../video-media.vo';
 import { VideoId } from '../video.aggregate';
@@ -30,7 +33,7 @@ export class VideoAudioMediaReplaced implements IDomainEvent {
   }
 }
 
-export class VideoAudioMediaUploadedIntegrationEvent {
+export class VideoAudioMediaUploadedIntegrationEvent implements IIntegrationEvent {
   //resource_id: string;
   //file_path: string;
 
@@ -40,14 +43,14 @@ export class VideoAudioMediaUploadedIntegrationEvent {
   declare occurred_on: Date;
 
   constructor(event: VideoAudioMediaReplaced) {
-    this['resource_id'] = `${event.aggregate_id.id}.${event.media_type}`;
-    this['file_path'] = event.media.raw_location;
-    // this.event_version = event.event_version;
-    // this.occurred_on = event.occurred_on;
-    // this.payload = {
-    //   video_id: event.aggregate_id.id,
-    //   media: event.media.toJSON(),
-    // };
-    // this.event_name = this.constructor.name;
+    // this['resource_id'] = `${event.aggregate_id.id}.${event.media_type}`;
+    // this['file_path'] = event.media.raw_location;
+    this.event_version = event.event_version;
+    this.occurred_on = event.occurred_on;
+    this.payload = {
+      video_id: event.aggregate_id.id,
+      media: event.media.toJSON(),
+    };
+    this.event_name = this.constructor.name;
   }
 }

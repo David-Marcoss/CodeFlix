@@ -8,6 +8,8 @@ import { GenresModule } from './nest-modules/genre-module/genre.module';
 import { VideosModule } from './nest-modules/video-module/video.module';
 import { UsecaseModule } from './nest-modules/usecase-module/usecase.module';
 import { EventModule } from './nest-modules/event-module/event.module';
+import { RabbitMQFakeConsumer } from '../fake-rabitmqt.consumer';
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 
 @Module({
   imports: [
@@ -20,6 +22,11 @@ import { EventModule } from './nest-modules/event-module/event.module';
     VideosModule,
     EventModule,
     UsecaseModule,
+    RabbitMQModule.forRoot({
+      uri: 'amqp://admin:admin@localhost:5672',
+      connectionInitOptions: { wait: false },
+    }),
   ],
+  providers: [RabbitMQFakeConsumer],
 })
 export class AppModule {}
