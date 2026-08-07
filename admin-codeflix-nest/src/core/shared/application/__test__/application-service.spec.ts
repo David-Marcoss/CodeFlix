@@ -29,9 +29,9 @@ describe('ApplicationService Unit Tests', () => {
   });
 
   describe('start', () => {
-    it('should call the start method of unit of work', () => {
+    it('should call the start method of unit of work', async () => {
       const startSpy = jest.spyOn(uow, 'start');
-      applicationService.start();
+      await applicationService.start();
       expect(startSpy).toHaveBeenCalled();
     });
   });
@@ -51,13 +51,14 @@ describe('ApplicationService Unit Tests', () => {
       expect(publishIntegrationEventsSpy).toHaveBeenCalledWith(aggregateRoot);
       expect(commitSpy).toHaveBeenCalled();
       expect(publishSpy).toHaveBeenCalledWith(aggregateRoot);
+      expect(uow.getAggregateRoots()).toHaveLength(0);
     });
   });
 
   describe('fail', () => {
-    it('should call the rollback method of unit of work', () => {
+    it('should call the rollback method of unit of work', async () => {
       const rollbackSpy = jest.spyOn(uow, 'rollback');
-      applicationService.fail();
+      await applicationService.fail();
       expect(rollbackSpy).toHaveBeenCalled();
     });
   });
@@ -83,6 +84,24 @@ describe('ApplicationService Unit Tests', () => {
         'test-error',
       );
       expect(spyFail).toHaveBeenCalled();
+    });
+
+    it('should not rollback a transaction already committed when integration event publishing fails', async () => {
+      const aggregateRoot = new StubAggregateRoot();
+      const integrationError = new Error('integration-error');
+      const rollbackSpy = jest.spyOn(uow, 'rollback');
+      jest
+        .spyOn(domainEventMediator, 'publishIntegrationEvents')
+        .mockRejectedValue(integrationError);
+
+      await expect(
+        applicationService.run(async () => {
+          uow.addAggregateRoot(aggregateRoot);
+        }),
+      ).rejects.toThrow(integrationError);
+
+      expect(rollbackSpy).not.toHaveBeenCalled();
+      expect(uow.getAggregateRoots()).toHaveLength(0);
     });
   });
 });

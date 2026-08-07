@@ -10,4 +10,5 @@ export interface IUnitOfWork {
   do<T>(workFn: (uow: IUnitOfWork) => Promise<T>): Promise<T>;
   addAggregateRoot: (aggregate: AggregateRoot) => void;
   getAggregateRoots: () => AggregateRoot[];
+  clearAggregateRoots: () => void;
 }

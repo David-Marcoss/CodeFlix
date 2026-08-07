@@ -2,14 +2,13 @@ import { Uuid } from '../../../domain/value-objects/uuid.vo';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Config } from '../../config';
 import { ConsumeMessage } from 'amqplib';
-import { IDomainEvent } from '../../../domain/events/domain-events.interface';
-import { ValueObject } from '../../../domain/value-object';
+import { IIntegrationEvent } from '../../../domain/events/domain-events.interface';
 import { RabbitMqMessageBroker } from '../rabbitmqt-menssage-broker';
 
-class TestEvent implements IDomainEvent {
+class TestEvent implements IIntegrationEvent {
+  event_name = TestEvent.name;
   occurred_on: Date = new Date();
   event_version: number = 1;
-  aggregate_id: ValueObject = new Uuid();
   constructor(readonly payload: any) {}
 }
 

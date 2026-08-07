@@ -14,14 +14,19 @@ export class ApplicationService {
 
   async finish() {
     const aggregateRoots = [...this.uow.getAggregateRoots()];
-    for (const aggregateRoot of aggregateRoots) {
-      await this.domainEventMediator.publish(aggregateRoot);
-    }
+    try {
+      for (const aggregateRoot of aggregateRoots) {
+        await this.domainEventMediator.publish(aggregateRoot);
+      }
 
-    await this.uow.commit();
+      await this.uow.commit();
 
-    for (const aggregateRoot of aggregateRoots) {
-      await this.domainEventMediator.publishIntegrationEvents(aggregateRoot);
+      for (const aggregateRoot of aggregateRoots) {
+        await this.domainEventMediator.publishIntegrationEvents(aggregateRoot);
+      }
+    } finally {
+      aggregateRoots.forEach((aggregateRoot) => aggregateRoot.clearEvents());
+      this.uow.clearAggregateRoots();
     }
   }
 
@@ -36,7 +41,9 @@ export class ApplicationService {
       await this.finish();
       return result;
     } catch (error) {
-      await this.fail();
+      if (this.uow.getTransaction()) {
+        await this.fail();
+      }
       throw error;
     }
   }

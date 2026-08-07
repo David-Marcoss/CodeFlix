@@ -1,5 +1,4 @@
-import { getConnectionToken, getModelToken } from '@nestjs/sequelize';
-import { Sequelize } from 'sequelize';
+import { getModelToken } from '@nestjs/sequelize';
 import { CreateVideoUseCase } from '../../core/video/application/use-cases/create-video/create-video.use-case';
 
 import { IVideoRepository } from '../../core/video/domain/video.repository';
@@ -25,11 +24,15 @@ import { IStorage } from '../../core/shared/application/storage.interface';
 import { UploadImageMediaUseCase } from '../../core/video/application/use-cases/upload-image-media/upload-image-media.use-case';
 import { PublishVideoMediaReplacedInQueueHandler } from '../../core/video/application/handlers/publish-video-media-replaced-in-queue.handler';
 import { ApplicationService } from '../../core/shared/application/aplication-service';
+import { IMenssageBroker } from '../../core/shared/application/menssage-broker.interface';
+import { Scope } from '@nestjs/common';
+import { ProcessAudioVideoMediaUseCase } from '../../core/video/application/use-cases/process-audio-video-media/process-audio-video-media.use-case';
 
 export const REPOSITORIES = {
   VIDEO_REPOSITORY: {
     provide: 'VideoRepository',
     useExisting: VideoSequelizeRepository,
+    scope: Scope.REQUEST,
   },
   VIDEO_IN_MEMORY_REPOSITORY: {
     provide: VideoInMemoryRepository,
@@ -40,17 +43,8 @@ export const REPOSITORIES = {
     useFactory: (videoModel: typeof VideoModel, uow: UnitOfWorkSequelize) => {
       return new VideoSequelizeRepository(videoModel, uow);
     },
+    scope: Scope.REQUEST,
     inject: [getModelToken(VideoModel), 'UnitOfWork'],
-  },
-};
-
-export const UNIT_OF_WORK = {
-  UNIT_OF_WORK_SEQUELIZE: {
-    provide: 'UnitOfWork',
-    useFactory: (sequelize: Sequelize) => {
-      return new UnitOfWorkSequelize(sequelize);
-    },
-    inject: [getConnectionToken()],
   },
 };
 
@@ -102,6 +96,7 @@ export const USE_CASES = {
         validateCastMembersIds,
       );
     },
+    scope: Scope.REQUEST,
     inject: [
       'UnitOfWork',
       REPOSITORIES.VIDEO_REPOSITORY.provide,
@@ -136,6 +131,7 @@ export const USE_CASES = {
         validateCastMembersIds,
       );
     },
+    scope: Scope.REQUEST,
     inject: [
       'UnitOfWork',
       REPOSITORIES.VIDEO_REPOSITORY.provide,
@@ -163,6 +159,7 @@ export const USE_CASES = {
         castMemberRepo,
       );
     },
+    scope: Scope.REQUEST,
     inject: [
       REPOSITORIES.VIDEO_REPOSITORY.provide,
       CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
@@ -179,6 +176,7 @@ export const USE_CASES = {
     ) => {
       return new UploadAudioVideoMediaUseCase(appService, videoRepo, storage);
     },
+    scope: Scope.REQUEST,
     inject: [
       ApplicationService,
       REPOSITORIES.VIDEO_REPOSITORY.provide,
@@ -194,7 +192,16 @@ export const USE_CASES = {
     ) => {
       return new UploadImageMediaUseCase(uow, videoRepo, storage);
     },
+    scope: Scope.REQUEST,
     inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide, 'IStorage'],
+  },
+  PROCESS_AUDIO_VIDEO_MEDIA_USE_CASE: {
+    provide: ProcessAudioVideoMediaUseCase,
+    useFactory: (uow: IUnitOfWork, videoRepo: IVideoRepository) => {
+      return new ProcessAudioVideoMediaUseCase(uow, videoRepo);
+    },
+    inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide],
+    scope: Scope.REQUEST,
   },
 };
 
@@ -202,13 +209,15 @@ export const USE_CASES = {
 export const HANDLERS = {
   PUBLISH_VIDEO_MEDIA_REPLACED_IN_QUEUE_HANDLER: {
     provide: PublishVideoMediaReplacedInQueueHandler,
-    useClass: PublishVideoMediaReplacedInQueueHandler,
+    useFactory: (messageBroker: IMenssageBroker) => {
+      return new PublishVideoMediaReplacedInQueueHandler(messageBroker);
+    },
+    inject: ['IMenssageBroker'],
   },
 };
 
 export const VIDEOS_PROVIDERS = {
   REPOSITORIES,
-  UNIT_OF_WORK,
   USE_CASES,
   VALIDATIONS,
   HANDLERS,

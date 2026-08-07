@@ -18,6 +18,10 @@ export class UnitOfWorkSequelize implements IUnitOfWork {
     return Array.from(this.agregatesRoot);
   }
 
+  clearAggregateRoots(): void {
+    this.agregatesRoot.clear();
+  }
+
   async start(): Promise<void> {
     if (!this.transaction) {
       this.transaction = await this.sequelize.transaction();
@@ -44,33 +48,24 @@ export class UnitOfWorkSequelize implements IUnitOfWork {
   }
 
   async do<T>(workFn: (uow: IUnitOfWork) => Promise<T>): Promise<T> {
-    let isAutoTransaction = false;
+    if (this.transaction) {
+      return await workFn(this);
+    }
+
     try {
-      if (this.transaction) {
-        const result = workFn(this);
-        this.transaction = null;
-
-        return result;
-      }
-
-      return await this.sequelize.transaction((t) => {
-        isAutoTransaction = true;
-        this.transaction = t;
-        const result = workFn(this);
-        this.transaction = null;
-
-        return result;
+      return await this.sequelize.transaction(async (transaction) => {
+        this.transaction = transaction;
+        try {
+          return await workFn(this);
+        } finally {
+          this.transaction = null;
+        }
       });
-    } catch (error) {
-      console.log(error);
-
-      if (isAutoTransaction) {
-        await this.transaction?.rollback();
-      }
-
-      this.transaction = null;
-
-      throw error;
+    } finally {
+      this.getAggregateRoots().forEach((aggregateRoot) =>
+        aggregateRoot.clearEvents(),
+      );
+      this.clearAggregateRoots();
     }
   }
 

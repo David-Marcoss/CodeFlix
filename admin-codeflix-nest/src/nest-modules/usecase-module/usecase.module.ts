@@ -16,6 +16,7 @@ import { getConnectionToken } from '@nestjs/sequelize';
       useFactory: (sequelize: Sequelize) => {
         return new UnitOfWorkSequelize(sequelize);
       },
+      scope: Scope.REQUEST,
       inject: [getConnectionToken()],
     },
     {
@@ -30,6 +31,6 @@ import { getConnectionToken } from '@nestjs/sequelize';
       inject: ['UnitOfWork', DomainEventMediator],
     },
   ],
-  exports: [ApplicationService],
+  exports: ['UnitOfWork', ApplicationService],
 })
 export class UsecaseModule {}

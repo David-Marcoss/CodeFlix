@@ -5,6 +5,7 @@ import {
 import { Trailer } from '../trailer.vo';
 import { VideoMedia } from '../video-media.vo';
 import { VideoId } from '../video.aggregate';
+import { AudioVideoMediaStatus } from '../../../shared/domain/value-objects/audio-video-media.vo';
 
 type VideoAudioMediaReplacedProps = {
   aggregate_id: VideoId;
@@ -33,24 +34,41 @@ export class VideoAudioMediaReplaced implements IDomainEvent {
   }
 }
 
-export class VideoAudioMediaUploadedIntegrationEvent implements IIntegrationEvent {
-  //resource_id: string;
-  //file_path: string;
+type VideoAudioMediaUploadedPayload = {
+  video_id: string;
+  media_type: 'trailer' | 'video';
+  resource_id: string;
+  file_path: string;
+  media: {
+    name: string;
+    raw_location: string;
+    encoded_location: string | null;
+    status: AudioVideoMediaStatus;
+  };
+};
 
+export class VideoAudioMediaUploadedIntegrationEvent implements IIntegrationEvent<VideoAudioMediaUploadedPayload> {
   declare event_name: string;
-  declare payload: any;
+  declare payload: VideoAudioMediaUploadedPayload;
   declare event_version: number;
   declare occurred_on: Date;
 
   constructor(event: VideoAudioMediaReplaced) {
-    // this['resource_id'] = `${event.aggregate_id.id}.${event.media_type}`;
-    // this['file_path'] = event.media.raw_location;
-    this.event_version = event.event_version;
-    this.occurred_on = event.occurred_on;
-    this.payload = {
-      video_id: event.aggregate_id.id,
-      media: event.media.toJSON(),
-    };
-    this.event_name = this.constructor.name;
+    this['event_name'] = this.constructor.name;
+    this['resource_id'] = `${event.aggregate_id.id}.${event.media_type}`;
+    this['file_path'] = event.media.raw_location;
+    // this.event_version = event.event_version;
+    // this.occurred_on = event.occurred_on;
+    // this.payload = {
+    //   video_id: event.aggregate_id.id,
+    //   media_type: event.media_type,
+    //   resource_id: `${event.aggregate_id.id}.${event.media_type}`,
+    //   file_path: event.media.url,
+    //   media: {
+    //     ...event.media.toJSON(),
+    //     status: event.media.status,
+    //   },
+    // };
+    // this.event_name = this.constructor.name;
   }
 }

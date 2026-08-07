@@ -10,9 +10,8 @@ import { DomainEventMediator } from '../../core/shared/domain/events/domain-even
   providers: [
     {
       provide: DomainEventMediator,
-      useFactory: (eventEmiter: EventEmitter2) => {
-        new DomainEventMediator(eventEmiter);
-      },
+      useFactory: (eventEmitter: EventEmitter2) =>
+        new DomainEventMediator(eventEmitter),
       inject: [EventEmitter2],
     },
   ],

@@ -42,6 +42,12 @@ describe('AppModule (e2e)', () => {
     return request(app.getHttpServer()).get('/categories').expect(200);
   });
 
+  it('/videos/:id (GET) resolves the request-scoped video dependencies', () => {
+    return request(app.getHttpServer())
+      .get('/videos/4e9e2e4e-4b4a-4b4a-8b8b-8b8b8b8b8b8b')
+      .expect(200);
+  });
+
   afterEach(async () => {
     await app?.close();
   });

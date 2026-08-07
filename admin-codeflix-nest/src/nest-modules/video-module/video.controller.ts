@@ -6,13 +6,14 @@ import {
   Patch,
   Param,
   Inject,
+  Scope,
   ValidationPipe,
   UseInterceptors,
   UploadedFiles,
   BadRequestException,
 } from '@nestjs/common';
 
-import type { Multer } from 'multer';
+import 'multer';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { CreateVideoUseCase } from '../../core/video/application/use-cases/create-video/create-video.use-case';
 import { FindVideoUseCase } from '../../core/video/application/use-cases/find-video/find-video.use-case';
@@ -24,24 +25,20 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { UploadAudioVideoMediaInput } from '../../core/video/application/use-cases/upload-audio-video-media/upload-audio-video-media.input';
 import { UploadImageMediaInput } from '../../core/video/application/use-cases/upload-image-media/upload-image-media.input';
 
-@Controller('videos')
+@Controller({ path: 'videos', scope: Scope.REQUEST })
 export class VideoController {
-  @Inject(CreateVideoUseCase)
-  private createUseCase!: CreateVideoUseCase;
-
-  @Inject(FindVideoUseCase)
-  private findUseCase!: FindVideoUseCase;
-
-  @Inject(UpdateVideoUseCase)
-  private updateUseCase!: UpdateVideoUseCase;
-
-  @Inject(UploadAudioVideoMediaUseCase)
-  private uploadAudioVideoMediaUseCase!: UploadAudioVideoMediaUseCase;
-
-  @Inject(UploadImageMediaUseCase)
-  private uploadImageMediaUseCase!: UploadImageMediaUseCase;
-
-  constructor() {}
+  constructor(
+    @Inject(CreateVideoUseCase)
+    private readonly createUseCase: CreateVideoUseCase,
+    @Inject(FindVideoUseCase)
+    private readonly findUseCase: FindVideoUseCase,
+    @Inject(UpdateVideoUseCase)
+    private readonly updateUseCase: UpdateVideoUseCase,
+    @Inject(UploadAudioVideoMediaUseCase)
+    private readonly uploadAudioVideoMediaUseCase: UploadAudioVideoMediaUseCase,
+    @Inject(UploadImageMediaUseCase)
+    private readonly uploadImageMediaUseCase: UploadImageMediaUseCase,
+  ) {}
 
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {

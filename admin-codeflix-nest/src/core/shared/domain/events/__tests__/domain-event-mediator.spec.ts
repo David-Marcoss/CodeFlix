@@ -87,6 +87,7 @@ describe('DomainEventMediator Unit Tests', () => {
   // });
 
   it('should publish integration event', async () => {
+    expect.assertions(4);
     mediator.register(
       StubIntegrationEvent.name,
       async (event: StubIntegrationEvent) => {
@@ -99,6 +100,6 @@ describe('DomainEventMediator Unit Tests', () => {
 
     const aggregate = new StubAggregate();
     aggregate.action('test');
-    await mediator.publish(aggregate);
+    await mediator.publishIntegrationEvents(aggregate);
   });
 });
