@@ -20,6 +20,15 @@ services:
       - seccomp:unconfined
     volumes:
       - mysql_data:/var/lib/mysql
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1
+    command: start-dev
+    ports:
+      - 8080:8080
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
 
 volumes:
   mysql_data:
