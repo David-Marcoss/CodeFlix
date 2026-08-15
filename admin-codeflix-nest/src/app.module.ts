@@ -10,15 +10,17 @@ import { UsecaseModule } from './nest-modules/usecase-module/usecase.module';
 import { EventModule } from './nest-modules/event-module/event.module';
 import { RabbitMQFakeConsumer } from '../fake-rabitmqt.consumer';
 import { RabbitmqModule } from './nest-modules/rabbitmq-module/rabbitmq.module';
+import { AuthModule } from './nest-modules/auth-module/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     DatabaseModule,
-    SharedModule,
-    EventModule,
-    UsecaseModule,
     RabbitmqModule.forRoot(),
+    EventModule,
+    SharedModule,
+    UsecaseModule,
+    AuthModule,
     CategoriesModule,
     CastMembersModule,
     GenresModule,
