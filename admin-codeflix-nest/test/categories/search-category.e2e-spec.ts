@@ -8,6 +8,14 @@ import { CategoriesController } from '../../src/nest-modules/categories-module/c
 import { ListCategoriesFixture } from '../../src/nest-modules/categories-module/testing/categoies.fixure';
 import { CATEGORY_PROVIDERS } from '../../src/nest-modules/categories-module/categories.provider';
 import { CategoryModel } from '../../src/core/category/infra/db/sequelize/category.model';
+import { GenreCategoryModel } from '../../src/core/genre/infra/db/sequelize/genre-model';
+import { VideoCategoryModel } from '../../src/core/video/infra/sequelize/video-model';
+
+async function clearCategories() {
+  await VideoCategoryModel.destroy({ where: {} });
+  await GenreCategoryModel.destroy({ where: {} });
+  await CategoryModel.destroy({ where: {} });
+}
 
 describe('CategoriesController (e2e)', () => {
   describe('/categories (GET)', () => {
@@ -21,7 +29,7 @@ describe('CategoriesController (e2e)', () => {
         categoryRepo = nestApp.app.get<ICategoryRepository>(
           CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
         );
-        await CategoryModel.truncate();
+        await clearCategories();
         await categoryRepo.createMany(Object.values(entitiesMap));
       });
 
@@ -31,6 +39,7 @@ describe('CategoriesController (e2e)', () => {
           const queryParams = new URLSearchParams(send_data as any).toString();
           return request(nestApp.app.getHttpServer())
             .get(`/categories/?${queryParams}`)
+            .authenticate(nestApp.app)
             .expect(200)
             .expect({
               data: expected.entities.map((e) =>
@@ -55,7 +64,7 @@ describe('CategoriesController (e2e)', () => {
         categoryRepo = nestApp.app.get<ICategoryRepository>(
           CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
         );
-        await CategoryModel.truncate();
+        await clearCategories();
         await categoryRepo.createMany(Object.values(entitiesMap));
       });
 
@@ -65,6 +74,7 @@ describe('CategoriesController (e2e)', () => {
           const queryParams = new URLSearchParams(send_data as any).toString();
           return request(nestApp.app.getHttpServer())
             .get(`/categories/?${queryParams}`)
+            .authenticate(nestApp.app)
             .expect(200)
             .expect({
               data: expected.entities.map((e) =>

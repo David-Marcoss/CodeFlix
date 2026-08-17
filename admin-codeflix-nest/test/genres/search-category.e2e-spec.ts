@@ -86,7 +86,9 @@ describe('GenreController (e2e)', () => {
           CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
         );
         await clearGenresData();
-        await categoryRepo.createMany(Array.from(relations.categories.values()));
+        await categoryRepo.createMany(
+          Array.from(relations.categories.values()),
+        );
         await genreRepo.createMany(Object.values(entitiesMap));
       });
 
@@ -96,6 +98,7 @@ describe('GenreController (e2e)', () => {
           const queryParams = makeQueryString(send_data);
           const response = await request(nestApp.app.getHttpServer())
             .get(`/genres/?${queryParams}`)
+            .authenticate(nestApp.app)
             .expect(200);
 
           expect(response.body.meta).toStrictEqual(expected.meta);
@@ -122,7 +125,9 @@ describe('GenreController (e2e)', () => {
           CATEGORY_PROVIDERS.REPOSITORIES.CATEGORY_REPOSITORY.provide,
         );
         await clearGenresData();
-        await categoryRepo.createMany(Array.from(relations.categories.values()));
+        await categoryRepo.createMany(
+          Array.from(relations.categories.values()),
+        );
         await genreRepo.createMany(Object.values(entitiesMap));
       });
 
@@ -132,6 +137,7 @@ describe('GenreController (e2e)', () => {
           const queryParams = makeQueryString(send_data);
           const response = await request(nestApp.app.getHttpServer())
             .get(`/genres/?${queryParams}`)
+            .authenticate(nestApp.app)
             .expect(200);
 
           expect(response.body.meta).toStrictEqual(expected.meta);

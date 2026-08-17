@@ -23,6 +23,7 @@ describe('Genre (e2e)', () => {
 
           const response = await request(helperApp.app.getHttpServer())
             .post('/genres')
+            .authenticate(helperApp.app)
             .send(send_data)
             .expect(201);
 
@@ -47,6 +48,7 @@ describe('Genre (e2e)', () => {
       test.each(arrange)('Create genre with $label', async ({ value }) => {
         await request(helperApp.app.getHttpServer())
           .post('/genres')
+          .authenticate(helperApp.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -65,6 +67,7 @@ describe('Genre (e2e)', () => {
       test.each(arrange)('Create genre with $label', async ({ value }) => {
         await request(helperApp.app.getHttpServer())
           .post('/genres')
+          .authenticate(helperApp.app)
           .send(value.send_data)
           .expect(value.expected.statusCode)
           .expect(value.expected);

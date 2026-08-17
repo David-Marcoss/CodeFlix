@@ -8,10 +8,12 @@ import {
 } from '../../core/genre/infra/db/sequelize/genre-model';
 import { GenreController } from './genre.controller';
 import { GENRES_PROVIDERS } from './genre.provider';
+import { AuthModule } from '../auth-module/auth.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([GenreModel, GenreCategoryModel]),
+    AuthModule,
     CategoriesModule,
   ],
   controllers: [GenreController],

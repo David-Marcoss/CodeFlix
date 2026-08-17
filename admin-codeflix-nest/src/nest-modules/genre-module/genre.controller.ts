@@ -11,6 +11,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
@@ -25,7 +26,10 @@ import { GenreOutput } from '../../core/genre/application/use-cases/common/genre
 import { NotFoundError } from '../../core/shared/domain/errors/notFoundError';
 import { Genre } from '../../core/genre/domain/genre.aggregate';
 import { CategoryId } from '../../core/category/domain/category.aggregate';
+import { AuthGuard } from '../auth-module/auth.guard';
+import { CheckIsAdminGuard } from '../auth-module/check-is-admin.guard';
 
+@UseGuards(AuthGuard, CheckIsAdminGuard)
 @Controller('genres')
 export class GenreController {
   @Inject(CreateGenreUseCase)

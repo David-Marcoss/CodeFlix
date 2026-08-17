@@ -11,6 +11,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateCastMemberDto } from './dto/create-cast-member.dto';
 import { UpdateCastMemberDto } from './dto/update-cast-member.dto';
@@ -27,7 +28,10 @@ import { SearchCastMemberDto } from './dto/search-cast-member.dto';
 import { NotFoundError } from '../../core/shared/domain/errors/notFoundError';
 import { CastMember } from '../../core/cast-member/domain/cast-member.aggregate';
 import { CastMemberOutput } from '../../core/cast-member/application/use-cases/common/cast-member-output';
+import { AuthGuard } from '../auth-module/auth.guard';
+import { CheckIsAdminGuard } from '../auth-module/check-is-admin.guard';
 
+@UseGuards(AuthGuard, CheckIsAdminGuard)
 @Controller('cast-member')
 export class CastMembersController {
   @Inject(CreateCastMemberUseCase)

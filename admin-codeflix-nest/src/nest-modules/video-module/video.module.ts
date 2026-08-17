@@ -16,6 +16,7 @@ import { AudioVideoMediaModel } from '../../core/video/infra/sequelize/audio-vid
 import { ImageMediaModel } from '../../core/video/infra/sequelize/image-media.model';
 import { RabbitmqModule } from '../rabbitmq-module/rabbitmq.module';
 import { VideoConsumer } from './video.consumers';
+import { AuthModule } from '../auth-module/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { VideoConsumer } from './video.consumers';
       AudioVideoMediaModel,
       ImageMediaModel,
     ]),
+    AuthModule,
     RabbitmqModule.forFeature(),
     CategoriesModule,
     CastMembersModule,

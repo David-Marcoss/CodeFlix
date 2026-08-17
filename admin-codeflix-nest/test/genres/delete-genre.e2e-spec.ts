@@ -35,6 +35,7 @@ describe('GenreController (e2e)', () => {
       test.each(arrange)('when id is $id', async ({ id, expected }) => {
         return request(appHelper.app.getHttpServer())
           .delete(`/genres/${id}`)
+          .authenticate(appHelper.app)
 
           .expect(expected.statusCode)
           .expect(expected);
@@ -62,6 +63,7 @@ describe('GenreController (e2e)', () => {
 
       await request(appHelper.app.getHttpServer())
         .delete(`/genres/${genre.genre_id.id}`)
+        .authenticate(appHelper.app)
 
         .expect(204);
 

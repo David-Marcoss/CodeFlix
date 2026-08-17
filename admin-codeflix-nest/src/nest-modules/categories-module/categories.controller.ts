@@ -11,6 +11,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -27,7 +28,10 @@ import { SearchCategoriesDto } from './dto/search-category.dto';
 import { CategoryOutput } from '../../core/category/application/use-cases/common/category-output';
 import { NotFoundError } from '../../core/shared/domain/errors/notFoundError';
 import { Category } from '../../core/category/domain/category.aggregate';
+import { AuthGuard } from '../auth-module/auth.guard';
+import { CheckIsAdminGuard } from '../auth-module/check-is-admin.guard';
 
+@UseGuards(AuthGuard, CheckIsAdminGuard)
 @Controller('categories')
 export class CategoriesController {
   @Inject(CreateCategoryUseCase)

@@ -45,6 +45,7 @@ describe('CastMemberController (e2e)', () => {
         async ({ id, send_data, expected }) => {
           return request(nestApp.app.getHttpServer())
             .patch(`/cast-member/${id}`)
+            .authenticate(nestApp.app)
             .send(send_data)
             .expect(expected.statusCode)
             .expect(expected);
@@ -62,6 +63,7 @@ describe('CastMemberController (e2e)', () => {
       test.each(arrange)('when body is $label', ({ value }) => {
         return request(app.app.getHttpServer())
           .patch(`/cast-member/${uuid}`)
+          .authenticate(app.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -88,6 +90,7 @@ describe('CastMemberController (e2e)', () => {
         await castMemberRepo.create(castMember);
         return request(app.app.getHttpServer())
           .patch(`/cast-member/${castMember.cast_member_id.id}`)
+          .authenticate(app.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -112,6 +115,7 @@ describe('CastMemberController (e2e)', () => {
 
           const res = await request(appHelper.app.getHttpServer())
             .patch(`/cast-member/${castMemberCreated.cast_member_id.id}`)
+            .authenticate(appHelper.app)
             .send(send_data)
             .expect(200);
           const keyInResponse = UpdateCastMemberFixture.keysInResponse;

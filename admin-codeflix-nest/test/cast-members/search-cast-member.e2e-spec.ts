@@ -7,6 +7,12 @@ import { CAST_MEMBER_PROVIDERS } from '../../src/nest-modules/cast-members-modul
 import { CastMemberModel } from '../../src/core/cast-member/infra/db/sequelize/cast-member.model';
 import { CastMembersController } from '../../src/nest-modules/cast-members-module/cast-members-module.controller';
 import { CastMemberOutputMapper } from '../../src/core/cast-member/application/use-cases/common/cast-member-output';
+import { VideoCastMemberModel } from '../../src/core/video/infra/sequelize/video-model';
+
+async function clearCastMembers() {
+  await VideoCastMemberModel.destroy({ where: {} });
+  await CastMemberModel.destroy({ where: {} });
+}
 
 describe('CastMemberController (e2e)', () => {
   describe('/cast-member (GET)', () => {
@@ -20,7 +26,7 @@ describe('CastMemberController (e2e)', () => {
         castMemberRepo = nestApp.app.get<ICastMemberRepository>(
           CAST_MEMBER_PROVIDERS.REPOSITORIES.CAST_MEMBER_REPOSITORY.provide,
         );
-        await CastMemberModel.truncate();
+        await clearCastMembers();
         await castMemberRepo.createMany(Object.values(entitiesMap));
       });
 
@@ -30,6 +36,7 @@ describe('CastMemberController (e2e)', () => {
           const queryParams = new URLSearchParams(send_data as any).toString();
           return request(nestApp.app.getHttpServer())
             .get(`/cast-member/?${queryParams}`)
+            .authenticate(nestApp.app)
             .expect(200)
             .expect({
               data: expected.entities.map((e) =>
@@ -54,7 +61,7 @@ describe('CastMemberController (e2e)', () => {
         castMemberRepo = nestApp.app.get<ICastMemberRepository>(
           CAST_MEMBER_PROVIDERS.REPOSITORIES.CAST_MEMBER_REPOSITORY.provide,
         );
-        await CastMemberModel.truncate();
+        await clearCastMembers();
         await castMemberRepo.createMany(Object.values(entitiesMap));
       });
 
@@ -64,6 +71,7 @@ describe('CastMemberController (e2e)', () => {
           const queryParams = new URLSearchParams(send_data as any).toString();
           return request(nestApp.app.getHttpServer())
             .get(`/cast-member/?${queryParams}`)
+            .authenticate(nestApp.app)
             .expect(200)
             .expect({
               data: expected.entities.map((e) =>

@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 
 import 'multer';
@@ -24,7 +25,10 @@ import { UpdateVideoInput } from '../../core/video/application/use-cases/update-
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { UploadAudioVideoMediaInput } from '../../core/video/application/use-cases/upload-audio-video-media/upload-audio-video-media.input';
 import { UploadImageMediaInput } from '../../core/video/application/use-cases/upload-image-media/upload-image-media.input';
+import { AuthGuard } from '../auth-module/auth.guard';
+import { CheckIsAdminGuard } from '../auth-module/check-is-admin.guard';
 
+@UseGuards(AuthGuard, CheckIsAdminGuard)
 @Controller({ path: 'videos', scope: Scope.REQUEST })
 export class VideoController {
   constructor(

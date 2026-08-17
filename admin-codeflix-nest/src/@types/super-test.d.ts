@@ -1,7 +1,7 @@
-import superagent from 'superagent';
+import type { INestApplication } from '@nestjs/common';
 
 declare module 'supertest' {
-  interface Test extends superagent.SuperAgentRequest {
+  interface Test {
     authenticate(app: INestApplication, forceAdmin?: boolean): this;
   }
 }

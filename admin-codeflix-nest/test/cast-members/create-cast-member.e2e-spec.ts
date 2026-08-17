@@ -15,6 +15,7 @@ describe('Categories (e2e)', () => {
         async ({ send_data, expected }) => {
           const response = await request(helperApp.app.getHttpServer())
             .post('/cast-member')
+            .authenticate(helperApp.app)
             .send(send_data)
             .expect(201);
 
@@ -33,6 +34,7 @@ describe('Categories (e2e)', () => {
 
         const response = await request(helperApp.app.getHttpServer())
           .post('/cast-member')
+          .authenticate(helperApp.app)
           .send(send_data)
           .expect(201);
 
@@ -56,6 +58,7 @@ describe('Categories (e2e)', () => {
       test.each(arrange)('Create castMember with $label', async ({ value }) => {
         await request(helperApp.app.getHttpServer())
           .post('/cast-member')
+          .authenticate(helperApp.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);

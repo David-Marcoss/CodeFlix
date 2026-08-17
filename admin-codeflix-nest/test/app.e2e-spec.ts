@@ -39,12 +39,27 @@ describe('AppModule (e2e)', () => {
   });
 
   it('/categories (GET)', () => {
-    return request(app.getHttpServer()).get('/categories').expect(200);
+    return request(app.getHttpServer())
+      .get('/categories')
+      .authenticate(app)
+      .expect(200);
+  });
+
+  it('/categories (GET) rejects requests without a token', () => {
+    return request(app.getHttpServer()).get('/categories').expect(401);
+  });
+
+  it('/categories (GET) rejects authenticated users without the admin role', () => {
+    return request(app.getHttpServer())
+      .get('/categories')
+      .authenticate(app, false)
+      .expect(403);
   });
 
   it('/videos/:id (GET) resolves the request-scoped video dependencies', () => {
     return request(app.getHttpServer())
       .get('/videos/4e9e2e4e-4b4a-4b4a-8b8b-8b8b8b8b8b8b')
+      .authenticate(app)
       .expect(200);
   });
 

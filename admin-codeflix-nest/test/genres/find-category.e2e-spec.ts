@@ -37,6 +37,7 @@ describe('CategoriesController (e2e)', () => {
       test.each(arrange)('when id is $id', async ({ id, expected }) => {
         return request(nestApp.app.getHttpServer())
           .get(`/genres/${id}`)
+          .authenticate(nestApp.app)
 
           .expect(expected.statusCode)
           .expect(expected);
@@ -64,6 +65,7 @@ describe('CategoriesController (e2e)', () => {
 
       const res = await request(nestApp.app.getHttpServer())
         .get(`/genres/${genre.genre_id.id}`)
+        .authenticate(nestApp.app)
 
         .expect(200);
       const keyInResponse = GetGenreFixture.keysInResponse;

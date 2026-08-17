@@ -15,6 +15,7 @@ describe('Categories (e2e)', () => {
         async ({ send_data, expected }) => {
           const response = await request(helperApp.app.getHttpServer())
             .post('/categories')
+            .authenticate(helperApp.app)
             .send(send_data)
             .expect(201);
 
@@ -39,6 +40,7 @@ describe('Categories (e2e)', () => {
       test.each(arrange)('Create category with $label', async ({ value }) => {
         await request(helperApp.app.getHttpServer())
           .post('/categories')
+          .authenticate(helperApp.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
@@ -57,6 +59,7 @@ describe('Categories (e2e)', () => {
       test.each(arrange)('Create category with $label', async ({ value }) => {
         await request(helperApp.app.getHttpServer())
           .post('/categories')
+          .authenticate(helperApp.app)
           .send(value.send_data)
           .expect(422)
           .expect(value.expected);
