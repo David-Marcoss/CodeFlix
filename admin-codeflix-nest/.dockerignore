@@ -1,0 +1,17 @@
+dist/
+node_modules/
+envs/
+coverage/
+
+.git/
+.github/
+.agents/
+.vscode/
+.devcontainer/
+./docker/rabbitmq/
+
+*.sqlite
+*.md
+
+docker-compose*.yaml
+docker-compose*.yml
