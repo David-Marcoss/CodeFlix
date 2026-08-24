@@ -57,18 +57,18 @@ export class VideoAudioMediaUploadedIntegrationEvent implements IIntegrationEven
     this['event_name'] = this.constructor.name;
     this['resource_id'] = `${event.aggregate_id.id}.${event.media_type}`;
     this['file_path'] = event.media.raw_location;
-    // this.event_version = event.event_version;
-    // this.occurred_on = event.occurred_on;
-    // this.payload = {
-    //   video_id: event.aggregate_id.id,
-    //   media_type: event.media_type,
-    //   resource_id: `${event.aggregate_id.id}.${event.media_type}`,
-    //   file_path: event.media.url,
-    //   media: {
-    //     ...event.media.toJSON(),
-    //     status: event.media.status,
-    //   },
-    // };
-    // this.event_name = this.constructor.name;
+    this.event_version = event.event_version;
+    this.occurred_on = event.occurred_on;
+    this.payload = {
+      video_id: event.aggregate_id.id,
+      media_type: event.media_type,
+      resource_id: `${event.aggregate_id.id}.${event.media_type}`,
+      file_path: event.media.url,
+      media: {
+        ...event.media.toJSON(),
+        status: event.media.status,
+      },
+    };
+    this.event_name = this.constructor.name;
   }
 }

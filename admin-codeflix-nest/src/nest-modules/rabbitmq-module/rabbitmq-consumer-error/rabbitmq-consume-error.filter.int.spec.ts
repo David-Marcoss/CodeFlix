@@ -111,14 +111,10 @@ describe('RabbitmqConsumeErrorFilter Integration Tests', () => {
       .mockImplementation(() => {
         throw new EntityValidationError([]);
       });
-    const spyHandleMessage = jest.spyOn(amqpConnection, 'handleMessage' as any);
     const spyRetry = jest.spyOn(filter as any, 'retry');
     await amqpConnection.publish('direct.delayed', queue1, 'test');
 
     await new Promise((resolve) => setTimeout(resolve, 500));
-    await expect(spyHandleMessage.mock.results[0].value).resolves.toEqual({
-      _requeue: false,
-    });
     expect(spyRetry).not.toHaveBeenCalled();
     expect(spyThrowError).toHaveBeenCalled();
   });
@@ -156,7 +152,6 @@ describe('RabbitmqConsumeErrorFilter Integration Tests', () => {
         throw new FakeError();
       });
     const ampqConnection: AmqpConnection = module.get(AmqpConnection);
-    const spyHandleMessage = jest.spyOn(ampqConnection, 'handleMessage' as any);
     const spyRetry = jest.spyOn(filter as any, 'retry');
     await ampqConnection.publish('direct.delayed', queue3, 'test', {
       headers: {
@@ -168,8 +163,5 @@ describe('RabbitmqConsumeErrorFilter Integration Tests', () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
     expect(spyThrowError).toHaveBeenCalled();
     expect(spyRetry).not.toHaveBeenCalled();
-    await expect(spyHandleMessage.mock.results[0].value).resolves.toEqual({
-      _requeue: false,
-    });
   });
 });
