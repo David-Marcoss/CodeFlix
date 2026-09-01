@@ -1,69 +1,96 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <main className='min-h-screen overflow-x-hidden bg-[#141414] font-sans'>
+
+
+      <section className='relative isolate flex h-[100svh] max-h-[56rem] min-h-[38rem] items-end overflow-hidden'>
         <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+          src='/banner.png'
+          fill
+          preload
+          sizes='100vw'
+          alt=''
+          className='object-cover object-[68%_center] sm:object-[62%_center] lg:object-center'
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+
+        <div
+          className='hero-backdrop absolute inset-0 z-0'
+          aria-hidden='true'
+        />
+
+        <div className='relative z-10 mx-auto flex w-full max-w-7xl px-6 pb-16 sm:px-10 sm:pb-20 lg:px-16 lg:pb-28'>
+          <div className='max-w-xl'>
+            <div className='mb-5 flex items-center gap-2.5 text-xs font-semibold tracking-[0.24em] text-white/80 sm:text-sm'>
+              <span className='h-2 w-2 rounded-full bg-red-600 shadow-[0_0_14px_rgba(220,38,38,0.9)]' />
+              SÉRIE ORIGINAL CODEFLIX
+            </div>
+
+            <h1 className='text-[clamp(4rem,12vw,8.5rem)] leading-[0.8] font-black tracking-[-0.07em] text-white drop-shadow-[0_5px_24px_rgba(0,0,0,0.65)]'>
+              MAID
+            </h1>
+
+            <p className='mt-7 max-w-lg text-base leading-relaxed text-white/85 drop-shadow-md sm:text-lg'>
+              Depois de fugir de um relacionamento abusivo, uma jovem mãe
+              enfrenta trabalhos como empregada doméstica enquanto luta para
+              construir um futuro melhor para a filha.
+            </p>
+
+            <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4'>
+              <button
+                type='button'
+                className='group inline-flex min-h-12 items-center justify-center gap-2.5 rounded-lg bg-white px-7 py-3 text-base font-bold text-black shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-white/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white'
+              >
+                <svg
+                  aria-hidden='true'
+                  viewBox='0 0 24 24'
+                  className='h-5 w-5 fill-current transition-transform duration-200 group-hover:scale-110'
+                >
+                  <path d='M7 4.8v14.4c0 .8.9 1.3 1.6.9l11-7.2a1.1 1.1 0 0 0 0-1.8l-11-7.2C7.9 3.5 7 4 7 4.8Z' />
+                </svg>
+                Assistir
+              </button>
+
+              <button
+                type='button'
+                className='inline-flex min-h-12 items-center justify-center gap-2.5 rounded-lg bg-white/15 px-7 py-3 text-base font-semibold text-white shadow-xl ring-1 ring-white/20 backdrop-blur-md transition duration-200 ring-inset hover:-translate-y-0.5 hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white'
+              >
+                <svg
+                  aria-hidden='true'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  className='h-5 w-5'
+                >
+                  <circle
+                    cx='12'
+                    cy='12'
+                    r='9'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                  />
+                  <path
+                    d='M12 10.5v6M12 7.5h.01'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                  />
+                </svg>
+                Mais informações
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        <div
+          className='absolute inset-x-0 bottom-0 z-10 h-px bg-linear-to-r from-transparent via-white/15 to-transparent'
+          aria-hidden='true'
+        />
+      </section>
+
+      <div className='h-screen flex items-center justify-center'>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate et incidunt nemo officiis sed corporis sapiente, ratione fugit asperiores omnis amet, modi numquam accusamus? Eius facere totam soluta nobis debitis!
+      </div>
+    </main>
   );
 }
