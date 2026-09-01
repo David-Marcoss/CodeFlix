@@ -1,10 +1,12 @@
 import Image from 'next/image';
+import { Header } from './components/header';
 
 export default function Home() {
   return (
     <main className='min-h-screen overflow-x-hidden bg-[#141414] font-sans'>
 
-
+      <Header/>
+      
       <section className='relative isolate flex h-[100svh] max-h-[56rem] min-h-[38rem] items-end overflow-hidden'>
         <Image
           src='/banner.png'
