@@ -1,19 +1,18 @@
 import Image from 'next/image';
 
 type MovieCardProps = {
-  index: number;
+  id: number;
 };
 
-export function MovieCard({index}: MovieCardProps) {
+export function MovieCard({id}: MovieCardProps) {
   return (
     <div
-      key={index}
-      className='group relative z-50 h-44 min-w-75 transform rounded-lg bg-linear-to-t from-transparent to-black transition duration-200 ease-in hover:scale-110'
+      className='group relative z-20 h-44 min-w-75 transform rounded-lg bg-linear-to-t from-transparent to-black transition duration-200 ease-in hover:scale-110'
     >
       <Image
-        src={`/item_${index}.png`}
+        src={`/item_${id}.png`}
         preload
-        alt={`Movie ${index}`}
+        alt={`Movie ${id}`}
         width={300}
         height={300}
         className='rounded-lg object-cover'
