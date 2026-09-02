@@ -1,29 +1,15 @@
 'use client';
 import { Search } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useScroll } from '../hooks/useScroll';
 
 export function Header() {
-  const [isScroled, setIsScroled] = useState(false);
-
-  useEffect(() => {
-    const handleSroll = () => {
-      if (window.scrollY > 0) {
-        setIsScroled(true);
-      } else {
-        setIsScroled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleSroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleSroll);
-    };
-  }, []);
+  const isScroled = useScroll();
 
   return (
-    <header className={`${isScroled && "bg-black transition-all"} fixed top-0 z-50 flex w-full`}>
+    <header
+      className={`${isScroled && 'bg-black transition-all'} fixed top-0 z-50 flex w-full`}
+    >
       <nav className='w-full'>
         <ul className='mx-20 flex flex-row justify-between px-10 py-3'>
           <div className='flex items-center'>
