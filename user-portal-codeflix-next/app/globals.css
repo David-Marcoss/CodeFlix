@@ -9,6 +9,21 @@
   body {
     @apply bg-[#141414] text-white antialiased;
   }
+  .credentialInput:-webkit-autofill,
+  .credentialInput:-webkit-autofill:hover,
+  .credentialInput:-webkit-autofill:focus,
+  .credentialInput:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
+    box-shadow: 0 0 0 1000px #1d1d1d inset;
+    transition: background-color 9999s ease-out 0s;
+  }
+
+  .credentialInput:autofill {
+    color: #fff;
+    caret-color: #fff;
+    box-shadow: 0 0 0 1000px #1d1d1d inset;
+  }
 }
 
 @layer components {
