@@ -1,15 +1,26 @@
 import Image from 'next/image';
+import { Movie } from '../types/movie.interface';
+import Link from 'next/link';
 
-export function Banner() {
+export function Banner({ bannerMovie }: { bannerMovie: Movie }) {
   return (
     <section className='relative isolate flex h-svh max-h-224 min-h-152 items-end overflow-hidden'>
+      <video
+        autoPlay
+        loop
+        muted
+        className='-z-10 absolute top-0 h-full w-full object-cover opacity-50 transition duration-1000 ease-in-out lg:block'
+        poster={bannerMovie.bannerFileURL}
+        src={bannerMovie.videoFileURL}
+      />
+
       <Image
-        src='/banner.png'
+        src={bannerMovie.bannerFileURL}
         fill
         preload
         sizes='100vw'
         alt=''
-        className='object-cover object-[68%_center] sm:object-[62%_center] lg:object-center'
+        className='block object-cover object-[68%_center] sm:object-[62%_center] md:hidden lg:object-center'
       />
 
       <div className='hero-backdrop absolute inset-0 z-0' aria-hidden='true' />
@@ -21,19 +32,17 @@ export function Banner() {
             SÉRIE ORIGINAL CODEFLIX
           </div>
 
-          <h1 className='text-[clamp(4rem,12vw,8.5rem)] leading-[0.8] font-black tracking-[-0.07em] text-white drop-shadow-[0_5px_24px_rgba(0,0,0,0.65)]'>
-            MAID
+          <h1 className='text-4xl font-bold lg:text-8xl'>
+            {bannerMovie.title}
           </h1>
 
           <p className='mt-7 max-w-lg text-base leading-relaxed text-white/85 drop-shadow-md sm:text-lg'>
-            Depois de fugir de um relacionamento abusivo, uma jovem mãe enfrenta
-            trabalhos como empregada doméstica enquanto luta para construir um
-            futuro melhor para a filha.
+            {bannerMovie.description}
           </p>
 
           <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4'>
-            <button
-              type='button'
+            <Link
+              href={`/movie/watch/${bannerMovie.id}`}
               className='group inline-flex min-h-12 items-center justify-center gap-2.5 rounded-lg bg-white px-7 py-3 text-base font-bold text-black shadow-xl transition duration-200 hover:-translate-y-0.5 hover:bg-white/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white'
             >
               <svg
@@ -44,7 +53,7 @@ export function Banner() {
                 <path d='M7 4.8v14.4c0 .8.9 1.3 1.6.9l11-7.2a1.1 1.1 0 0 0 0-1.8l-11-7.2C7.9 3.5 7 4 7 4.8Z' />
               </svg>
               Assistir
-            </button>
+            </Link>
 
             <button
               type='button'

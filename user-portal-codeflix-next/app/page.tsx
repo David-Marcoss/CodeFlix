@@ -1,13 +1,16 @@
 import { Header } from './components/header';
 import { MovieRow } from './components/MovieRow';
 import { Banner } from './components/Banner';
+import { getMovieById } from './services/movie.service';
 
-export default function Home() {
+export default async function Home() {
+  const bannerMovie = await getMovieById("103");
+
   return (
     <main className='min-h-screen overflow-x-hidden bg-[#141414] font-sans'>
       <Header />
 
-      <Banner />
+      <Banner bannerMovie={bannerMovie} />
 
       <MovieRow title='Recomendado para você' />
       <MovieRow title='Lançamentos' />
