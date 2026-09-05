@@ -5,14 +5,14 @@ export interface ApiQueryParams {
 }
 
 export interface RequestOptions {
-  page?: number;
-  _limit?: number;
+  _page?: number;
+  _per_page?: number;
   rating_like?: string;
 }
 
 export const defaultOptions: RequestOptions = {
-  page: 1,
-  _limit: 10,
+  _page: 1,
+  _per_page: 10,
 };
 
 export function buildQueryString(params: ApiQueryParams) {
@@ -30,6 +30,7 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const mergedOptions: RequestOptions = { ...defaultOptions, ...options };
   const queryString: string = buildQueryString({ ...query, ...mergedOptions });
+  console.log("quueryString", queryString);
   try {
     const response = await fetch(`${API_URL}/${endpoint}${queryString}`);
     if (!response.ok) {
