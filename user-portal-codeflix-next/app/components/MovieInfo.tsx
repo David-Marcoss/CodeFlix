@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Movie } from '../types/movie.interface';
-import { Play, Plus } from 'lucide-react';
+import { Link, Play, Plus } from 'lucide-react';
 
 type MovieCardProps = {
   movie: Movie;
@@ -20,29 +20,38 @@ export function MovieInfo({ movie }: MovieCardProps) {
         />
       </div>
 
-      <div className='flex flex-col gap-6 p-2'>
+      <div className='flex flex-col gap-4 p-2'>
         <div className='flex justify-between'>
-          <h3 className='text-start text-2xl font-extrabold'>{movie.title}</h3>
+          <h3 className='text-start text-xl font-extrabold'>{movie.title}</h3>
 
           <div className='flex gap-1'>
-            <button className='flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 bg-black hover:h-11 hover:w-11'>
-              <Play className='text-center text-white' />
-            </button>
             <button className='flex h-10 w-10 items-center justify-center rounded-full border border-gray-600 bg-gray-900 hover:h-11 hover:w-11'>
               <Plus className='text-center text-white' />
             </button>
           </div>
         </div>
 
-        <p className='text-md text-gray-300'>{movie.description}</p>
-
-        <div className='mb-2 flex gap-2'>
+        <div className='flex gap-2'>
           {movie.genres.map((g) => (
             <div key={g} className='flex items-center justify-center gap-2'>
-              <span className='h-2 w-2 rounded-full bg-white' />
+              <span className='h-2 w-2 rounded-full bg-red-600' />
               <span>{g}</span>
             </div>
           ))}
+        </div>
+
+        <p className='text-md line-clamp-3 text-gray-300'>
+          {movie.description}
+        </p>
+
+        <div className='mb-4 flex w-full'>
+          <a
+            href={`/movie/watch/${movie.id}`}
+            className='mx-4 flex w-full items-center justify-center gap-2 rounded-xl border-gray-600 bg-white p-2 hover:bg-gray-200'
+          >
+            <Play className='text-center text-black' />
+            <span className='font-bold text-black'>Assistir</span>
+          </a>
         </div>
       </div>
     </div>
