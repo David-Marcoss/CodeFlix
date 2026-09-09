@@ -2,6 +2,7 @@
 import { Search } from 'lucide-react';
 import Image from 'next/image';
 import { useScroll } from '../hooks/useScroll';
+import { SearchForm } from './searchForm';
 
 export function Header() {
   const isScroled = useScroll();
@@ -39,8 +40,8 @@ export function Header() {
           </div>
 
           <div className='flex items-center gap-8'>
-            <li className='p-2 hover:rounded-full hover:bg-gray-500'>
-              <Search width={30} height={30} />
+            <li>
+              <SearchForm />
             </li>
             <li>
               <Image

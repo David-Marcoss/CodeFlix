@@ -13,11 +13,15 @@ export const getMoviesByGenre = async (
   genre: string,
   options?: RequestOptions
 ): Promise<Movie[]> => {
-  const { data: movies } = await apiRequest<PaginatedMovies>(`movies`, undefined, {
-    ...options,
-    _page: 1,
-    _per_page: 1000,
-  });
+  const { data: movies } = await apiRequest<PaginatedMovies>(
+    `movies`,
+    undefined,
+    {
+      ...options,
+      _page: 1,
+      _per_page: 1000,
+    }
+  );
 
   const filteredMovies = movies.filter((movie) => movie.genres.includes(genre));
 
@@ -32,9 +36,11 @@ export const SearchMovies = async (
   title: string = '',
   options?: RequestOptions
 ): Promise<Movie[]> => {
-  return await apiRequest<Movie[]>(
+  const { data: movies } = await apiRequest<PaginatedMovies>(
     `/movies`,
     { 'title:contains': title },
     options
   );
+
+  return movies;
 };
