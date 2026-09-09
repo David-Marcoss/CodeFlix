@@ -4,9 +4,10 @@ import { MovieInfo } from './MovieInfo';
 
 type MovieCardProps = {
   movie: Movie;
+  index: number
 };
 
-export function MovieCard({ movie }: MovieCardProps) {
+export function MovieCard({ movie, index }: MovieCardProps) {
   return (
     <div className='group relative'>
       <div className='relative z-10 min-w-75 transform rounded-lg bg-linear-to-t from-transparent to-black'>
@@ -20,7 +21,7 @@ export function MovieCard({ movie }: MovieCardProps) {
         />
       </div>
 
-      <MovieInfo movie={movie}/>
+      <MovieInfo movie={movie} index={index}/>
     </div>
   );
 }

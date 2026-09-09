@@ -1,15 +1,17 @@
-import Image from 'next/image';
 import { Movie } from '../types/movie.interface';
-import { Link, Play, Plus } from 'lucide-react';
+import { Play, Plus } from 'lucide-react';
 
 type MovieCardProps = {
   movie: Movie;
+  index: number;
 };
 
-export function MovieInfo({ movie }: MovieCardProps) {
+export function MovieInfo({ movie, index }: MovieCardProps) {
   return (
-    <div className='absolute -top-20 left-0 z-20 hidden h-[550px] w-[450px] flex-col gap-4 rounded-xl bg-[#1d1d1d] group-hover:flex'>
-      <div className='h-[60%] w-full rounded-tl-xl rounded-tr-xl'>
+    <div
+      className={`invisible absolute -top-15 ${index === 0 ? 'left-0' : '-left-15'} z-20 flex h-[550px] w-[430px] scale-95 flex-col justify-between gap-4 rounded-xl bg-[#1d1d1d] opacity-0 transition-all duration-500 ease-out group-hover:visible group-hover:scale-100 group-hover:opacity-100`}
+    >
+      <div className='h-[50%] w-full rounded-tl-xl rounded-tr-xl'>
         <video
           autoPlay
           loop
@@ -20,7 +22,7 @@ export function MovieInfo({ movie }: MovieCardProps) {
         />
       </div>
 
-      <div className='flex flex-col gap-4 p-2'>
+      <div className='flex flex-1 flex-col gap-4 p-2'>
         <div className='flex justify-between'>
           <h3 className='text-start text-xl font-extrabold'>{movie.title}</h3>
 

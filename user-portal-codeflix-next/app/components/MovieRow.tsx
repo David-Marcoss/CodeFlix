@@ -11,9 +11,9 @@ export function MovieRow({ title, movies }: MovieRowProps) {
     <div className='my-10 px-8'>
       <h2 className='mb-5 text-2xl font-bold'>{title}</h2>
 
-      <div className='flex scrollbar-none items-start gap-4 overflow-x-scroll py-6'>
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie}  />
+      <div className='flex scrollbar-none items-start gap-4 py-6'>
+        {movies.map((movie, index) => (
+          <MovieCard key={movie.id} movie={movie} index={index} />
         ))}
       </div>
     </div>
