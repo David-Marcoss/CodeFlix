@@ -6,7 +6,7 @@ import { useState } from 'react';
 export function SearchForm() {
   const searchParam = useSearchParams();
   const navigate = useRouter();
-  const currentSearch = searchParam.get('search');
+  const currentSearch = searchParam.get('title');
 
   const [showSearchForm, setShowSearchForm] = useState(false);
   const [searchValue, setSearchValue] = useState<string>(currentSearch ?? '');
@@ -18,7 +18,7 @@ export function SearchForm() {
   const onSubmitSearchForm = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const params = new URLSearchParams(searchParam.toString());
-    params.set('search', searchValue);
+    params.set('title', searchValue);
     navigate.push(`/search?${params.toString()}`);
   };
 

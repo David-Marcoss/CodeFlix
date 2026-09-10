@@ -1,9 +1,11 @@
 import { Header } from '../components/header';
 import { MovieCard } from '../components/MovieCard';
-import { SearchMovies } from '../services/movie.service';
+import { getMoviesByGenre, SearchMovies } from '../services/movie.service';
+import { Movie } from '../types/movie.interface';
 
 type SearchParams = {
-  search: string;
+  title?: string;
+  genre?: string;
 };
 
 export default async function SearchPage({
@@ -11,12 +13,18 @@ export default async function SearchPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
+  let movies: Movie[] = [];
   // Await the searchParams promise
   const resolvedSearchParams = await searchParams;
 
-  const search = resolvedSearchParams.search; // "shoes"
+  const title = resolvedSearchParams.title;
+  const genre = resolvedSearchParams.genre;
 
-  const movies = await SearchMovies(search, { _per_page: 100 });
+  if (genre) {
+    movies = await getMoviesByGenre(genre, { _per_page: 100 });
+  } else {
+    movies = await SearchMovies(title, { _per_page: 100 });
+  }
 
   return (
     <main className='min-h-screen overflow-x-hidden bg-[#141414] font-sans text-white'>
@@ -28,17 +36,21 @@ export default async function SearchPage({
             Resultados para a busca:
           </h1>
           <h1 className='text-xl font-semibold break-all text-red-500 sm:text-2xl'>
-            {search}
+            {genre ?? title}
           </h1>
         </div>
-        
-        {movies.length > 0 ? (<div className='flex flex-wrap items-start gap-4'>
-          {movies.map((movie, index) => (
-            <MovieCard key={index} movie={movie} index={index} />
-          ))}
-        </div>): (<div className='flex items-center justify-center text-5xl'>Nenhum título encontrado</div>)}
 
-        
+        {movies.length > 0 ? (
+          <div className='flex flex-wrap items-start gap-4'>
+            {movies.map((movie, index) => (
+              <MovieCard key={index} movie={movie} index={index} />
+            ))}
+          </div>
+        ) : (
+          <div className='flex items-center justify-center text-5xl'>
+            Nenhum título encontrado
+          </div>
+        )}
       </div>
     </main>
   );
