@@ -1,8 +1,13 @@
 import { Movie, PaginatedMovies } from '../types/movie.interface';
 import { apiRequest, RequestOptions } from './api-request';
 
-export const getMovieById = async (id: string): Promise<Movie> => {
-  return await apiRequest<Movie>(`/movies/${id}`);
+export const getMovieById = async (id: string): Promise<Movie | undefined> => {
+  try {
+    const movie = await apiRequest<Movie>(`/movies/${id}`);
+    return movie;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getFeaturedById = async (id: string): Promise<Movie> => {
