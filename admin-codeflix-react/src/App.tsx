@@ -5,10 +5,15 @@ import Layout from "./components/Layout";
 import AppTheme from "./config/appTheme";
 import { BrowserRouter } from "react-router-dom";
 import RoutesApp from "./router";
+import { SnackbarProvider } from "notistack";
 
 export const App = () => (
   <ThemeProvider theme={AppTheme}>
     <Box sx={{ height: "100vh", width: "100vw" }}>
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{ horizontal: "right", vertical: "top" }}
+      />
       <Header />
       <BrowserRouter>
         <Layout>

@@ -6,6 +6,7 @@ import { IconButton, Typography } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../app/hooks";
+import { enqueueSnackbar } from "notistack";
 
 interface CategoryTableProps {
   categories: Category[];
@@ -70,6 +71,7 @@ export default function CategoryTable({ categories }: CategoryTableProps) {
               type: "category/deleteCategory",
               payload: params.row.id,
             });
+            enqueueSnackbar("Categoria excluída com sucesso!", { variant: "success" });
           }}
         >
           <Delete color="secondary" />

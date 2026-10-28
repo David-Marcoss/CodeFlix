@@ -6,6 +6,7 @@ import type { RootState } from "../../app/store";
 import { selectCategoryById, type Category } from "./categorySlice";
 import CategoriesForm from "./components/cayegoriesForm";
 import { useAppDispatch } from "../../app/hooks";
+import { enqueueSnackbar } from "notistack";
 
 export default function CategoriesEdit() {
   const params = useParams();
@@ -53,6 +54,8 @@ export default function CategoriesEdit() {
       type: "category/updateCategory",
       payload: categoryData,
     });
+
+    enqueueSnackbar("Categoria atualizada com sucesso!", { variant: "success" });
 
     navigate("/categories");
   }

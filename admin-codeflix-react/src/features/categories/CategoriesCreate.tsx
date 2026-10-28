@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import { createCategory, type Category } from "./categorySlice";
 import CategoriesForm from "./components/cayegoriesForm";
+import { enqueueSnackbar } from "notistack";
 
 export default function CategoriesCreate() {
 
@@ -42,6 +43,8 @@ export default function CategoriesCreate() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     dispatch(createCategory({ ...categoryData, category_id: nanoid() }));
+
+    enqueueSnackbar("Categoria criada com sucesso!", { variant: "success" });
 
     navigate("/categories");
   }
