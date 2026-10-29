@@ -1,0 +1,99 @@
+# Ambiente de desenvolvimento: execute na raiz com docker compose up --build.
+services:
+  volume-init:
+    image: node:24-bookworm-slim
+    user: root
+    command: ["chown", "-R", "1000:1000", "/nest_modules", "/next_cache"]
+    volumes:
+      - nest_node_modules:/nest_modules
+      - portal_next:/next_cache
+
+  app:
+    build: ./admin-codeflix-nest
+    command: sh -c "npm ci && npm run migrate:ts -- up && npm run start:dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./admin-codeflix-nest:/home/node/app
+      - nest_node_modules:/home/node/app/node_modules
+    environment:
+      DB_VENDOR: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: codeflix
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_LOGGING: "false"
+      DB_AUTO_LOAD_MODELS: "true"
+      RABBITMQ_URI: amqp://admin:admin@rabbitmq:5672
+    depends_on:
+      volume-init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  db:
+    extends:
+      file: ./admin-codeflix-nest/docker-compose.yaml
+      service: db
+    tmpfs: !reset []
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  rabbitmq:
+    extends:
+      file: ./admin-codeflix-nest/docker-compose.yaml
+      service: rabbitmq
+    build: ./admin-codeflix-nest/.docker/rabbitmq
+
+  admin:
+    build: ./admin-codeflix-react
+    ports:
+      - "${ADMIN_PORT:-5173}:5173"
+    environment:
+      API_PROXY_TARGET: http://app:3000
+    volumes:
+      - ./admin-codeflix-react:/app
+      - admin_node_modules:/app/node_modules
+    depends_on:
+      app:
+        condition: service_started
+
+  portal-api:
+    build: ./user-portal-codeflix-next
+    command: ["npm", "run", "api:local", "--", "--host", "0.0.0.0"]
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./user-portal-codeflix-next/db.json:/app/db.json
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  portal:
+    build: ./user-portal-codeflix-next
+    ports:
+      - "3002:3000"
+    environment:
+      API_URL: http://portal-api:3001
+      NEXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      - ./user-portal-codeflix-next:/app
+      - portal_node_modules:/app/node_modules
+      - portal_next:/app/.next
+    depends_on:
+      volume-init:
+        condition: service_completed_successfully
+      portal-api:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
+  nest_node_modules:
+  admin_node_modules:
+  portal_node_modules:
+  portal_next:
