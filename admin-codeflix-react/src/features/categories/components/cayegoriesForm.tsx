@@ -9,12 +9,12 @@ import {
   TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import type { Category } from "../categorySlice";
+import type { Category } from "../../../types/category";
 
 interface CategoriesFormProps {
   category: Category;
   isLoading: boolean;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   handleSubmit(event: React.FormEvent<HTMLFormElement>): void;
   handleInputChange(event: React.ChangeEvent<HTMLInputElement, Element>): void;
   handleInputToggleChange(

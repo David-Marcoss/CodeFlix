@@ -1,12 +1,13 @@
 import { Box, Paper, Typography } from "@mui/material";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import type { RootState } from "../../app/store";
-import { selectCategoryById, type Category } from "./categorySlice";
-import CategoriesForm from "./components/cayegoriesForm";
-import { useAppDispatch } from "../../app/hooks";
 import { enqueueSnackbar } from "notistack";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import type { Category } from "../../types/category";
+import {
+  useGetCategoryByIdQuery,
+  useUpdateCategoryMutation,
+} from "./categorySlice";
+import CategoriesForm from "./components/cayegoriesForm";
 
 export default function CategoriesEdit() {
   const params = useParams();
@@ -14,22 +15,22 @@ export default function CategoriesEdit() {
 
   const navigate = useNavigate();
 
-  const category = selectCategoryById(
-    useSelector((state: RootState) => state),
-    id,
-  );
+  const {
+    data: resultGetCategory,
+    isError,
+    isFetching,
+  } = useGetCategoryByIdQuery(id);
+  const [updateCategory, resultUpdateCategory] = useUpdateCategoryMutation();
 
-  const dispash = useAppDispatch();
-
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(isFetching);
 
   const [categoryData, setCategoryData] = useState<Category>({
-    category_id: category?.category_id || "",
-    name: category?.name || "",
-    description: category?.description || "",
-    is_active: category?.is_active || false,
-    created_at: category?.created_at || new Date(),
+    category_id: "",
+    name: "",
+    description: "",
+    is_active: false,
+    created_at: new Date(),
   });
 
   function handleInputToggleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -48,17 +49,45 @@ export default function CategoriesEdit() {
     }));
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    dispash({
-      type: "category/updateCategory",
-      payload: categoryData,
-    });
+    const { name, description, is_active } = categoryData;
+    setIsLoading(true);
 
-    enqueueSnackbar("Categoria atualizada com sucesso!", { variant: "success" });
-
-    navigate("/categories");
+    await updateCategory({ category_id: id, name, description, is_active });
   }
+
+  useEffect(() => {
+    if (resultGetCategory && resultGetCategory.data) {
+      setCategoryData(resultGetCategory.data);
+    }
+
+    if (isError) {
+      enqueueSnackbar("Erro ao buscar dados da Categoria!", {
+        variant: "error",
+      });
+    }
+
+    setIsLoading(false);
+  }, [resultGetCategory, isError]);
+
+  useEffect(() => {
+    if (resultUpdateCategory.isSuccess) {
+      enqueueSnackbar("Categoria atualizada com sucesso!", {
+        variant: "success",
+      });
+
+      navigate("/categories");
+      setIsLoading(false);
+    }
+
+    if (resultUpdateCategory.isError) {
+      enqueueSnackbar("Erro ao atualizar categoria!", {
+        variant: "error",
+      });
+      setIsLoading(false);
+    }
+  }, [resultUpdateCategory]);
 
   return (
     <Box

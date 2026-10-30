@@ -1,20 +1,40 @@
 import Box from "@mui/material/Box";
-import type { GridCellParams, GridColDef } from "@mui/x-data-grid";
+import type {
+  GridCellParams,
+  GridColDef,
+  GridFilterModel,
+  GridPaginationModel,
+} from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
-import type { Category } from "../categorySlice";
+import { useDeleteCategoryMutation } from "../categorySlice";
 import { IconButton, Typography } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../../app/hooks";
+import { useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
+import type { Category } from "../../../types/category";
 
 interface CategoryTableProps {
   categories: Category[];
+  isFetching: boolean;
+  page: number;
+  perPage: number;
+  pageSizeOptions: number[];
+  onFilterModelChange: (filter: GridFilterModel) => void;
+  onPaginationModelChange: (model: GridPaginationModel) => void;
 }
 
-export default function CategoryTable({ categories }: CategoryTableProps) {
+export default function CategoryTable({
+  perPage,
+  page,
+  categories,
+  pageSizeOptions,
+  isFetching,
+  onFilterModelChange,
+  onPaginationModelChange,
+}: CategoryTableProps) {
   const navigate = useNavigate();
-  const dispash = useAppDispatch();
+  const [deleteCategory, result] = useDeleteCategoryMutation();
 
   const columns: GridColDef<(typeof rows)[number]>[] = [
     { field: "id", headerName: "ID", flex: 1 },
@@ -57,6 +77,10 @@ export default function CategoryTable({ categories }: CategoryTableProps) {
       : "-",
   }));
 
+  const handleDeleteCategory = (id: string) => {
+    deleteCategory({ category_id: id });
+  };
+
   function renderActionsCell(params: GridCellParams) {
     return (
       <Box sx={{ display: "flex", gap: 1 }}>
@@ -67,11 +91,7 @@ export default function CategoryTable({ categories }: CategoryTableProps) {
         </IconButton>
         <IconButton
           onClick={() => {
-            dispash({
-              type: "category/deleteCategory",
-              payload: params.row.id,
-            });
-            enqueueSnackbar("Categoria excluída com sucesso!", { variant: "success" });
+            handleDeleteCategory(params.row.id);
           }}
         >
           <Delete color="secondary" />
@@ -88,6 +108,14 @@ export default function CategoryTable({ categories }: CategoryTableProps) {
     );
   }
 
+  useEffect(() => {
+    if (result.isSuccess) {
+      enqueueSnackbar("Categoria removida com sucesso!", {
+        variant: "success",
+      });
+    }
+  }, [result]);
+
   return (
     <Box sx={{ height: 500, width: "100%" }}>
       <DataGrid
@@ -96,13 +124,19 @@ export default function CategoryTable({ categories }: CategoryTableProps) {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: perPage,
+              page: page,
             },
           },
         }}
-        pageSizeOptions={[5]}
+        loading={isFetching}
+        pageSizeOptions={pageSizeOptions}
         showToolbar
         disableColumnFilter
+        filterMode="server"
+        paginationMode="server"
+        onFilterModelChange={onFilterModelChange}
+        onPaginationModelChange={onPaginationModelChange}
       />
     </Box>
   );

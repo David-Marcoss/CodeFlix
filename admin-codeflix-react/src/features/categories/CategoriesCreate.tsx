@@ -1,19 +1,16 @@
 import { Box, Paper, Typography } from "@mui/material";
-import { nanoid } from "@reduxjs/toolkit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks";
-import { createCategory, type Category } from "./categorySlice";
+import { useCreateCategoryMutation } from "./categorySlice";
 import CategoriesForm from "./components/cayegoriesForm";
 import { enqueueSnackbar } from "notistack";
+import type { Category } from "../../types/category";
 
 export default function CategoriesCreate() {
-
   const navigate = useNavigate();
 
-  const dispatch = useAppDispatch();
+  const [createCategory, result] = useCreateCategoryMutation();
 
-  const [isDisabled, setIsDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const [categoryData, setCategoryData] = useState<Category>({
@@ -40,14 +37,32 @@ export default function CategoriesCreate() {
     }));
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    dispatch(createCategory({ ...categoryData, category_id: nanoid() }));
+    
+    const { name, description, is_active } = categoryData;
+    setIsLoading(true);
 
-    enqueueSnackbar("Categoria criada com sucesso!", { variant: "success" });
-
-    navigate("/categories");
+    await createCategory({ name, description, is_active });
   }
+
+  useEffect(() => {
+    if (result.isSuccess) {
+      enqueueSnackbar("Categoria criada com sucesso!", {
+        variant: "success",
+      });
+
+      navigate("/categories");
+      setIsLoading(false);
+    }
+
+    if (result.isError) {
+      enqueueSnackbar("Erro ao criada categoria!", {
+        variant: "error",
+      });
+      setIsLoading(false);
+    }
+  }, [result]);
 
   return (
     <Box
@@ -73,7 +88,6 @@ export default function CategoriesCreate() {
 
         <CategoriesForm
           category={categoryData}
-          isDisabled={isDisabled}
           isLoading={isLoading}
           handleInputChange={handleInputChange}
           handleInputToggleChange={handleInputToggleChange}
