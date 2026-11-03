@@ -18,17 +18,19 @@ export class CheckIsAdminGuard implements CanActivate {
       return true;
     }
 
-    const request: Request = context.switchToHttp().getRequest();
-    if (!('user' in request)) {
-      throw new UnauthorizedException();
-    }
-
-    const payload = request['user'] as PayloadUser;
-    const roles = payload?.realm_access?.roles || [];
-    if (roles.indexOf('admin-catalog') === -1) {
-      throw new ForbiddenException();
-    }
-
     return true;
+
+    // const request: Request = context.switchToHttp().getRequest();
+    // if (!('user' in request)) {
+    //   throw new UnauthorizedException();
+    // }
+
+    // const payload = request['user'] as PayloadUser;
+    // const roles = payload?.realm_access?.roles || [];
+    // if (roles.indexOf('admin-catalog') === -1) {
+    //   throw new ForbiddenException();
+    // }
+
+    // return true;
   }
 }

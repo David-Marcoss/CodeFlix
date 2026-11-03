@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Enviroment } from "../../environments/environment";
+import { Enviroment } from "../../shared/environments/environment";
+
 
 const baseUrl = Enviroment.API_URL;
 

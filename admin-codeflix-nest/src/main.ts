@@ -5,6 +5,7 @@ import { applyGlobalConfig } from './nest-modules/global-config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
 
   applyGlobalConfig(app);
 

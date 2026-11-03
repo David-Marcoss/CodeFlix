@@ -8,7 +8,7 @@ import type {
   GetCategoryById,
   SearchParams,
   UpdateCategory,
-} from "../../types/category";
+} from "../../shared/types/category";
 
 const initialState: Category[] = [
   {
@@ -158,7 +158,7 @@ export const { createCategory, updateCategory, deleteCategory } =
 
 export const selectCategories = (state: RootState) => state.category;
 export const selectCategoryById = (state: RootState, categoryId: string) =>
-  state.category.find((cat) => cat.category_id === categoryId);
+  state.category.find((cat: Category) => cat.category_id === categoryId);
 
 export default categorySlice.reducer;
 

@@ -2,12 +2,13 @@ import { Box, Paper, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Category } from "../../types/category";
+
 import {
   useGetCategoryByIdQuery,
   useUpdateCategoryMutation,
 } from "./categorySlice";
 import CategoriesForm from "./components/cayegoriesForm";
+import type { Category } from "../../shared/types/category";
 
 export default function CategoriesEdit() {
   const params = useParams();

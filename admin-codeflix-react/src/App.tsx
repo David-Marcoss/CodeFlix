@@ -2,7 +2,7 @@ import { Box, ThemeProvider } from "@mui/material";
 import "./App.css";
 import Header from "./components/Header";
 import Layout from "./components/Layout";
-import AppTheme from "./config/appTheme";
+import AppTheme from "./shared/config/appTheme";
 import { BrowserRouter } from "react-router-dom";
 import RoutesApp from "./router";
 import { SnackbarProvider } from "notistack";

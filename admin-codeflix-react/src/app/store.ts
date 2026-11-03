@@ -1,12 +1,10 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { counterSlice } from "../features/counter/counterSlice";
 import categoryReducer from "../features/categories/categorySlice";
-import { quotesApiSlice } from "../features/quotes/quotesApiSlice";
 import { apiSlice } from "../features/api/apiSlice";
 
-const rootReducer = combineSlices(counterSlice, quotesApiSlice, {
+const rootReducer = combineSlices({
   category: categoryReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
@@ -21,10 +19,7 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
     reducer: rootReducer,
 
     middleware: (getDefaultMiddleware) => {
-      return getDefaultMiddleware().concat(
-        quotesApiSlice.middleware,
-        apiSlice.middleware,
-      );
+      return getDefaultMiddleware().concat(apiSlice.middleware);
     },
     preloadedState,
   });
