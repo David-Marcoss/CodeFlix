@@ -6,9 +6,9 @@ import type {
   CategoryList,
   CreateCategory,
   GetCategoryById,
-  SearchParams,
   UpdateCategory,
 } from "../../shared/types/category";
+import type { SearchParams } from "../../shared/types/searchParams";
 
 const initialState: Category[] = [
   {
@@ -16,42 +16,42 @@ const initialState: Category[] = [
     name: "Ação",
     description: "Ação",
     is_active: true,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   },
   {
     category_id: "2",
     name: "Comédia",
     description: "Comédia",
     is_active: true,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   },
   {
     category_id: "3",
     name: "Drama",
     description: "Drama",
     is_active: true,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   },
   {
     category_id: "4",
     name: "Ação",
     description: "Ação",
     is_active: true,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   },
   {
     category_id: "5",
     name: "Comédia",
     description: "Comédia",
     is_active: true,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   },
   {
     category_id: "6",
     name: "Drama",
     description: "Drama",
     is_active: true,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   },
 ];
 

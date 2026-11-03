@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCreateCategoryMutation } from "./categorySlice";
 import CategoriesForm from "./components/cayegoriesForm";
 import { enqueueSnackbar } from "notistack";
-import type { Category } from "../../types/category";
+import type { Category } from "../../shared/types/category";
 
 export default function CategoriesCreate() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function CategoriesCreate() {
     name: "",
     description: "",
     is_active: false,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   });
 
   function handleInputToggleChange(event: React.ChangeEvent<HTMLInputElement>) {

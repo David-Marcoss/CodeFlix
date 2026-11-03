@@ -89,6 +89,7 @@ export default function CategoriesList() {
         isFetching={isFetching}
         page={page}
         perPage={perPage}
+        rowCount={result?.meta?.total ?? 0}
         pageSizeOptions={pageSizeOptions}
         onFilterModelChange={onFilterChange}
         onPaginationModelChange={onPaginationChange}

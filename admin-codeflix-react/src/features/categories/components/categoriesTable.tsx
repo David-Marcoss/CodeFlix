@@ -12,10 +12,11 @@ import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
-import type { Category } from "../../../types/category";
+import type { Category } from "../../../shared/types/category";
 
 interface CategoryTableProps {
   categories: Category[];
+  rowCount: number;
   isFetching: boolean;
   page: number;
   perPage: number;
@@ -26,6 +27,7 @@ interface CategoryTableProps {
 
 export default function CategoryTable({
   perPage,
+  rowCount,
   page,
   categories,
   pageSizeOptions,
@@ -120,6 +122,7 @@ export default function CategoryTable({
     <Box sx={{ height: 500, width: "100%" }}>
       <DataGrid
         rows={rows}
+        rowCount={rowCount}
         columns={columns}
         initialState={{
           pagination: {

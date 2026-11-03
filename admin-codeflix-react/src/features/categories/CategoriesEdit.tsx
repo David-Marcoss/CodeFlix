@@ -31,7 +31,7 @@ export default function CategoriesEdit() {
     name: "",
     description: "",
     is_active: false,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   });
 
   function handleInputToggleChange(event: React.ChangeEvent<HTMLInputElement>) {
