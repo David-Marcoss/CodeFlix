@@ -2,10 +2,12 @@ import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import categoryReducer from "../features/categories/categorySlice";
+import castMemberReducer from "../features/castMembers/castMemberSlice";
 import { apiSlice } from "../features/api/apiSlice";
 
 const rootReducer = combineSlices({
   category: categoryReducer,
+  castMember: castMemberReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 

@@ -2,6 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import CategoriesList from "../features/categories/CategoriesList";
 import CategoriesCreate from "../features/categories/CategoriesCreate";
 import CategoriesEdit from "../features/categories/CategoriesEdit";
+import CastMembersList from "../features/castMembers/CastMemberList";
+import CastMembersCreate from "../features/castMembers/CastMemberCreate";
+import CastMembersEdit from "../features/castMembers/CastMemberEdit";
 
 const RoutesApp = () => {
   return (
@@ -12,6 +15,12 @@ const RoutesApp = () => {
         <Route Component={CategoriesList} path="" />
         <Route Component={CategoriesCreate} path="create" />
         <Route Component={CategoriesEdit} path="edit/:id" />
+      </Route>
+
+      <Route path="/cast-members">
+        <Route Component={CastMembersList} path="" />
+        <Route Component={CastMembersCreate} path="create" />
+        <Route Component={CastMembersEdit} path="edit/:id" />
       </Route>
     </Routes>
   );
