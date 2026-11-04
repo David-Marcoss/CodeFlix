@@ -14,7 +14,7 @@ import type {
   CastMemberType,
 } from "../../../shared/types/castMember";
 
-interface CastMembersFormProps {
+export interface CastMembersFormProps {
   castMember: CastMember;
   isLoading: boolean;
   isDisabled?: boolean;

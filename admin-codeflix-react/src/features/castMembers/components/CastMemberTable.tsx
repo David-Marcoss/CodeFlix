@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
 import type { CastMember } from "../../../shared/types/castMember";
 
-interface CastMemberTableProps {
+export interface CastMemberTableProps {
   castMembers: CastMember[];
   rowCount: number;
   isFetching: boolean;

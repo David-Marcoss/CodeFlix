@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Test snapshots
+__snapshots__/
+*.snap
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
