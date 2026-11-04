@@ -22,7 +22,7 @@ const props: CategoriesFormProps = {
 
 test("renderiza o formulário de membros", () => {
   const { asFragment } = renderWithProviders(
-    createElement(BrowserRouter, null, createElement(CategoriesForm, props)),
+    createElement(CategoriesForm, props),
   );
 
   expect(asFragment()).toMatchSnapshot();

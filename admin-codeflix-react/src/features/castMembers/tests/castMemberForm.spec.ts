@@ -25,7 +25,7 @@ const props: CastMembersFormProps = {
 
 test("renderiza o formulário de membros", () => {
   const { asFragment } = renderWithProviders(
-    createElement(BrowserRouter, null, createElement(CastMembersForm, props)),
+    createElement(CastMembersForm, props),
   );
 
   expect(asFragment()).toMatchSnapshot();

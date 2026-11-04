@@ -25,7 +25,7 @@ const props: CategoryTableProps = {
 
 test("renderiza a tabela de membros", () => {
   const { asFragment } = renderWithProviders(
-    createElement(BrowserRouter, null, createElement(CategoryTable, props)),
+    createElement(CategoryTable, props),
   );
 
   expect(asFragment()).toMatchSnapshot();

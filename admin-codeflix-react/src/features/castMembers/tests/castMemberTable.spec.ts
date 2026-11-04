@@ -4,7 +4,6 @@ import {
   CastMemberTable,
   type CastMemberTableProps,
 } from "../components/CastMemberTable";
-import { BrowserRouter } from "react-router-dom";
 import { renderWithProviders } from "../../../shared/utils/test-utils";
 
 const props: CastMemberTableProps = {
@@ -27,7 +26,7 @@ const props: CastMemberTableProps = {
 
 test("renderiza a tabela de membros", () => {
   const { asFragment } = renderWithProviders(
-    createElement(BrowserRouter, null, createElement(CastMemberTable, props)),
+    createElement(CastMemberTable, props),
   );
 
   expect(asFragment()).toMatchSnapshot();
