@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
 import type { Category } from "../../../shared/types/category";
 
-interface CategoryTableProps {
+export interface CategoryTableProps {
   categories: Category[];
   rowCount: number;
   isFetching: boolean;

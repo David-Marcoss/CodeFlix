@@ -9,9 +9,9 @@ import {
   TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import type { Category } from "../../../types/category";
+import type { Category } from "../../../shared/types/category";
 
-interface CategoriesFormProps {
+export interface CategoriesFormProps {
   category: Category;
   isLoading: boolean;
   isDisabled?: boolean;

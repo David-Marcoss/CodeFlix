@@ -29,3 +29,5 @@ __snapshots__/
 
 .yalc/
 yalc.lock
+
+coverage
