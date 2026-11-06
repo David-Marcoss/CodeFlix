@@ -80,8 +80,9 @@ describe("CategoryList", () => {
   });
 
   test("should search a category", async () => {
-    const { findByText, getByRole, getByPlaceholderText, user } =
-      renderWithProviders(createElement(CategoriesList));
+    const { findByText, getByRole, getByPlaceholderText } = renderWithProviders(
+      createElement(CategoriesList),
+    );
 
     expect(getByRole("heading", { name: "Categorias" })).toBeInTheDocument();
 
@@ -128,10 +129,13 @@ describe("CategoryList", () => {
       http.delete(
         `${API_URL}/categories/${categoriesListMock.data[0].category_id}`,
         () => {
-          return HttpResponse.json({
-            message: "Erro ao remover categoria!",
-            status: 404,
-          }, { status: 404 });
+          return HttpResponse.json(
+            {
+              message: "Erro ao remover categoria!",
+              status: 404,
+            },
+            { status: 404 },
+          );
         },
       ),
     );
@@ -147,8 +151,6 @@ describe("CategoryList", () => {
 
     await user.click(deleteButton);
 
-    expect(
-      await findByText("Erro ao remover categoria!"),
-    ).toBeInTheDocument();
+    expect(await findByText("Erro ao remover categoria!")).toBeInTheDocument();
   });
 });

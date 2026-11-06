@@ -44,6 +44,7 @@ export default function CategoriesForm({
               value={category?.name || ""}
               disabled={isDisabled}
               onChange={handleInputChange}
+              slotProps={{ htmlInput: { "data-testid": "name-input" } }}
             />
           </FormControl>
         </Grid>
@@ -57,6 +58,7 @@ export default function CategoriesForm({
               value={category?.description || ""}
               disabled={isDisabled}
               onChange={handleInputChange}
+              slotProps={{ htmlInput: { "data-testid": "description-input" } }}
             />
           </FormControl>
         </Grid>
@@ -90,6 +92,7 @@ export default function CategoriesForm({
               variant="contained"
               color="secondary"
               disabled={isDisabled || isLoading}
+              data-testid="submit-button"
             >
               {isLoading ? "Loading..." : "Salvar"}
             </Button>

@@ -57,7 +57,7 @@ export default function CategoriesCreate() {
     }
 
     if (result.isError) {
-      enqueueSnackbar("Erro ao criada categoria!", {
+      enqueueSnackbar("Erro ao criar categoria!", {
         variant: "error",
       });
       setIsLoading(false);
