@@ -8,7 +8,7 @@ import { enqueueSnackbar } from "notistack";
 
 export default function CategoriesList() {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [pageSizeOptions] = useState([6, 10, 15, 20]);
 
@@ -18,7 +18,7 @@ export default function CategoriesList() {
     isFetching,
   } = useGetCategoriesQuery({
     search,
-    page,
+    page: page + 1,
     perPage,
   });
 
@@ -35,13 +35,8 @@ export default function CategoriesList() {
   };
 
   const onPaginationChange = (model: GridPaginationModel) => {
-    if (model.page) {
-      setPage(model.page);
-    }
-
-    if (model.pageSize) {
-      setPerPage(model.pageSize);
-    }
+    setPage(model.pageSize !== perPage ? 0 : model.page);
+    setPerPage(model.pageSize);
   };
 
   useEffect(() => {

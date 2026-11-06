@@ -47,6 +47,7 @@
     "babel-jest": "^30.5.2",
     "jest": "^30.5.2",
     "jest-environment-jsdom": "^30.5.2",
+    "msw": "^3.0.3",
     "oxfmt": "^0.68.0",
     "oxlint": "^1.83.0",
     "typescript": "~6.0.2",

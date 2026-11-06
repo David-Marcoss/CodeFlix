@@ -30,10 +30,9 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
   return store;
 };
 
-export const store = makeStore();
 
 // Infer the type of `store`
-export type AppStore = typeof store;
+export type AppStore = ReturnType<typeof makeStore>;
 // Infer the `AppDispatch` type from the store itself
 export type AppDispatch = AppStore["dispatch"];
 export type AppThunk<ThunkReturnType = void> = ThunkAction<

@@ -95,6 +95,7 @@ export default function CategoryTable({
           onClick={() => {
             handleDeleteCategory(params.row.id);
           }}
+          data-testid={`delete-category-${params.row.id}`}
         >
           <Delete color="secondary" />
         </IconButton>
@@ -115,6 +116,10 @@ export default function CategoryTable({
       enqueueSnackbar("Categoria removida com sucesso!", {
         variant: "success",
       });
+    }else if (result.isError) {
+      enqueueSnackbar("Erro ao remover categoria!", {
+        variant: "error",
+      });
     }
   }, [result]);
 
@@ -124,14 +129,7 @@ export default function CategoryTable({
         rows={rows}
         rowCount={rowCount}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: perPage,
-              page: page,
-            },
-          },
-        }}
+        paginationModel={{ page, pageSize: perPage }}
         loading={isFetching}
         pageSizeOptions={pageSizeOptions}
         showToolbar
