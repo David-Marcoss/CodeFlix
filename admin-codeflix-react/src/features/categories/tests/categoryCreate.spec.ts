@@ -6,10 +6,6 @@ import { setupServer } from "msw/node";
 import CategoriesCreate from "../CategoriesCreate";
 import { renderWithProviders } from "../../../shared/utils/test-utils";
 import { Enviroment } from "../../../shared/environments/environment";
-import {
-  categoriesListMock,
-  categoriesListMockPage2,
-} from "../../../shared/mock/categoriesMock";
 import { fireEvent } from "@testing-library/dom";
 
 const API_URL = Enviroment.API_URL;
