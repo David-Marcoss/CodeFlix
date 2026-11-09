@@ -50,6 +50,7 @@ export default function CastMembersForm({
               value={castMember?.name || ""}
               disabled={isDisabled}
               onChange={handleInputChange}
+              slotProps={{ htmlInput: { "data-testid": "name-input" } }}
             />
           </FormControl>
         </Grid>
@@ -66,9 +67,14 @@ export default function CastMembersForm({
                 onChange={(e) =>
                   handleCastMemberTypeChange(e.target.value as CastMemberType)
                 }
+                data-testid="type-select"
               >
                 {castMemberTypes.map((type) => (
-                  <MenuItem key={type.value} value={type.value}>
+                  <MenuItem
+                    key={type.value}
+                    value={type.value}
+                    data-testid="type-select-value"
+                  >
                     {type.label}
                   </MenuItem>
                 ))}
@@ -79,7 +85,10 @@ export default function CastMembersForm({
 
         <Grid size={12}>
           <Box sx={{ display: "flex", gap: 2 }}>
-            <Button variant="contained" onClick={() => navigate("/cast-members")}>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/cast-members")}
+            >
               Voltar
             </Button>
 
@@ -88,6 +97,7 @@ export default function CastMembersForm({
               variant="contained"
               color="secondary"
               disabled={isDisabled || isLoading}
+              data-testid="submit-button"
             >
               {isLoading ? "Loading..." : "Salvar"}
             </Button>

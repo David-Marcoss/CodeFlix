@@ -81,6 +81,7 @@ export function CastMemberTable({
       <Box sx={{ display: "flex", gap: 1 }}>
         <IconButton
           onClick={() => navigate(`/cast-members/edit/${params.row.id}`)}
+          data-testid={`edit-button-${params.row.id}`}
         >
           <Edit />
         </IconButton>
@@ -88,6 +89,7 @@ export function CastMemberTable({
           onClick={() => {
             handleDeleteCastMember(params.row.id);
           }}
+          data-testid={`delete-button-${params.row.id}`}
         >
           <Delete color="secondary" />
         </IconButton>
@@ -100,6 +102,10 @@ export function CastMemberTable({
       enqueueSnackbar("Membro da equipe removido com sucesso!", {
         variant: "success",
       });
+    } else if (result.isError) {
+      enqueueSnackbar("Erro ao remover membro da equipe!", {
+        variant: "error",
+      });
     }
   }, [result]);
 
@@ -109,14 +115,7 @@ export function CastMemberTable({
         rows={rows}
         rowCount={rowCount}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: perPage,
-              page: page,
-            },
-          },
-        }}
+        paginationModel={{ page, pageSize: perPage }}
         loading={isFetching}
         pageSizeOptions={pageSizeOptions}
         showToolbar

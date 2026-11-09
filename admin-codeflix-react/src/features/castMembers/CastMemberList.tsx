@@ -8,7 +8,7 @@ import { CastMemberTable } from "./components/CastMemberTable";
 
 export default function CastMembersList() {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [pageSizeOptions] = useState([6, 10, 15, 20]);
 
@@ -18,7 +18,7 @@ export default function CastMembersList() {
     isFetching,
   } = useGetCastMembersQuery({
     search,
-    page,
+    page: page + 1,
     perPage,
   });
 
@@ -35,13 +35,8 @@ export default function CastMembersList() {
   };
 
   const onPaginationChange = (model: GridPaginationModel) => {
-    if (model.page) {
-      setPage(model.page);
-    }
-
-    if (model.pageSize) {
-      setPerPage(model.pageSize);
-    }
+    setPage(model.pageSize !== perPage ? 0 : model.page);
+    setPerPage(model.pageSize);
   };
 
   useEffect(() => {
