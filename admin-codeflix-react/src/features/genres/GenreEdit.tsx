@@ -1,42 +1,62 @@
 import { Box, Paper, Typography } from "@mui/material";
-import { enqueueSnackbar } from "notistack";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useUpdateGenreMutation, useGetGenreByIdQuery } from "./genreSlice";
+import GenreForm from "./components/genreForm";
+import { enqueueSnackbar } from "notistack";
+import type { Genre } from "../../shared/types/genre";
+import { useGetCategoriesQuery } from "../categories/categorySlice";
 
-import {
-  useGetCategoryByIdQuery,
-  useUpdateCategoryMutation,
-} from "./genreSlice";
-import CategoriesForm from "./components/genreForm";
-import type { Category } from "../../shared/types/category";
-
-export default function CategoriesEdit() {
+export default function GenreEdit() {
   const params = useParams();
   const id = params.id ?? "";
 
   const navigate = useNavigate();
 
+  const [updateGenre, result] = useUpdateGenreMutation();
   const {
-    data: resultGetCategory,
-    isError,
+    data: resultGetGenre,
+    isError: isErrorGetGenre,
     isFetching,
-  } = useGetCategoryByIdQuery(id);
-  const [updateCategory, resultUpdateCategory] = useUpdateCategoryMutation();
+  } = useGetGenreByIdQuery(id);
 
-  const [isDisabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(isFetching);
-
-  const [categoryData, setCategoryData] = useState<Category>({
-    category_id: "",
+  const [genreData, setGenreData] = useState<Genre>({
+    genre_id: "",
     name: "",
-    description: "",
+    categories: [],
+    categories_id: [],
     is_active: false,
     created_at: new Date().toISOString(),
   });
 
+  const [categories, setCategories] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const { data: categoriesResult, isError } = useGetCategoriesQuery({
+    perPage: 100,
+  });
+
+  useEffect(() => {
+    if (!isError && categoriesResult?.data) {
+      setCategories(
+        categoriesResult.data.map((cat) => ({
+          value: cat.category_id,
+          label: cat.name,
+        })),
+      );
+    }
+  }, [categoriesResult, isError]);
+
+  useEffect(() => {
+    if (!isErrorGetGenre && resultGetGenre?.data) {
+      setGenreData(resultGetGenre.data);
+    }
+  }, [resultGetGenre, isErrorGetGenre]);
+
   function handleInputToggleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, checked } = event.target;
-    setCategoryData((prevData) => ({
+    setGenreData((prevData) => ({
       ...prevData,
       [name]: checked,
     }));
@@ -44,51 +64,42 @@ export default function CategoriesEdit() {
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    setCategoryData((prevData) => ({
+    setGenreData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   }
 
+  function handleCategoriesChange(values: string[]) {
+    setGenreData((prevData) => ({
+      ...prevData,
+      categories_id: values,
+    }));
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const { name, description, is_active } = categoryData;
-    setIsLoading(true);
 
-    await updateCategory({ category_id: id, name, description, is_active });
+    const { name, categories_id, is_active } = genreData;
+
+    await updateGenre({ genre_id: id, name, categories_id, is_active });
   }
 
   useEffect(() => {
-    if (resultGetCategory && resultGetCategory.data) {
-      setCategoryData(resultGetCategory.data);
-    }
-
-    if (isError) {
-      enqueueSnackbar("Erro ao buscar dados da Categoria!", {
-        variant: "error",
-      });
-    }
-
-    setIsLoading(false);
-  }, [resultGetCategory, isError]);
-
-  useEffect(() => {
-    if (resultUpdateCategory.isSuccess) {
-      enqueueSnackbar("Categoria atualizada com sucesso!", {
+    if (result.isSuccess) {
+      enqueueSnackbar("Genero atualizado com sucesso!", {
         variant: "success",
       });
 
-      navigate("/categories");
-      setIsLoading(false);
+      navigate("/genres");
     }
 
-    if (resultUpdateCategory.isError) {
-      enqueueSnackbar("Erro ao atualizar categoria!", {
+    if (result.isError) {
+      enqueueSnackbar("Erro ao atualizar genero!", {
         variant: "error",
       });
-      setIsLoading(false);
     }
-  }, [resultUpdateCategory]);
+  }, [result]);
 
   return (
     <Box
@@ -110,15 +121,16 @@ export default function CategoriesEdit() {
           width: "60%",
         }}
       >
-        <Typography variant="h4">Editar Categorias</Typography>
+        <Typography variant="h4">Atualizar Genero</Typography>
 
-        <CategoriesForm
-          category={categoryData}
-          isDisabled={isDisabled}
-          isLoading={isLoading}
+        <GenreForm
+          genre={genreData}
+          isLoading={isFetching}
           handleInputChange={handleInputChange}
           handleInputToggleChange={handleInputToggleChange}
           handleSubmit={handleSubmit}
+          categories={categories}
+          handleCategoriesChange={handleCategoriesChange}
         />
       </Paper>
     </Box>

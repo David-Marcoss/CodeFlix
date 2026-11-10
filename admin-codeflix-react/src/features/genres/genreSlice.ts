@@ -61,6 +61,7 @@ const updateGenresQuery = (data: UpdateGenre) => {
 };
 
 const route = "/genres";
+
 const genreApiSlice = apiSlice.injectEndpoints({
   endpoints: ({ query, mutation }) => ({
     createGenre: mutation<Genre, CreateGenre>({
