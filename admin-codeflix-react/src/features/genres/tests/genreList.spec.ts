@@ -3,44 +3,44 @@ import { createElement } from "react";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 
-import CategoriesList from "../GenreList";
+import GenreList from "../GenreList";
 import { renderWithProviders } from "../../../shared/utils/test-utils";
 import { Enviroment } from "../../../shared/environments/environment";
 import {
-  categoriesListMock,
-  categoriesListMockPage2,
-} from "../../../shared/mock/categoriesMock";
+  genresListMock,
+  genresListMockPage2,
+} from "../../../shared/mock/genresMock";
 import { fireEvent } from "@testing-library/dom";
 
 const API_URL = Enviroment.API_URL;
 
-describe("CategoryList", () => {
+describe("GenreList", () => {
   const handlers = [
-    http.get(`${API_URL}/categories`, ({ request }) => {
+    http.get(`${API_URL}/genres`, ({ request }) => {
       const url = new URL(request.url);
       const page = url.searchParams.get("page");
       const search = url.searchParams.get("search");
 
       if (search) {
         return HttpResponse.json({
-          ...categoriesListMock,
-          data: categoriesListMock.data.filter((category) =>
-            category.name.includes(search),
+          ...genresListMock,
+          data: genresListMock.data.filter((genre) =>
+            genre.name.includes(search),
           ),
         });
       }
 
       if (page === "2") {
-        return HttpResponse.json(categoriesListMockPage2);
+        return HttpResponse.json(genresListMockPage2);
       }
-      return HttpResponse.json(categoriesListMock);
+      return HttpResponse.json(genresListMock);
     }),
 
     http.delete(
-      `${API_URL}/categories/${categoriesListMock.data[0].category_id}`,
+      `${API_URL}/genres/${genresListMock.data[0].genre_id}`,
       () => {
         return HttpResponse.json({
-          message: "Categoria removida com sucesso!",
+          message: "Gênero removido com sucesso!",
         });
       },
     ),
@@ -54,84 +54,84 @@ describe("CategoryList", () => {
 
   test("should render categoy list", async () => {
     const { findByText, getByRole } = renderWithProviders(
-      createElement(CategoriesList),
+      createElement(GenreList),
     );
 
-    expect(getByRole("heading", { name: "Categorias" })).toBeInTheDocument();
+    expect(getByRole("heading", { name: "Gêneros" })).toBeInTheDocument();
     expect(
-      await findByText(categoriesListMock.data[0].name),
+      await findByText(genresListMock.data[0].name),
     ).toBeInTheDocument();
   });
 
-  test("should render category list for page 2", async () => {
+  test("should render genre list for page 2", async () => {
     const { findByText, getByRole, getByTestId, user } = renderWithProviders(
-      createElement(CategoriesList),
+      createElement(GenreList),
     );
 
-    expect(getByRole("heading", { name: "Categorias" })).toBeInTheDocument();
+    expect(getByRole("heading", { name: "Gêneros" })).toBeInTheDocument();
 
-    await findByText(categoriesListMock.data[0].name);
+    await findByText(genresListMock.data[0].name);
     expect(getByRole("button", { name: "Go to previous page" })).toBeDisabled();
     await user.click(getByTestId("KeyboardArrowRightIcon"));
 
     expect(
-      await findByText(categoriesListMockPage2.data[0].name),
+      await findByText(genresListMockPage2.data[0].name),
     ).toBeInTheDocument();
   });
 
-  test("should search a category", async () => {
+  test("should search a genre", async () => {
     const { findByText, getByRole, getByPlaceholderText } = renderWithProviders(
-      createElement(CategoriesList),
+      createElement(GenreList),
     );
 
-    expect(getByRole("heading", { name: "Categorias" })).toBeInTheDocument();
+    expect(getByRole("heading", { name: "Gêneros" })).toBeInTheDocument();
 
-    await findByText(categoriesListMock.data[0].name);
+    await findByText(genresListMock.data[0].name);
 
     const searchInput = await getByPlaceholderText("Search…");
 
     await fireEvent.change(searchInput, {
-      target: { value: categoriesListMock.data[0].name },
+      target: { value: genresListMock.data[0].name },
     });
 
     expect(
-      await findByText(categoriesListMock.data[0].name),
+      await findByText(genresListMock.data[0].name),
     ).toBeInTheDocument();
   });
 
-  test("should delete a category with success", async () => {
+  test("should delete a genre with success", async () => {
     const { findByText, getByRole, getByTestId, user } = renderWithProviders(
-      createElement(CategoriesList),
+      createElement(GenreList),
     );
 
-    expect(getByRole("heading", { name: "Categorias" })).toBeInTheDocument();
+    expect(getByRole("heading", { name: "Gêneros" })).toBeInTheDocument();
     expect(
-      await findByText(categoriesListMock.data[0].name),
+      await findByText(genresListMock.data[0].name),
     ).toBeInTheDocument();
 
     const deleteButton = await getByTestId(
-      `delete-category-${categoriesListMock.data[0].category_id}`,
+      `delete-genre-${genresListMock.data[0].genre_id}`,
     );
 
     await user.click(deleteButton);
 
     expect(
-      await findByText("Categoria removida com sucesso!"),
+      await findByText("Gênero removido com sucesso!"),
     ).toBeInTheDocument();
   });
 
-  test("should not delete a category with success", async () => {
+  test("should not delete a genre with success", async () => {
     const { findByText, getByRole, getByTestId, user } = renderWithProviders(
-      createElement(CategoriesList),
+      createElement(GenreList),
     );
 
     server.use(
       http.delete(
-        `${API_URL}/categories/${categoriesListMock.data[0].category_id}`,
+        `${API_URL}/genres/${genresListMock.data[0].genre_id}`,
         () => {
           return HttpResponse.json(
             {
-              message: "Erro ao remover categoria!",
+              message: "Erro ao remover gênero!",
               status: 404,
             },
             { status: 404 },
@@ -140,17 +140,17 @@ describe("CategoryList", () => {
       ),
     );
 
-    expect(getByRole("heading", { name: "Categorias" })).toBeInTheDocument();
+    expect(getByRole("heading", { name: "Gêneros" })).toBeInTheDocument();
     expect(
-      await findByText(categoriesListMock.data[0].name),
+      await findByText(genresListMock.data[0].name),
     ).toBeInTheDocument();
 
     const deleteButton = await getByTestId(
-      `delete-category-${categoriesListMock.data[0].category_id}`,
+      `delete-genre-${genresListMock.data[0].genre_id}`,
     );
 
     await user.click(deleteButton);
 
-    expect(await findByText("Erro ao remover categoria!")).toBeInTheDocument();
+    expect(await findByText("Erro ao remover gênero!")).toBeInTheDocument();
   });
 });

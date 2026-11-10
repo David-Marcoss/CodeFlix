@@ -87,7 +87,7 @@ export default function GenreEdit() {
 
   useEffect(() => {
     if (result.isSuccess) {
-      enqueueSnackbar("Genero atualizado com sucesso!", {
+      enqueueSnackbar("Gênero atualizado com sucesso!", {
         variant: "success",
       });
 
@@ -95,7 +95,7 @@ export default function GenreEdit() {
     }
 
     if (result.isError) {
-      enqueueSnackbar("Erro ao atualizar genero!", {
+      enqueueSnackbar("Erro ao atualizar gênero!", {
         variant: "error",
       });
     }
@@ -121,7 +121,7 @@ export default function GenreEdit() {
           width: "60%",
         }}
       >
-        <Typography variant="h4">Atualizar Genero</Typography>
+        <Typography variant="h4">Editar Gênero</Typography>
 
         <GenreForm
           genre={genreData}

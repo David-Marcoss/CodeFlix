@@ -56,11 +56,11 @@ export default function GenreList() {
 
   useEffect(() => {
     if (deleteResult.isSuccess) {
-      enqueueSnackbar("Genero removido com sucesso!", {
+      enqueueSnackbar("Gênero removido com sucesso!", {
         variant: "success",
       });
     } else if (deleteResult.isError) {
-      enqueueSnackbar("Erro ao remover genero!", {
+      enqueueSnackbar("Erro ao remover gênero!", {
         variant: "error",
       });
     }
@@ -87,7 +87,7 @@ export default function GenreList() {
         }}
       >
         <Typography variant="h3" sx={{ color: "text.primary" }}>
-          Generos
+          Gêneros
         </Typography>
 
         <Button
@@ -96,7 +96,7 @@ export default function GenreList() {
           component={Link}
           to="/genres/create"
         >
-          Criar Genero
+          Criar Gênero
         </Button>
       </Box>
 

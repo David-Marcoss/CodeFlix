@@ -45,6 +45,7 @@ export default function MultipleSelect({
               .map((v) => v.label)
               .join(", ")
           }
+          data-testid="multiple-select"
         >
           {values.map((value) => {
             const selected = selectedValues.includes(value.value);

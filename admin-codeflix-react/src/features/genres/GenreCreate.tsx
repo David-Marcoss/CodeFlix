@@ -76,7 +76,7 @@ export default function GenreCreate() {
 
   useEffect(() => {
     if (result.isSuccess) {
-      enqueueSnackbar("Genero criada com sucesso!", {
+      enqueueSnackbar("Gênero criada com sucesso!", {
         variant: "success",
       });
 
@@ -112,7 +112,7 @@ export default function GenreCreate() {
           width: "60%",
         }}
       >
-        <Typography variant="h4">Criar Genero</Typography>
+        <Typography variant="h4">Criar Gênero</Typography>
 
         <GenreForm
           genre={genreData}
