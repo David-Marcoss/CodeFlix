@@ -5,6 +5,7 @@ import CategoriesEdit from "../features/categories/CategoriesEdit";
 import CastMembersList from "../features/castMembers/CastMemberList";
 import CastMembersCreate from "../features/castMembers/CastMemberCreate";
 import CastMembersEdit from "../features/castMembers/CastMemberEdit";
+import GenreList from "../features/genres/GenreList";
 
 const RoutesApp = () => {
   return (
@@ -19,6 +20,12 @@ const RoutesApp = () => {
 
       <Route path="/cast-members">
         <Route Component={CastMembersList} path="" />
+        <Route Component={CastMembersCreate} path="create" />
+        <Route Component={CastMembersEdit} path="edit/:id" />
+      </Route>
+
+      <Route path="/genres">
+        <Route Component={GenreList} path="" />
         <Route Component={CastMembersCreate} path="create" />
         <Route Component={CastMembersEdit} path="edit/:id" />
       </Route>

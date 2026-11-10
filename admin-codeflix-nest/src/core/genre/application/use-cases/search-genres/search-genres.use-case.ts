@@ -24,6 +24,9 @@ export class SearchGenresUseCase implements IUseCase<
       ...input,
       filter: input.filter ?? undefined,
     });
+
+    console.log('SearchGenresUseCase.execute', { input, params });
+
     const { items: _items, ...result } = await this.genreRepo.search(params);
 
     const categories_ids = new Set<CategoryId>();

@@ -7,7 +7,7 @@ const baseUrl = Enviroment.API_URL;
 // configura a comunicação com API externa e gerencia os estados dos dados das requisições
 export const apiSlice = createApi({
   reducerPath: "api",
-  tagTypes: ["Categories", "CastMembers"],
+  tagTypes: ["Categories", "CastMembers", "Genres"],
   endpoints: (builder) => ({}),
   baseQuery: fetchBaseQuery({ baseUrl }),
 });
