@@ -9,27 +9,32 @@ import {
   TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import type { Category } from "../../../shared/types/category";
+import type { Genre } from "../../../shared/types/genre";
+import MultipleSelect from "../../../components/MultipleSelect";
 
-export interface CategoriesFormProps {
-  category: Category;
+export interface GenreFormProps {
+  genre: Genre;
   isLoading: boolean;
   isDisabled?: boolean;
+  categories: { value: string; label: string }[];
   handleSubmit(event: React.FormEvent<HTMLFormElement>): void;
+  handleCategoriesChange(values: string[]): void;
   handleInputChange(event: React.ChangeEvent<HTMLInputElement, Element>): void;
   handleInputToggleChange(
     event: React.ChangeEvent<HTMLInputElement, Element>,
   ): void;
 }
 
-export default function CategoriesForm({
-  category,
+export default function GenreForm({
+  genre,
+  categories,
   isLoading,
   isDisabled,
   handleSubmit,
   handleInputChange,
   handleInputToggleChange,
-}: CategoriesFormProps) {
+  handleCategoriesChange,
+}: GenreFormProps) {
   const navigate = useNavigate();
 
   return (
@@ -41,7 +46,7 @@ export default function CategoriesForm({
               required
               name="name"
               label="Nome"
-              value={category?.name || ""}
+              value={genre?.name || ""}
               disabled={isDisabled}
               onChange={handleInputChange}
               slotProps={{ htmlInput: { "data-testid": "name-input" } }}
@@ -51,14 +56,11 @@ export default function CategoriesForm({
 
         <Grid size={12}>
           <FormControl fullWidth>
-            <TextField
-              required
-              name="description"
-              label="Descrição"
-              value={category?.description || ""}
-              disabled={isDisabled}
-              onChange={handleInputChange}
-              slotProps={{ htmlInput: { "data-testid": "description-input" } }}
+            <MultipleSelect
+              label="Categorias"
+              values={categories}
+              selectedValues={genre?.categories_id || []}
+              onValuesChange={handleCategoriesChange}
             />
           </FormControl>
         </Grid>
@@ -71,7 +73,7 @@ export default function CategoriesForm({
                   name="is_active"
                   color="secondary"
                   onChange={handleInputToggleChange}
-                  checked={category?.is_active || false}
+                  checked={genre?.is_active || false}
                   data-testid="is_active"
                   disabled={isDisabled}
                 />

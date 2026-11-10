@@ -1,29 +1,50 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCreateCategoryMutation } from "./genreSlice";
-import CategoriesForm from "./components/genreForm";
+import { useCreateGenreMutation } from "./genreSlice";
+import GenreForm from "./components/genreForm";
 import { enqueueSnackbar } from "notistack";
-import type { Category } from "../../shared/types/category";
+import type { Genre } from "../../shared/types/genre";
+import { useGetCategoriesQuery } from "../categories/categorySlice";
 
-export default function CategoriesCreate() {
+export default function GenreCreate() {
   const navigate = useNavigate();
 
-  const [createCategory, result] = useCreateCategoryMutation();
+  const [createGenre, result] = useCreateGenreMutation();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [categoryData, setCategoryData] = useState<Category>({
-    category_id: "",
+  const [genreData, setGenreData] = useState<Genre>({
+    genre_id: "",
     name: "",
-    description: "",
+    categories: [],
+    categories_id: [],
     is_active: false,
     created_at: new Date().toISOString(),
   });
 
+  const [categories, setCategories] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  const { data: categoriesResult, isError } = useGetCategoriesQuery({
+    perPage: 100,
+  });
+
+  useEffect(() => {
+    if (!isError && categoriesResult?.data) {
+      setCategories(
+        categoriesResult.data.map((cat) => ({
+          value: cat.category_id,
+          label: cat.name,
+        }))
+      );
+    }
+  }, [categoriesResult, isError]);
+
   function handleInputToggleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, checked } = event.target;
-    setCategoryData((prevData) => ({
+    setGenreData((prevData) => ({
       ...prevData,
       [name]: checked,
     }));
@@ -31,33 +52,40 @@ export default function CategoriesCreate() {
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-    setCategoryData((prevData) => ({
+    setGenreData((prevData) => ({
       ...prevData,
       [name]: value,
+    }));
+  }
+
+  function handleCategoriesChange(values: string[]) {
+    setGenreData((prevData) => ({
+      ...prevData,
+      categories_id: values,
     }));
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const { name, description, is_active } = categoryData;
+    const { name, categories_id, is_active } = genreData;
     setIsLoading(true);
 
-    await createCategory({ name, description, is_active });
+    await createGenre({ name, categories_id, is_active });
   }
 
   useEffect(() => {
     if (result.isSuccess) {
-      enqueueSnackbar("Categoria criada com sucesso!", {
+      enqueueSnackbar("Genero criada com sucesso!", {
         variant: "success",
       });
 
-      navigate("/categories");
+      navigate("/genres");
       setIsLoading(false);
     }
 
     if (result.isError) {
-      enqueueSnackbar("Erro ao criar categoria!", {
+      enqueueSnackbar("Erro ao criar genero!", {
         variant: "error",
       });
       setIsLoading(false);
@@ -84,14 +112,17 @@ export default function CategoriesCreate() {
           width: "60%",
         }}
       >
-        <Typography variant="h4">Criar Categoria</Typography>
+        <Typography variant="h4">Criar Genero</Typography>
 
-        <CategoriesForm
-          category={categoryData}
+        <GenreForm
+          genre={genreData}
           isLoading={isLoading}
           handleInputChange={handleInputChange}
           handleInputToggleChange={handleInputToggleChange}
           handleSubmit={handleSubmit}
+          categories={categories}
+          
+          handleCategoriesChange={handleCategoriesChange}
         />
       </Paper>
     </Box>

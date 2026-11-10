@@ -32,7 +32,7 @@ export default function GenreList() {
     if (filter.quickFilterValues && filter.quickFilterValues.length > 0) {
 
       console.log(filter.quickFilterValues.join(" "));
-      
+
       setSearch(filter.quickFilterValues.join(" "));
       return;
     }
@@ -94,7 +94,7 @@ export default function GenreList() {
           variant="contained"
           color="secondary"
           component={Link}
-          to="/categories/create"
+          to="/genres/create"
         >
           Criar Genero
         </Button>

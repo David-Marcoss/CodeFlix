@@ -7,7 +7,7 @@ export interface Genre {
     categories_id: string[];
     is_active: boolean;
     categories: Category[];
-    created_at: Date;
+    created_at: string;
 }
 
 export interface GenresList {

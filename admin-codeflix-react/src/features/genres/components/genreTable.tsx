@@ -51,7 +51,14 @@ export default function GenreTable({
       headerName: "Categorias",
       flex: 1,
       renderCell: (params) => (
-        <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+        <Typography
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "block",
+          }}
+        >
           {params.value}
         </Typography>
       ),
