@@ -18,22 +18,7 @@ module.exports = {
       "babel-jest",
       {
         // MSW's Node interceptor uses import.meta.url to locate its WASM asset.
-        plugins: [function nodeImportMeta({ types }) {
-          return {
-            visitor: {
-              MetaProperty(path, state) {
-                if (path.node.meta.name === "import") {
-                  path.replaceWith(types.objectExpression([
-                    types.objectProperty(
-                      types.identifier("url"),
-                      types.stringLiteral(require("node:url").pathToFileURL(state.filename).href),
-                    ),
-                  ]));
-                }
-              },
-            },
-          };
-        }],
+        plugins: [require.resolve("./jest.import-meta-plugin.cjs")],
         presets: [
           ["@babel/preset-env", { targets: { node: "current" }, modules: "commonjs" }],
           ["@babel/preset-react", { runtime: "automatic" }],

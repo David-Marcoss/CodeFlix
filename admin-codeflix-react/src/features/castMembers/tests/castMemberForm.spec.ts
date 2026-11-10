@@ -1,10 +1,5 @@
 import "@testing-library/jest-dom";
 import { createElement } from "react";
-import {
-  CastMemberTable,
-  type CastMemberTableProps,
-} from "../components/CastMemberTable";
-import { BrowserRouter } from "react-router-dom";
 import { renderWithProviders } from "../../../shared/utils/test-utils";
 import type { CastMembersFormProps } from "../components/CastMemberForm";
 import CastMembersForm from "../components/CastMemberForm";
