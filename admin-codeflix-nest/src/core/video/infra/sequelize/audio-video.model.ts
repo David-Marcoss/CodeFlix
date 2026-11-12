@@ -17,6 +17,7 @@ export enum AudioVideoRelatedField {
 
 export interface AudioVideoMediaModelProps {
   audio_video_media_id: string;
+  url?: string | null;
   name: string;
   raw_location: string;
   encoded_location: string | null;
@@ -33,6 +34,9 @@ export interface AudioVideoMediaModelProps {
   ],
 })
 export class AudioVideoMediaModel extends Model<AudioVideoMediaModelProps> {
+  @Column({ allowNull: true, type: DataType.TEXT })
+  declare url: string | null;
+
   @PrimaryKey
   @Column({ type: DataType.UUID, defaultValue: () => new Uuid().id })
   declare audio_video_media_id: string;

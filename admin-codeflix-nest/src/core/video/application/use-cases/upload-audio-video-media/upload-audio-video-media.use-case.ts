@@ -1,4 +1,4 @@
-import { ApplicationService } from '../../../../shared/application/aplication-service';
+import { IUnitOfWork } from '../../../../shared/domain/repository/unit-of-work-interface';
 import { IStorage } from '../../../../shared/application/storage.interface';
 import { IUseCase } from '../../../../shared/application/use-case.interface';
 import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
@@ -14,7 +14,7 @@ export class UploadAudioVideoMediaUseCase implements IUseCase<
   UploadAudioVideoMediaOutput
 > {
   constructor(
-    private appService: ApplicationService,
+    private uow: IUnitOfWork,
     private videoRepo: IVideoRepository,
     private storage: IStorage,
   ) {}
@@ -30,28 +30,28 @@ export class UploadAudioVideoMediaUseCase implements IUseCase<
       throw new NotFoundError(input.video_id, Video);
     }
 
-    const imageMap = {
+    const mediaMap = {
       trailer: Trailer,
       video: VideoMedia,
     };
 
-    const image = imageMap[input.field].createFromFile({
+    let media = mediaMap[input.field].createFromFile({
       ...input.file,
       video_id,
     });
 
-    image instanceof Trailer && existingVideo.replaceTrailer(image);
-    image instanceof VideoMedia && existingVideo.replaceVideo(image);
-
-    await this.storage.store({
+    const { url } = await this.storage.store({
       data: input.file.data,
-      id: image.url,
+      id: media.url,
       mime_type: input.file.mime_type,
     });
 
-    await this.appService.run(
-      async () => await this.videoRepo.update(existingVideo),
-    );
+    media = media.complete(url);
+    media.remote_url = url;
+    media instanceof Trailer && existingVideo.replaceTrailer(media);
+    media instanceof VideoMedia && existingVideo.replaceVideo(media);
+
+    await this.uow.do(async () => await this.videoRepo.update(existingVideo));
   }
 }
 

@@ -14,8 +14,6 @@ import { CastMembersModule } from '../cast-members-module/cast-members-module.mo
 import { GenresModule } from '../genre-module/genre.module';
 import { AudioVideoMediaModel } from '../../core/video/infra/sequelize/audio-video.model';
 import { ImageMediaModel } from '../../core/video/infra/sequelize/image-media.model';
-import { RabbitmqModule } from '../rabbitmq-module/rabbitmq.module';
-import { VideoConsumer } from './video.consumers';
 import { AuthModule } from '../auth-module/auth.module';
 
 @Module({
@@ -29,7 +27,6 @@ import { AuthModule } from '../auth-module/auth.module';
       ImageMediaModel,
     ]),
     AuthModule,
-    RabbitmqModule.forFeature(),
     CategoriesModule,
     CastMembersModule,
     GenresModule,
@@ -39,8 +36,6 @@ import { AuthModule } from '../auth-module/auth.module';
     ...Object.values(VIDEOS_PROVIDERS.REPOSITORIES),
     ...Object.values(VIDEOS_PROVIDERS.USE_CASES),
     ...Object.values(VIDEOS_PROVIDERS.VALIDATIONS),
-    ...Object.values(VIDEOS_PROVIDERS.HANDLERS),
-    VideoConsumer,
   ],
   exports: [VIDEOS_PROVIDERS.REPOSITORIES.VIDEO_REPOSITORY.provide],
 })

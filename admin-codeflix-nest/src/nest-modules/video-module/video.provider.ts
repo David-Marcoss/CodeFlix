@@ -1,3 +1,4 @@
+import { ListVideosUseCase } from '../../core/video/application/use-cases/list-videos/list-videos.use-case';
 import { getModelToken } from '@nestjs/sequelize';
 import { CreateVideoUseCase } from '../../core/video/application/use-cases/create-video/create-video.use-case';
 
@@ -22,11 +23,7 @@ import { CAST_MEMBER_PROVIDERS } from '../cast-members-module/cast-members.provi
 import { UploadAudioVideoMediaUseCase } from '../../core/video/application/use-cases/upload-audio-video-media/upload-audio-video-media.use-case';
 import { IStorage } from '../../core/shared/application/storage.interface';
 import { UploadImageMediaUseCase } from '../../core/video/application/use-cases/upload-image-media/upload-image-media.use-case';
-import { PublishVideoMediaReplacedInQueueHandler } from '../../core/video/application/handlers/publish-video-media-replaced-in-queue.handler';
-import { ApplicationService } from '../../core/shared/application/aplication-service';
-import { IMenssageBroker } from '../../core/shared/application/menssage-broker.interface';
 import { Scope } from '@nestjs/common';
-import { ProcessAudioVideoMediaUseCase } from '../../core/video/application/use-cases/process-audio-video-media/process-audio-video-media.use-case';
 
 export const REPOSITORIES = {
   VIDEO_REPOSITORY: {
@@ -73,6 +70,13 @@ export const VALIDATIONS = {
 };
 
 export const USE_CASES = {
+  LIST_VIDEOS_USE_CASE: {
+    provide: ListVideosUseCase,
+    useFactory: (repo: IVideoRepository, find: FindVideoUseCase) =>
+      new ListVideosUseCase(repo, find),
+    inject: [REPOSITORIES.VIDEO_REPOSITORY.provide, FindVideoUseCase],
+    scope: Scope.REQUEST,
+  },
   CREATE_VIDEO_USE_CASE: {
     provide: CreateVideoUseCase,
     useFactory: (
@@ -170,18 +174,14 @@ export const USE_CASES = {
   UPLOAD_AUDIO_VIDEO_MEDIA_USE_CASE: {
     provide: UploadAudioVideoMediaUseCase,
     useFactory: (
-      appService: ApplicationService,
+      uow: IUnitOfWork,
       videoRepo: IVideoRepository,
       storage: IStorage,
     ) => {
-      return new UploadAudioVideoMediaUseCase(appService, videoRepo, storage);
+      return new UploadAudioVideoMediaUseCase(uow, videoRepo, storage);
     },
     scope: Scope.REQUEST,
-    inject: [
-      ApplicationService,
-      REPOSITORIES.VIDEO_REPOSITORY.provide,
-      'IStorage',
-    ],
+    inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide, 'IStorage'],
   },
   UPLOAD_IMAGE_MEDIA_USE_CASE: {
     provide: UploadImageMediaUseCase,
@@ -195,30 +195,10 @@ export const USE_CASES = {
     scope: Scope.REQUEST,
     inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide, 'IStorage'],
   },
-  PROCESS_AUDIO_VIDEO_MEDIA_USE_CASE: {
-    provide: ProcessAudioVideoMediaUseCase,
-    useFactory: (uow: IUnitOfWork, videoRepo: IVideoRepository) => {
-      return new ProcessAudioVideoMediaUseCase(uow, videoRepo);
-    },
-    inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide],
-    scope: Scope.REQUEST,
-  },
-};
-
-// Registra o ouvinte que irar processar o evento de video
-export const HANDLERS = {
-  PUBLISH_VIDEO_MEDIA_REPLACED_IN_QUEUE_HANDLER: {
-    provide: PublishVideoMediaReplacedInQueueHandler,
-    useFactory: (messageBroker: IMenssageBroker) => {
-      return new PublishVideoMediaReplacedInQueueHandler(messageBroker);
-    },
-    inject: ['IMenssageBroker'],
-  },
 };
 
 export const VIDEOS_PROVIDERS = {
   REPOSITORIES,
   USE_CASES,
   VALIDATIONS,
-  HANDLERS,
 };

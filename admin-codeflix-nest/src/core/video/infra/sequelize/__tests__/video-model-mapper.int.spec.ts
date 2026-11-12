@@ -379,6 +379,7 @@ describe('VideoModelMapper Unit Tests', () => {
     expect(model2.is_published).toEqual(videoProps.is_published);
     expect(model2.created_at).toEqual(videoProps.created_at);
     expect(model2.audio_video_medias[0].toJSON()).toEqual({
+      url: null,
       audio_video_media_id: model2.audio_video_medias[0].audio_video_media_id,
       video_id: videoProps.video_id.id,
       name: 'name trailer',
@@ -388,6 +389,7 @@ describe('VideoModelMapper Unit Tests', () => {
       audio_video_related_field: AudioVideoRelatedField.TRAILER,
     });
     expect(model2.audio_video_medias[1].toJSON()).toEqual({
+      url: null,
       audio_video_media_id: model2.audio_video_medias[1].audio_video_media_id,
       video_id: videoProps.video_id.id,
       name: 'name video',
@@ -397,6 +399,7 @@ describe('VideoModelMapper Unit Tests', () => {
       audio_video_related_field: AudioVideoRelatedField.VIDEO,
     });
     expect(model2.image_medias[0].toJSON()).toEqual({
+      url: null,
       image_media_id: model2.image_medias[0].image_media_id,
       video_id: videoProps.video_id.id,
       location: 'location banner',
@@ -404,6 +407,7 @@ describe('VideoModelMapper Unit Tests', () => {
       image_media_related_field: ImageMediaRelatedField.BANNER,
     });
     expect(model2.image_medias[1].toJSON()).toEqual({
+      url: null,
       image_media_id: model2.image_medias[1].image_media_id,
       video_id: videoProps.video_id.id,
       location: 'location thumbnail',
@@ -411,6 +415,7 @@ describe('VideoModelMapper Unit Tests', () => {
       image_media_related_field: ImageMediaRelatedField.THUMBNAIL,
     });
     expect(model2.image_medias[2].toJSON()).toEqual({
+      url: null,
       image_media_id: model2.image_medias[2].image_media_id,
       video_id: videoProps.video_id.id,
       location: 'location thumbnail half',

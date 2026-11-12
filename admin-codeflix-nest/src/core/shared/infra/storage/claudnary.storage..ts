@@ -49,10 +49,10 @@ export class CloudnaryStorage implements IStorage {
     id: string;
     data: Buffer;
     mime_type?: string;
-  }): Promise<void> {
+  }): Promise<{ url: string }> {
     const resourceType = this.getResourceType(object.mime_type);
 
-    await new Promise<void>((resolve, reject) => {
+    return new Promise<{ url: string }>((resolve, reject) => {
       const uploadStream = this.cloudinary.uploader.upload_stream(
         {
           folder: 'uploads',
@@ -75,7 +75,7 @@ export class CloudnaryStorage implements IStorage {
             return;
           }
 
-          resolve();
+          resolve({ url: result.secure_url });
         },
       );
 

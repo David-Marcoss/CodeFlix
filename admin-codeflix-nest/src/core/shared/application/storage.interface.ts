@@ -4,5 +4,5 @@ export interface IStorage {
     id: string;
     data: Buffer;
     mime_type?: string;
-  }): Promise<void>;
+  }): Promise<{ url: string }>;
 }

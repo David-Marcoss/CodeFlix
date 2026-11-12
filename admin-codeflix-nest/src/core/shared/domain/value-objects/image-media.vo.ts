@@ -1,6 +1,7 @@
 import { ValueObject } from '../value-object';
 
 export abstract class ImageMedia extends ValueObject {
+  remote_url: string | null = null;
   name: string;
   location: string;
   constructor({ name, location }: { name: string; location: string }) {
@@ -10,7 +11,7 @@ export abstract class ImageMedia extends ValueObject {
   }
 
   get url(): string {
-    return `${this.location}/${this.name}`;
+    return this.remote_url ?? `${this.location}/${this.name}`;
   }
 
   toJSON() {

@@ -51,7 +51,7 @@ export class Trailer extends AudioVideoMedia {
 
     return new Trailer({
       name,
-      raw_location: `videos/${video_id.id}/videos`,
+      raw_location: `videos/${video_id.id}`,
       status,
     });
   }

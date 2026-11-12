@@ -48,6 +48,7 @@ export class VideoModelMapper {
       .filter((i) => i.value)
       .map((i) =>
         ImageMediaModel.build({
+          url: i.value!.remote_url,
           name: i.value!.name,
           location: i.value!.location,
           video_id: props.video_id,
@@ -65,6 +66,7 @@ export class VideoModelMapper {
       .filter((i) => i.value)
       .map((i) =>
         AudioVideoMediaModel.build({
+          url: i.value!.remote_url,
           name: i.value!.name,
           raw_location: i.value!.raw_location,
           video_id: props.video_id,
@@ -145,6 +147,7 @@ export class VideoModelMapper {
     image_medias.forEach((i) => {
       if (i.image_media_related_field === ImageMediaRelatedField.THUMBNAIL) {
         thumbnail = new Thumbnail({ name: i.name, location: i.location });
+        thumbnail.remote_url = i.url ?? null;
         return;
       } else if (
         i.image_media_related_field === ImageMediaRelatedField.THUMBNAIL_HALF
@@ -153,10 +156,12 @@ export class VideoModelMapper {
           name: i.name,
           location: i.location,
         });
+        thumbnail_half.remote_url = i.url ?? null;
         return;
       }
 
       banner = new Banner({ name: i.name, location: i.location });
+      banner.remote_url = i.url ?? null;
     });
 
     audio_video_medias.forEach((v) => {
@@ -168,6 +173,7 @@ export class VideoModelMapper {
           encoded_location: v.encoded_location ?? undefined,
         });
 
+        trailer.remote_url = v.url ?? null;
         return;
       }
 
@@ -177,6 +183,7 @@ export class VideoModelMapper {
         status: v.status,
         encoded_location: v.encoded_location ?? undefined,
       });
+      videoMedia.remote_url = v.url ?? null;
     });
 
     const video = new Video({

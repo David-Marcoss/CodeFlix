@@ -13,7 +13,6 @@ import { Trailer } from './trailer.vo';
 import { VideoValidatorFactory } from './video.validator';
 import { AudioVideoMediaStatus } from '../../shared/domain/value-objects/audio-video-media.vo';
 import { VideoCreatedEvent } from './domain-events/video-created.event';
-import { VideoAudioMediaReplaced } from './domain-events/audio-video-media-replaced.event';
 import { VideoFakeBuilder } from './video-fake-builder';
 
 export class VideoId extends Uuid {}
@@ -113,12 +112,6 @@ export class Video extends AggregateRoot {
       VideoCreatedEvent.name,
       this.onVideoCreated.bind(this),
     );
-
-    // Registra evento de substituição de mídia de áudio/vídeo
-    this.registerHandler(
-      VideoAudioMediaReplaced.name,
-      this.onAudioMediaReplaced.bind(this),
-    );
   }
 
   static create(props: CreateVideoComand) {
@@ -205,29 +198,11 @@ export class Video extends AggregateRoot {
   replaceVideo(video: VideoMedia): void {
     this.video = video;
     this.tryMarkVideoAsPublished();
-
-    // Dispara o evento de substituição de mídia de vídeo
-    this.applyEvent(
-      new VideoAudioMediaReplaced({
-        aggregate_id: this.video_id,
-        media: video,
-        media_type: 'video',
-      }),
-    );
   }
 
   replaceTrailer(trailer: Trailer): void {
     this.trailer = trailer;
     this.tryMarkVideoAsPublished();
-
-    // Dispara o evento de substituição de mídia de trailer
-    this.applyEvent(
-      new VideoAudioMediaReplaced({
-        aggregate_id: this.video_id,
-        media: trailer,
-        media_type: 'trailer',
-      }),
-    );
   }
 
   private tryMarkVideoAsPublished() {
@@ -293,15 +268,6 @@ export class Video extends AggregateRoot {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onVideoCreated(_event: VideoCreatedEvent) {
-    if (this.is_published) {
-      return;
-    }
-
-    this.tryMarkVideoAsPublished();
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onAudioMediaReplaced(_event: VideoAudioMediaReplaced) {
     if (this.is_published) {
       return;
     }

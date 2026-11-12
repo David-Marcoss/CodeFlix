@@ -43,11 +43,13 @@ export class UploadImageMediaUseCase implements IUseCase<
     image instanceof Thumbnail && existingVideo.replaceThumbnail(image);
     image instanceof ThumbnailHalf && existingVideo.replaceThumbnailHalf(image);
 
-    await this.storage.store({
+    const { url } = await this.storage.store({
       data: input.file.data,
       id: image.url,
       mime_type: input.file.mime_type,
     });
+
+    image.remote_url = url;
 
     await this.uow.do(async () => await this.videoRepo.update(existingVideo));
   }

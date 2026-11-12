@@ -25,10 +25,11 @@ export class StorageInMemory implements IStorage {
     id: string;
     data: Buffer;
     mime_type?: string;
-  }): Promise<void> {
+  }): Promise<{ url: string }> {
     this.storage.set(object.id, {
       data: object.data,
       mime_type: object.mime_type,
     });
+    return { url: `https://storage.example/${object.id}` };
   }
 }

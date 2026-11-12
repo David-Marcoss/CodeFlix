@@ -1,3 +1,4 @@
+import { CategoryId } from '../../category/domain/category.aggregate';
 import { CastMemberId } from '../../cast-member/domain/cast-member.aggregate';
 import { GenreId } from '../../genre/domain/genre.aggregate';
 import { ISearchableRepository } from '../../shared/domain/repository/repository-interface';
@@ -10,7 +11,7 @@ import { Video, VideoId } from './video.aggregate';
 
 export type VideoFilter = {
   title?: string;
-  categories_id?: VideoId[];
+  categories_id?: CategoryId[];
   genres_id?: GenreId[];
   cast_members_id?: CastMemberId[];
 };
@@ -26,7 +27,7 @@ export class VideoSearchParams extends SearchParams<VideoFilter> {
     } = {},
   ) {
     const categories_id = props.filter?.categories_id?.map((c) => {
-      return c instanceof VideoId ? c : new VideoId(c);
+      return c instanceof CategoryId ? c : new CategoryId(c);
     });
 
     const genres_id = props.filter?.genres_id?.map((g) => {

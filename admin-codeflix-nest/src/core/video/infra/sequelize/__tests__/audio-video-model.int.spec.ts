@@ -20,6 +20,7 @@ describe('AudioVideoMediaModel Unit Tests', () => {
     const attributesMap = AudioVideoMediaModel.getAttributes();
     const attributes = Object.keys(AudioVideoMediaModel.getAttributes());
     expect(attributes).toStrictEqual([
+      'url',
       'audio_video_media_id',
       'name',
       'raw_location',

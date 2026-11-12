@@ -1,91 +1,75 @@
-import EventEmitter2 from 'eventemitter2';
-import { ApplicationService } from '../../../../../shared/application/aplication-service';
-import { IMenssageBroker } from '../../../../../shared/application/menssage-broker.interface';
-import { DomainEventMediator } from '../../../../../shared/domain/events/domain-event-mediator';
 import { UnitOfWorkFakeInMemory } from '../../../../../shared/infra/db/sequelize/fake-unit-of-work-sequelise';
 import { StorageInMemory } from '../../../../../shared/infra/storage/storage.in-memory';
-import { PublishVideoMediaReplacedInQueueHandler } from '../../../handlers/publish-video-media-replaced-in-queue.handler';
-import { VideoAudioMediaUploadedIntegrationEvent } from '../../../../domain/domain-events/audio-video-media-replaced.event';
 import { Video } from '../../../../domain/video.aggregate';
 import { IVideoRepository } from '../../../../domain/video.repository';
 import { UploadAudioVideoMediaUseCase } from '../upload-audio-video-media.use-case';
 
 describe('UploadAudioVideoMediaUseCase', () => {
   it.each(['video', 'trailer'] as const)(
-    'should publish VideoAudioMediaUploadedIntegrationEvent after uploading %s',
+    'stores the Cloudinary URL for %s without encoder events',
     async (field) => {
       const video = Video.fake().aVideoWithoutMedias().build();
-      const uow = new UnitOfWorkFakeInMemory();
-      const eventMediator = new DomainEventMediator(new EventEmitter2());
-      const applicationService = new ApplicationService(uow, eventMediator);
+      video.clearEvents();
       const storage = new StorageInMemory();
-      const publishEventMock = jest.fn().mockResolvedValue(undefined);
-      const updateMock = jest.fn().mockImplementation(async (entity: Video) => {
-        uow.addAggregateRoot(entity);
-      });
-      const messageBroker: IMenssageBroker = {
-        publishEvent: publishEventMock,
-      };
-      const handler = new PublishVideoMediaReplacedInQueueHandler(
-        messageBroker,
-      );
-      const videoRepo = {
+      jest
+        .spyOn(storage, 'store')
+        .mockResolvedValue({
+          url: 'https://res.cloudinary.com/demo/video/upload/file.mp4',
+        });
+      const repo = {
         getById: jest.fn().mockResolvedValue(video),
-        update: updateMock,
+        update: jest.fn(),
       } as unknown as IVideoRepository;
-
-      eventMediator.register(
-        VideoAudioMediaUploadedIntegrationEvent.name,
-        handler.handle.bind(handler),
-      );
-
       const useCase = new UploadAudioVideoMediaUseCase(
-        applicationService,
-        videoRepo,
+        new UnitOfWorkFakeInMemory(),
+        repo,
         storage,
       );
-
       await useCase.execute({
         video_id: video.video_id.id,
         field,
         file: {
-          raw_name: `${field}.mp4`,
-          data: Buffer.from('video-content'),
+          raw_name: 'file.mp4',
+          data: Buffer.from('video'),
           mime_type: 'video/mp4',
-          size: 13,
+          size: 5,
         },
       });
-
-      expect(updateMock).toHaveBeenCalledWith(video);
-      expect(publishEventMock).toHaveBeenCalledTimes(1);
-
-      const event = publishEventMock.mock
-        .calls[0][0] as VideoAudioMediaUploadedIntegrationEvent;
-      const media = field === 'video' ? video.video! : video.trailer!;
-
-      expect(event).toBeInstanceOf(VideoAudioMediaUploadedIntegrationEvent);
-      expect(event.event_name).toBe(
-        VideoAudioMediaUploadedIntegrationEvent.name,
+      expect(video[field]?.url).toBe(
+        'https://res.cloudinary.com/demo/video/upload/file.mp4',
       );
-      expect(event.payload).toEqual({
-        video_id: video.video_id.id,
-        media_type: field,
-        resource_id: `${video.video_id.id}.${field}`,
-        file_path: media.url,
-        media: {
-          ...media.toJSON(),
-          status: media.status,
-        },
-      });
-      await expect(storage.get(event.payload.file_path)).resolves.toMatchObject(
-        {
-          data: Buffer.from('video-content'),
-          name: event.payload.file_path,
-          mime_type: 'video/mp4',
-        },
-      );
+      expect(video[field]?.status).toBe('completed');
+      expect(repo.update).toHaveBeenCalledWith(video);
       expect(video.events.size).toBe(0);
-      expect(uow.getAggregateRoots()).toHaveLength(0);
     },
   );
+
+  it('does not persist when Cloudinary fails', async () => {
+    const video = Video.fake().aVideoWithoutMedias().build();
+    video.clearEvents();
+    const storage = new StorageInMemory();
+    jest.spyOn(storage, 'store').mockRejectedValue(new Error('upload failed'));
+    const repo = {
+      getById: jest.fn().mockResolvedValue(video),
+      update: jest.fn(),
+    } as unknown as IVideoRepository;
+    const useCase = new UploadAudioVideoMediaUseCase(
+      new UnitOfWorkFakeInMemory(),
+      repo,
+      storage,
+    );
+    await expect(
+      useCase.execute({
+        video_id: video.video_id.id,
+        field: 'video',
+        file: {
+          raw_name: 'file.mp4',
+          data: Buffer.from('video'),
+          mime_type: 'video/mp4',
+          size: 5,
+        },
+      }),
+    ).rejects.toThrow('upload failed');
+    expect(repo.update).not.toHaveBeenCalled();
+  });
 });

@@ -9,11 +9,8 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 3306
-      RABBITMQ_URI: amqp://admin:admin@rabbitmq:5672
     depends_on:
       db:
-        condition: service_healthy
-      rabbitmq:
         condition: service_healthy
 
   db:

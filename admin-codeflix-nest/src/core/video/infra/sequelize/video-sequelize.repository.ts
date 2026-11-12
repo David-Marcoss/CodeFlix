@@ -280,81 +280,38 @@ export class VideoSequelizeRepository implements IVideoRepository {
   async search(props: VideoSearchParams): Promise<VideoSearchResult> {
     const offset = (props.page - 1) * props.per_page;
     const limit = props.per_page;
-    const videoCategoryRelation =
-      this.videoModel.associations.categories_id.target;
     const videoTableName = this.videoModel.getTableName() as string;
-    const videoCategoryTableName =
-      videoCategoryRelation.getTableName() as string;
     const videoAlias = this.videoModel.name;
-
-    const wheres: any[] = [];
-
-    if (props.filter && (props.filter.title || props.filter.categories_id)) {
-      if (props.filter.title) {
-        wheres.push({
-          field: 'title',
-          value: `%${props.filter.title}%`,
-          get condition() {
-            return {
-              [this.field]: {
-                [Op.like]: this.value,
-              },
-            };
-          },
-          rawCondition: `${videoAlias}.title LIKE :title`,
-        });
-      }
-
-      if (props.filter.categories_id) {
-        wheres.push({
-          field: 'categories_id',
-          value: props.filter.categories_id.map((c) => c.id),
-          get condition() {
-            return {
-              ['$categories_id.category_id$']: {
-                [Op.in]: this.value,
-              },
-            };
-          },
-          rawCondition: `${videoCategoryTableName}.category_id IN (:categories_id)`,
-        });
-      }
-
-      if (props.filter?.cast_members_id) {
-        wheres.push({
-          field: '?.cast_members_id',
-          value: props.filter?.cast_members_id.map((c) => c.id),
-          get condition() {
-            return {
-              ['$?.cast_members_id.category_id$']: {
-                [Op.in]: this.value,
-              },
-            };
-          },
-          rawCondition: `${videoCategoryTableName}.category_id IN (:?.cast_members_id)`,
-        });
-      }
-
-      if (props.filter?.genres_id) {
-        wheres.push({
-          field: '?.genres_id',
-          value: props.filter?.genres_id.map((c) => c.id),
-          get condition() {
-            return {
-              ['$?.genres_id.category_id$']: {
-                [Op.in]: this.value,
-              },
-            };
-          },
-          rawCondition: `${videoCategoryTableName}.category_id IN (:?.genres_id)`,
-        });
-      }
+    const wheres: {
+      field: string;
+      value: string | string[];
+      rawCondition: string;
+    }[] = [];
+    if (props.filter?.title) {
+      wheres.push({
+        field: 'title',
+        value: `%${props.filter.title}%`,
+        rawCondition: `${videoAlias}.title LIKE :title`,
+      });
     }
-
+    const relations = [
+      { field: 'categories_id', column: 'category_id' },
+      { field: 'genres_id', column: 'genre_id' },
+      { field: 'cast_members_id', column: 'cast_member_id' },
+    ] as const;
+    for (const { field, column } of relations) {
+      const ids = props.filter?.[field];
+      if (!ids?.length) continue;
+      const table = this.videoModel.associations[
+        field
+      ].target.getTableName() as string;
+      wheres.push({
+        field,
+        value: ids.map((id) => id.id),
+        rawCondition: `EXISTS (SELECT 1 FROM ${table} AS related WHERE related.video_id = ${videoAlias}.video_id AND related.${column} IN (:${field}))`,
+      });
+    }
     const orderBy = this.formatSort(props.sort, props.sort_dir, videoAlias);
-    const join = props.filter?.categories_id
-      ? `INNER JOIN ${videoCategoryTableName} ON ${videoAlias}.\`video_id\` = ${videoCategoryTableName}.\`video_id\``
-      : '';
     const where = wheres.length
       ? `WHERE ${wheres.map((w) => w.rawCondition).join(' AND ')}`
       : '';
@@ -369,7 +326,6 @@ export class VideoSequelizeRepository implements IVideoRepository {
       [
         `SELECT COUNT(DISTINCT ${videoAlias}.\`video_id\`) as total`,
         `FROM ${videoTableName} as ${videoAlias}`,
-        join,
         where,
       ].join(' '),
       {
@@ -386,7 +342,6 @@ export class VideoSequelizeRepository implements IVideoRepository {
         'SELECT',
         `DISTINCT ${videoAlias}.\`video_id\`, ${orderBy.column} as order_column`,
         `FROM ${videoTableName} as ${videoAlias}`,
-        join,
         where,
         `ORDER BY ${orderBy.expression}`,
         `LIMIT ${limit}`,

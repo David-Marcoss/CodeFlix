@@ -280,6 +280,59 @@ describe('VideoSequelizeRepository Integration Tests', () => {
   });
 
   describe('search method tests', () => {
+    it('filters independently by every relation and combines filters with pagination', async () => {
+      const first = await createRelations();
+      const second = await createRelations();
+      const make = (relations: typeof first, title: string) =>
+        Video.fake()
+          .aVideoWithoutMedias()
+          .withTitle(title)
+          .addCategoryId(relations.category.category_id)
+          .addGenreId(relations.genre.genre_id)
+          .addCastMemberId(relations.castMember.cast_member_id)
+          .build();
+      const matching = make(first, 'Matching video');
+      matching.addCategoryId(second.category.category_id);
+      await videoRepo.createMany([matching, make(second, 'Other video')]);
+      const filters = [
+        { categories_id: [first.category.category_id] },
+        { genres_id: [first.genre.genre_id] },
+        { cast_members_id: [first.castMember.cast_member_id] },
+        {
+          title: 'Matching',
+          categories_id: [
+            first.category.category_id,
+            second.category.category_id,
+          ],
+          genres_id: [first.genre.genre_id],
+          cast_members_id: [first.castMember.cast_member_id],
+        },
+      ];
+      for (const filter of filters) {
+        const result = await videoRepo.search(
+          VideoSearchParams.create({ filter, per_page: 1 }),
+        );
+        expect(result.total).toBe(1);
+        expect(result.items.map((item) => item.video_id.id)).toEqual([
+          matching.video_id.id,
+        ]);
+      }
+      const empty = await videoRepo.search(
+        VideoSearchParams.create({
+          filter: {
+            categories_id: [first.category.category_id],
+            genres_id: [second.genre.genre_id],
+          },
+        }),
+      );
+      expect(empty.total).toBe(0);
+      const beyond = await videoRepo.search(
+        VideoSearchParams.create({ page: 2, per_page: 1, filter: filters[0] }),
+      );
+      expect(beyond.items).toEqual([]);
+      expect(beyond.total).toBe(1);
+    });
+
     it('should order by created_at DESC when search params are null', async () => {
       const { category, genre, castMember } = await createRelations();
 

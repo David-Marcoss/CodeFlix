@@ -1,5 +1,12 @@
+import { SearchVideosDto } from './dto/search-videos.dto';
+import { VideoCollectionPresenter } from './video.presenter';
+import { CategoryId } from '../../core/category/domain/category.aggregate';
+import { GenreId } from '../../core/genre/domain/genre.aggregate';
+import { CastMemberId } from '../../core/cast-member/domain/cast-member.aggregate';
+import { ListVideosUseCase } from '../../core/video/application/use-cases/list-videos/list-videos.use-case';
 import {
   Controller,
+  Query,
   Get,
   Post,
   Body,
@@ -32,6 +39,8 @@ import { CheckIsAdminGuard } from '../auth-module/check-is-admin.guard';
 @Controller({ path: 'videos', scope: Scope.REQUEST })
 export class VideoController {
   constructor(
+    @Inject(ListVideosUseCase)
+    private readonly listUseCase: ListVideosUseCase,
     @Inject(CreateVideoUseCase)
     private readonly createUseCase: CreateVideoUseCase,
     @Inject(FindVideoUseCase)
@@ -47,6 +56,23 @@ export class VideoController {
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {
     return this.createUseCase.execute({ ...createVideoDto });
+  }
+
+  @Get()
+  async findAll(@Query() query: SearchVideosDto = {}) {
+    const { filter, ...params } = query;
+    const output = await this.listUseCase.execute({
+      ...params,
+      filter: {
+        title: filter?.title,
+        categories_id: filter?.categories_id?.map((id) => new CategoryId(id)),
+        genres_id: filter?.genres_id?.map((id) => new GenreId(id)),
+        cast_members_id: filter?.cast_members_id?.map(
+          (id) => new CastMemberId(id),
+        ),
+      },
+    });
+    return new VideoCollectionPresenter(output);
   }
 
   @Get(':id')

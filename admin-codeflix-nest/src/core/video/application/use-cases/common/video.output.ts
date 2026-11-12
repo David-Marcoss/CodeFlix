@@ -28,6 +28,11 @@ export type VideoCastMemberOutput = {
 };
 
 export type VideoOutput = {
+  banner: string | null;
+  thumbnail: string | null;
+  thumbnail_half: string | null;
+  video: string | null;
+  trailer: string | null;
   id: string;
   title: string;
   description: string;
@@ -60,6 +65,11 @@ export class VideoOutputMapper {
     cast_members,
   }: VideoOutputParams): VideoOutput {
     return {
+      banner: video.banner?.url ?? null,
+      thumbnail: video.thumbnail?.url ?? null,
+      thumbnail_half: video.thumbnail_half?.url ?? null,
+      video: video.video?.url ?? null,
+      trailer: video.trailer?.url ?? null,
       id: video.video_id.id,
       title: video.title,
       description: video.description,

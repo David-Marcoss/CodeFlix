@@ -19,6 +19,7 @@ describe('ImageMediaModel Unit Tests', () => {
     const attributesMap = ImageMediaModel.getAttributes();
     const attributes = Object.keys(ImageMediaModel.getAttributes());
     expect(attributes).toStrictEqual([
+      'url',
       'image_media_id',
       'name',
       'location',

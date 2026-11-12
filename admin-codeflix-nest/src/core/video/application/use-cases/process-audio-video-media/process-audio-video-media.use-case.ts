@@ -19,6 +19,8 @@ export class ProcessAudioVideoMediaUseCase implements IUseCase<
   async execute(
     input: ProcessAudioVideoMediaInput,
   ): Promise<ProcessAudioVideoMediaOutput> {
+    console.log('ProcessAudioVideoMediaUseCase.execute', input);
+
     const video_id = new VideoId(input.video_id);
 
     const existingVideo = await this.videoRepo.getById(video_id);

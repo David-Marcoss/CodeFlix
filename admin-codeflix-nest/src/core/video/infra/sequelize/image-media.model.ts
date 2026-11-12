@@ -17,6 +17,7 @@ export enum ImageMediaRelatedField {
 
 export interface VideoModelProps {
   image_media_id: string;
+  url?: string | null;
   name: string;
   location: string;
   video_id: string;
@@ -31,6 +32,9 @@ export interface VideoModelProps {
   ],
 })
 export class ImageMediaModel extends Model<VideoModelProps> {
+  @Column({ allowNull: true, type: DataType.TEXT })
+  declare url: string | null;
+
   @PrimaryKey
   @Column({ type: DataType.UUID, defaultValue: () => new Uuid().id })
   declare image_media_id: string;

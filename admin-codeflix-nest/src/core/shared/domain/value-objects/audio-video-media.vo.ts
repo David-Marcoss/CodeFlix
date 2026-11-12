@@ -8,6 +8,7 @@ export enum AudioVideoMediaStatus {
 }
 
 export abstract class AudioVideoMedia extends ValueObject {
+  remote_url: string | null = null;
   name: string;
   raw_location: string;
   encoded_location: string | null;
@@ -31,7 +32,7 @@ export abstract class AudioVideoMedia extends ValueObject {
   }
 
   get url(): string {
-    return `${this.raw_location}/${this.name}`;
+    return this.remote_url ?? `${this.raw_location}/${this.name}`;
   }
 
   toJSON() {

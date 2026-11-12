@@ -118,6 +118,11 @@ describe('Find Video use-case integration tests', () => {
     };
 
     expect(output).toStrictEqual({
+      banner: null,
+      thumbnail: null,
+      thumbnail_half: null,
+      video: null,
+      trailer: null,
       id: result.id,
       title: video.title,
       description: video.description,
