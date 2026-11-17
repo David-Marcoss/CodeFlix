@@ -14,6 +14,8 @@ import {
   type RatingValues,
   type Video,
 } from "../../../shared/types/videos";
+import { ratingOptions } from "../utils/rattingOptions";
+import { Ratting } from "./ratting";
 
 export interface VideoTableProps {
   data: Video[];
@@ -136,14 +138,13 @@ export default function VideoTable({
 
   function renderRatingCell(params: GridCellParams) {
     const rating = params.value as RatingValues;
-    const item = Object.entries(ratingValues).find((item) => {
-      const [_, value] = item;
-      return value === rating;
-    });
+    const ratingOption = ratingOptions.find((o) => o.value === rating)!;
 
-    const value = item ? item[0] : "";
-
-    return <Typography sx={{ margin: 1 }}>{value}</Typography>;
+    return (
+      <Box sx={{ height: 4, width: 8, paddingY: "1px" }}>
+        <Ratting label={ratingOption?.label} color={ratingOption.color} />
+      </Box>
+    );
   }
 
   function renderActiveCell(params: GridCellParams) {
