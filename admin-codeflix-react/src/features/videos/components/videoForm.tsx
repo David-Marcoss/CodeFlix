@@ -3,31 +3,35 @@ import {
   Button,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormGroup,
   Grid,
-  MenuItem,
   Switch,
   TextField,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from "@mui/material"
+import { useNavigate } from "react-router-dom"
+import { Controller, FormProvider, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
-import { ratingValues } from "../../../shared/types/videos";
-import type { Video } from "../../../shared/types/videos";
-import MultipleSelect from "../../../components/MultipleSelect";
-import type { SelectOptions } from "../../../shared/types/selectoptions";
-import { videoSchema, type VideoSchema } from "../video.schema";
-import { formatVideoDataToForm } from "../utils/formatVideosDataToForm";
+import type { Video } from "../../../shared/types/videos"
+import MultipleSelect from "../../../components/MultipleSelect"
+import type { SelectOptions } from "../../../shared/types/selectoptions"
+import {
+  videoSchema,
+  type VideoSchema,
+  type VideoFormValues,
+} from "../video.schema"
+import { formatVideoDataToForm } from "../utils/formatVideosDataToForm"
+import RattingInput from "./rattingInput"
 
 export interface VideoFormProps {
-  video?: Video;
-  isLoading: boolean;
-  isDisabled?: boolean;
-  categories: SelectOptions;
-  castMembers: SelectOptions;
-  genres: SelectOptions;
-  handleSubmitForm(data: VideoSchema): void;
+  video?: Video
+  isLoading: boolean
+  isDisabled?: boolean
+  categories: SelectOptions
+  castMembers: SelectOptions
+  genres: SelectOptions
+  handleSubmitForm(data: VideoSchema): void
 }
 
 export default function VideoForm({
@@ -39,35 +43,37 @@ export default function VideoForm({
   isDisabled,
   handleSubmitForm,
 }: VideoFormProps) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const formMethods = useForm<VideoSchema>({
+  const formMethods = useForm<VideoFormValues, unknown, VideoSchema>({
     resolver: zodResolver(videoSchema),
     defaultValues: formatVideoDataToForm(video),
-  });
+  })
 
-  const { handleSubmit, control } = formMethods;
+  const { handleSubmit, control } = formMethods
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(handleSubmitForm)}>
+      <form noValidate onSubmit={handleSubmit(handleSubmitForm)}>
         <Grid container spacing={4}>
           <Grid size={12}>
             <Controller
               name="title"
               control={control}
               render={({ field: { ref, ...field }, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  inputRef={ref}
-                  label="Nome"
-                  required
-                  fullWidth
-                  disabled={isDisabled}
-                  error={!!error}
-                  helperText={error?.message}
-                  slotProps={{ htmlInput: { "data-testid": "name-input" } }}
-                />
+                <>
+                  <TextField
+                    {...field}
+                    inputRef={ref}
+                    label="Nome"
+                    required
+                    fullWidth
+                    disabled={isDisabled}
+                    error={!!error}
+                    helperText={error?.message ?? " "}
+                    slotProps={{ htmlInput: { "data-testid": "name-input" } }}
+                  />
+                </>
               )}
             />
           </Grid>
@@ -86,13 +92,13 @@ export default function VideoForm({
                   fullWidth
                   disabled={isDisabled}
                   error={!!error}
-                  helperText={error?.message}
+                  helperText={error?.message ?? " "}
                 />
               )}
             />
           </Grid>
 
-          <Grid  container spacing={2} size={12}>
+          <Grid container spacing={2} size={12}>
             <Grid size={6}>
               <Controller
                 name="year_launched"
@@ -110,13 +116,10 @@ export default function VideoForm({
                     disabled={isDisabled}
                     error={!!error}
                     helperText={error?.message}
-                    onChange={(event) =>
-                      field.onChange(
-                        event.target.value === ""
-                          ? NaN
-                          : Number(event.target.value),
-                      )
-                    }
+                    slotProps={{
+                      inputLabel: { shrink: true },
+                      htmlInput: { min: 1000, max: 9999, step: 1 },
+                    }}
                   />
                 )}
               />
@@ -134,47 +137,16 @@ export default function VideoForm({
                     {...field}
                     inputRef={ref}
                     label="Duração"
-                    type="number"
+                    type="time"
                     fullWidth
                     disabled={isDisabled}
                     error={!!error}
                     helperText={error?.message}
-                    onChange={(event) =>
-                      field.onChange(
-                        event.target.value === ""
-                          ? NaN
-                          : Number(event.target.value),
-                      )
-                    }
+                    slotProps={{ inputLabel: { shrink: true } }}
                   />
                 )}
               />
             </Grid>
-          </Grid>
-
-          <Grid size={12}>
-            <Controller
-              name="rating"
-              control={control}
-              render={({ field: { ref, ...field }, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  inputRef={ref}
-                  select
-                  label="Classificação indicativa"
-                  fullWidth
-                  disabled={isDisabled}
-                  error={!!error}
-                  helperText={error?.message}
-                >
-                  {Object.values(ratingValues).map((rating) => (
-                    <MenuItem key={rating} value={rating}>
-                      {rating}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            />
           </Grid>
 
           <Grid size={12}>
@@ -190,6 +162,9 @@ export default function VideoForm({
                     onValuesChange={field.onChange}
                     disabled={isDisabled}
                   />
+                  <FormHelperText error={!!error}>
+                    {error?.message ?? " "}
+                  </FormHelperText>
                 </FormControl>
               )}
             />
@@ -208,6 +183,9 @@ export default function VideoForm({
                     onValuesChange={field.onChange}
                     disabled={isDisabled}
                   />
+                  <FormHelperText error={!!error}>
+                    {error?.message ?? " "}
+                  </FormHelperText>
                 </FormControl>
               )}
             />
@@ -226,62 +204,85 @@ export default function VideoForm({
                     onValuesChange={field.onChange}
                     disabled={isDisabled}
                   />
+                  <FormHelperText error={!!error}>
+                    {error?.message ?? " "}
+                  </FormHelperText>
                 </FormControl>
               )}
             />
           </Grid>
 
           <Grid size={12}>
-            <FormGroup>
-              <Controller
-                name="is_opened"
-                control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    label="Active"
-                    control={
-                      <Switch
-                        name={field.name}
-                        checked={field.value}
-                        onChange={(_, checked) => field.onChange(checked)}
-                        onBlur={field.onBlur}
-                        slotProps={{ input: { ref: field.ref } }}
-                        color="secondary"
-                        data-testid="is_opened"
-                        disabled={isDisabled}
-                      />
-                    }
-                  />
-                )}
-              />
-            </FormGroup>
+            <Controller
+              name="rating"
+              control={control}
+              render={({ field: { ref, ...field }, fieldState: { error } }) => (
+                <RattingInput
+                  {...field}
+                  inputRef={ref}
+                  disabled={isDisabled}
+                  error={!!error}
+                  helperText={error?.message}
+                />
+              )}
+            />
           </Grid>
 
-          <Grid size={12}>
-            <FormGroup>
-              <Controller
-                name="is_published"
-                control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    label="Publicado"
-                    control={
-                      <Switch
-                        name={field.name}
-                        checked={field.value}
-                        onChange={(_, checked) => field.onChange(checked)}
-                        onBlur={field.onBlur}
-                        slotProps={{ input: { ref: field.ref } }}
-                        color="secondary"
-                        data-testid="is_published"
-                        disabled={isDisabled}
+          {video && (
+            <>
+              <Grid size={12}>
+                <FormGroup>
+                  <Controller
+                    name="is_opened"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        label="Active"
+                        control={
+                          <Switch
+                            name={field.name}
+                            checked={field.value}
+                            onChange={(_, checked) => field.onChange(checked)}
+                            onBlur={field.onBlur}
+                            slotProps={{ input: { ref: field.ref } }}
+                            color="secondary"
+                            data-testid="is_opened"
+                            disabled={isDisabled}
+                          />
+                        }
                       />
-                    }
+                    )}
                   />
-                )}
-              />
-            </FormGroup>
-          </Grid>
+                </FormGroup>
+              </Grid>
+
+              <Grid size={12}>
+                <FormGroup>
+                  <Controller
+                    name="is_published"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        label="Publicado"
+                        control={
+                          <Switch
+                            name={field.name}
+                            checked={field.value}
+                            onChange={(_, checked) => field.onChange(checked)}
+                            onBlur={field.onBlur}
+                            slotProps={{ input: { ref: field.ref } }}
+                            color="secondary"
+                            data-testid="is_published"
+                            disabled={isDisabled}
+                          />
+                        }
+                      />
+                    )}
+                  />
+                </FormGroup>
+              </Grid>
+            </>
+          )}
 
           <Grid size={12}>
             <Box sx={{ display: "flex", gap: 2 }}>
@@ -303,5 +304,5 @@ export default function VideoForm({
         </Grid>
       </form>
     </FormProvider>
-  );
+  )
 }

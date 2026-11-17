@@ -1,46 +1,39 @@
-import { Box, Paper, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { useCreateVideoMutation } from "./videoSlice"
-import VideoForm from "./components/videoForm"
-import { enqueueSnackbar } from "notistack"
-import { useGetvideosAgregatesOptions } from "./hooks/useGetvideosAgregatesOptions"
-import type { VideoSchema } from "./video.schema"
+import { Box, Paper, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCreateVideoMutation } from "./videoSlice";
+import VideoForm from "./components/videoForm";
+import { enqueueSnackbar } from "notistack";
+import { useGetvideosAgregatesOptions } from "./hooks/useGetvideosAgregatesOptions";
+import type { VideoSchema } from "./video.schema";
 
 export default function VideoCreate() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [createVideo, result] = useCreateVideoMutation()
-
-  const [isLoading, setIsLoading] = useState(false)
+  const [createVideo, result] = useCreateVideoMutation();
 
   const { castMemberOptions, categorieOptions, genreOptions } =
-    useGetvideosAgregatesOptions()
+    useGetvideosAgregatesOptions();
 
   async function handleSubmit(data: VideoSchema) {
-    console.log("submmit data: ", data)
-    // const { title, categories_id, is_opened } = videoData;
-    // setIsLoading(true);
-    // await createVideo({ title, categories_id, is_opened } as any);
+    await createVideo(data);
   }
 
   useEffect(() => {
     if (result.isSuccess) {
       enqueueSnackbar("Video criado com sucesso!", {
         variant: "success",
-      })
+      });
 
-      navigate("/videos")
-      setIsLoading(false)
+      navigate("/videos");
     }
 
     if (result.isError) {
       enqueueSnackbar("Erro ao criar video!", {
         variant: "error",
-      })
-      setIsLoading(false)
+      });
     }
-  }, [result])
+  }, [result]);
 
   return (
     <Box
@@ -65,7 +58,7 @@ export default function VideoCreate() {
         <Typography variant="h4">Criar Video</Typography>
 
         <VideoForm
-          isLoading={isLoading}
+          isLoading={result.isLoading}
           handleSubmitForm={handleSubmit}
           categories={categorieOptions}
           castMembers={castMemberOptions}
@@ -73,5 +66,5 @@ export default function VideoCreate() {
         />
       </Paper>
     </Box>
-  )
+  );
 }
