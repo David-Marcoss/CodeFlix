@@ -1,32 +1,34 @@
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
-import Select, { type SelectChangeEvent } from "@mui/material/Select";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import OutlinedInput from "@mui/material/OutlinedInput"
+import InputLabel from "@mui/material/InputLabel"
+import MenuItem from "@mui/material/MenuItem"
+import FormControl from "@mui/material/FormControl"
+import ListItemText from "@mui/material/ListItemText"
+import Select, { type SelectChangeEvent } from "@mui/material/Select"
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank"
+import CheckBoxIcon from "@mui/icons-material/CheckBox"
 
 interface MultipleSelectProps {
-  values: { value: string; label: string }[];
-  selectedValues?: string[];
-  label: string;
-  onValuesChange: (values: string[]) => void;
+  values: { value: string; label: string }[]
+  selectedValues?: string[]
+  label: string
+  disabled?: boolean
+  onValuesChange: (values: string[]) => void
 }
 
 export default function MultipleSelect({
   values,
   selectedValues = [],
   label,
+  disabled,
   onValuesChange,
 }: MultipleSelectProps) {
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
-    } = event;
+    } = event
 
-    onValuesChange(typeof value === "string" ? value.split(",") : value);
-  };
+    onValuesChange(typeof value === "string" ? value.split(",") : value)
+  }
 
   return (
     <div>
@@ -36,22 +38,23 @@ export default function MultipleSelect({
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
+          disabled={disabled}
           value={selectedValues}
           onChange={handleChange}
           input={<OutlinedInput label={label} />}
-          renderValue={(selected) =>
+          renderValue={selected =>
             values
-              .filter((v) => selected.includes(v.value))
-              .map((v) => v.label)
+              .filter(v => selected.includes(v.value))
+              .map(v => v.label)
               .join(", ")
           }
           data-testid="multiple-select"
         >
-          {values.map((value) => {
-            const selected = selectedValues.includes(value.value);
+          {values.map(value => {
+            const selected = selectedValues.includes(value.value)
             const SelectionIcon = selected
               ? CheckBoxIcon
-              : CheckBoxOutlineBlankIcon;
+              : CheckBoxOutlineBlankIcon
 
             return (
               <MenuItem key={value.value} value={value.value}>
@@ -65,10 +68,10 @@ export default function MultipleSelect({
                 />
                 <ListItemText primary={value.label} />
               </MenuItem>
-            );
+            )
           })}
         </Select>
       </FormControl>
     </div>
-  );
+  )
 }

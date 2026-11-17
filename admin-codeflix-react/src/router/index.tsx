@@ -9,6 +9,7 @@ import GenreList from "../features/genres/GenreList";
 import GenreCreate from "../features/genres/GenreCreate";
 import GenreEdit from "../features/genres/GenreEdit";
 import VideoList from "../features/videos/VideoList";
+import VideoCreate from "../features/videos/VideoCreate";
 
 const RoutesApp = () => {
   return (
@@ -35,7 +36,7 @@ const RoutesApp = () => {
 
       <Route path="/videos">
         <Route Component={VideoList} path="" />
-        <Route Component={GenreCreate} path="create" />
+        <Route Component={VideoCreate} path="create" />
         <Route Component={GenreEdit} path="edit/:id" />
       </Route>
     </Routes>
