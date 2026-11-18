@@ -1,3 +1,4 @@
+import { useId } from "react"
 import OutlinedInput from "@mui/material/OutlinedInput"
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
@@ -22,6 +23,9 @@ export default function MultipleSelect({
   disabled,
   onValuesChange,
 }: MultipleSelectProps) {
+  const id = useId()
+  const labelId = `${id}-label`
+
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
@@ -33,10 +37,10 @@ export default function MultipleSelect({
   return (
     <div>
       <FormControl sx={{ width: "100%" }}>
-        <InputLabel id="demo-multiple-checkbox-label">{label}</InputLabel>
+        <InputLabel id={labelId}>{label}</InputLabel>
         <Select
-          labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
+          labelId={labelId}
+          id={id}
           multiple
           disabled={disabled}
           value={selectedValues}

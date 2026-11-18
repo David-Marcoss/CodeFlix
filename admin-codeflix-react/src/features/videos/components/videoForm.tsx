@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import {
   Box,
   Button,
@@ -50,7 +51,11 @@ export default function VideoForm({
     defaultValues: formatVideoDataToForm(video),
   })
 
-  const { handleSubmit, control } = formMethods
+  const { handleSubmit, control, reset } = formMethods
+
+  useEffect(() => {
+    reset(formatVideoDataToForm(video))
+  }, [video, reset])
 
   return (
     <FormProvider {...formMethods}>
@@ -65,13 +70,13 @@ export default function VideoForm({
                   <TextField
                     {...field}
                     inputRef={ref}
-                    label="Nome"
+                    label="Título"
                     required
                     fullWidth
                     disabled={isDisabled}
                     error={!!error}
                     helperText={error?.message ?? " "}
-                    slotProps={{ htmlInput: { "data-testid": "name-input" } }}
+                    slotProps={{ htmlInput: { "data-testid": "title-input" } }}
                   />
                 </>
               )}
@@ -87,12 +92,16 @@ export default function VideoForm({
                   {...field}
                   inputRef={ref}
                   label="Descrição"
+                  type="text"
                   multiline
                   minRows={3}
                   fullWidth
                   disabled={isDisabled}
                   error={!!error}
                   helperText={error?.message ?? " "}
+                  slotProps={{
+                    htmlInput: { "data-testid": "description-input" },
+                  }}
                 />
               )}
             />
@@ -118,7 +127,12 @@ export default function VideoForm({
                     helperText={error?.message}
                     slotProps={{
                       inputLabel: { shrink: true },
-                      htmlInput: { min: 1000, max: 9999, step: 1 },
+                      htmlInput: {
+                        min: 1000,
+                        max: 9999,
+                        step: 1,
+                        "data-testid": "year_launched-input",
+                      },
                     }}
                   />
                 )}
@@ -142,7 +156,10 @@ export default function VideoForm({
                     disabled={isDisabled}
                     error={!!error}
                     helperText={error?.message}
-                    slotProps={{ inputLabel: { shrink: true } }}
+                    slotProps={{
+                      inputLabel: { shrink: true },
+                      htmlInput: { "data-testid": "duration-input" },
+                    }}
                   />
                 )}
               />
