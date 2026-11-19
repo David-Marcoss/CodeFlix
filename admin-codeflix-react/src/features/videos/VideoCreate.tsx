@@ -53,6 +53,7 @@ export default function VideoCreate() {
           flexDirection: "column",
           gap: 2,
           width: "60%",
+          marginBottom: 10,
         }}
       >
         <Typography variant="h4">Criar Video</Typography>
