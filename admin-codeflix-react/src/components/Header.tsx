@@ -1,49 +1,84 @@
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import BrightnessHighIcon from "@mui/icons-material/BrightnessHigh";
 import Brightness3Icon from "@mui/icons-material/Brightness3";
 import { useToogleThreme } from "../shared/hooks/useToogleThreme";
+import { drawerWidth } from "./MenuDrawer";
+import { Box } from "@mui/material";
 
-export default function Header() {
+type HeaderProps = {
+  handleDrawerClose?: () => void;
+};
+
+export default function Header({ handleDrawerClose }: HeaderProps) {
   const { theme, onThremeChange } = useToogleThreme();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
-          </Typography>
-          <Button
-            color="inherit"
-            aria-label="Alternar tema"
-            onClick={() =>
-              theme === "dark"
-                ? onThremeChange("light")
-                : onThremeChange("dark")
+    <AppBar
+      position="fixed"
+      elevation={0}
+      sx={{
+        width: { sm: `calc(100% - ${drawerWidth}px)` },
+        ml: { sm: `${drawerWidth}px` },
+        bgcolor: "background.paper",
+        color: "text.primary",
+        borderBottom: 1,
+        borderColor: "divider",
+      }}
+    >
+      <Toolbar
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 1,
+          px: { xs: 2, sm: 3, md: 4 },
+        }}
+      >
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="Abrir menu"
+          sx={{ display: { sm: "none" } }}
+          onClick={handleDrawerClose}
+        >
+          <MenuIcon />
+        </IconButton>
+        {/* <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 600 }}>
+          CodeFlix
+        </Typography> */}
+
+        <Box sx={{ flex: 1 }}></Box>
+        <Box>
+          <Tooltip
+            title={
+              theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"
             }
           >
-            {theme === "dark" ? <Brightness3Icon /> : <BrightnessHighIcon />}
+            <IconButton
+              color="inherit"
+              aria-label="Alternar tema"
+              onClick={() =>
+                onThremeChange(theme === "dark" ? "light" : "dark")
+              }
+            >
+              {theme === "dark" ? <BrightnessHighIcon /> : <Brightness3Icon />}
+            </IconButton>
+          </Tooltip>
+          <Button
+            color="inherit"
+            sx={{ textTransform: "none", fontWeight: 600 }}
+          >
+            Login
           </Button>
-
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }
