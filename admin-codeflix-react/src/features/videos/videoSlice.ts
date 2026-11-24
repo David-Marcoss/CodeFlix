@@ -62,11 +62,11 @@ const route = "/videos";
 
 const videoApiSlice = apiSlice.injectEndpoints({
   endpoints: ({ query, mutation }) => ({
-    createVideo: mutation<Video, CreateVideo>({
+    createVideo: mutation<GetVideoById, CreateVideo>({
       query: createVideosQuery,
       invalidatesTags: ["Videos"],
     }),
-    updateVideo: mutation<Video, UpdateVideo>({
+    updateVideo: mutation<GetVideoById, UpdateVideo>({
       query: updateVideosQuery,
       invalidatesTags: ["Videos"],
     }),

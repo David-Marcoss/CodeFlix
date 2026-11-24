@@ -4,10 +4,13 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import categoryReducer from "../features/categories/categorySlice";
 import castMemberReducer from "../features/castMembers/castMemberSlice";
 import { apiSlice } from "../features/api/apiSlice";
+import { uploadReducer } from "../features/uploads/uploadSlice";
+import { uploadsQueeMiddleware } from "../shared/middleware/uploadsMiddleware";
 
 const rootReducer = combineSlices({
   category: categoryReducer,
   castMember: castMemberReducer,
+  uploads: uploadReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 
@@ -21,7 +24,9 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
     reducer: rootReducer,
 
     middleware: (getDefaultMiddleware) => {
-      return getDefaultMiddleware().concat(apiSlice.middleware);
+      return getDefaultMiddleware({ serializableCheck: false })
+        .prepend(uploadsQueeMiddleware.middleware)
+        .concat(apiSlice.middleware);
     },
     preloadedState,
   });
@@ -29,7 +34,6 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
   setupListeners(store.dispatch);
   return store;
 };
-
 
 // Infer the type of `store`
 export type AppStore = ReturnType<typeof makeStore>;

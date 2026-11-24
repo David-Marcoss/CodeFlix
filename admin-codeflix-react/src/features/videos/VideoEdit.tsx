@@ -6,11 +6,16 @@ import VideoForm from "./components/videoForm";
 import { enqueueSnackbar } from "notistack";
 import { useGetvideosAgregatesOptions } from "./hooks/useGetvideosAgregatesOptions";
 import type { VideoSchema } from "./video.schema";
+import { nanoid } from "nanoid";
+import { useAppDispatch } from "../../app/hooks";
+import { addVideoFile } from "../uploads/uploadSlice";
 
 export default function VideoEdit() {
   const params = useParams();
-  const id = params.id!;
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const id = params.id!;
 
   const [updateVideo, result] = useUpdateVideoMutation();
   const {
@@ -22,8 +27,26 @@ export default function VideoEdit() {
   const { castMemberOptions, categorieOptions, genreOptions } =
     useGetvideosAgregatesOptions();
 
+  function addFilesToUpload(field: string, videoId: string, file: File) {
+    const payload = { id: nanoid(), file, videoId, field };
+    dispatch(addVideoFile(payload));
+  }
+
   async function handleSubmit(data: VideoSchema) {
-    await updateVideo({ ...data, id });
+    const { banner, video, trailer, thumbnail, thumbnail_half, ...metadata } = data;
+    const removals = Object.fromEntries(
+      Object.entries({ banner, thumbnail, thumbnail_half, video, trailer }).filter(([, value]) => value === null),
+    );
+    const result = await updateVideo({ ...metadata, ...removals, id }).unwrap();
+
+    if (result.data) {
+      const { id: videoId } = result.data;
+      banner && addFilesToUpload("banner", videoId, banner);
+      video && addFilesToUpload("video", videoId, video);
+      trailer && addFilesToUpload("trailer", videoId, trailer);
+      thumbnail && addFilesToUpload("thumbnail", videoId, thumbnail);
+      thumbnail_half && addFilesToUpload("thumbnail_half", videoId, thumbnail_half);
+    }
   }
 
   useEffect(() => {
@@ -74,7 +97,7 @@ export default function VideoEdit() {
 
         <VideoForm
           video={getVideoResult?.data}
-          isLoading={result.isLoading ?? isFetchingVideo}
+          isLoading={result.isLoading || isFetchingVideo}
           handleSubmitForm={handleSubmit}
           categories={categorieOptions}
           castMembers={castMemberOptions}

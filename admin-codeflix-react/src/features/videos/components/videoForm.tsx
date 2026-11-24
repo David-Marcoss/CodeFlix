@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,30 +9,31 @@ import {
   Grid,
   Switch,
   TextField,
-} from "@mui/material"
-import { useNavigate } from "react-router-dom"
-import { Controller, FormProvider, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { Video } from "../../../shared/types/videos"
-import MultipleSelect from "../../../components/MultipleSelect"
-import type { SelectOptions } from "../../../shared/types/selectoptions"
+import type { Video } from "../../../shared/types/videos";
+import MultipleSelect from "../../../components/MultipleSelect";
+import type { SelectOptions } from "../../../shared/types/selectoptions";
 import {
   videoSchema,
   type VideoSchema,
   type VideoFormValues,
-} from "../video.schema"
-import { formatVideoDataToForm } from "../utils/formatVideosDataToForm"
-import RattingInput from "./rattingInput"
+} from "../video.schema";
+import { formatVideoDataToForm } from "../utils/formatVideosDataToForm";
+import RattingInput from "./rattingInput";
+import FileInput from "../../../components/FileInput";
 
 export interface VideoFormProps {
-  video?: Video
-  isLoading: boolean
-  isDisabled?: boolean
-  categories: SelectOptions
-  castMembers: SelectOptions
-  genres: SelectOptions
-  handleSubmitForm(data: VideoSchema): void
+  video?: Video;
+  isLoading: boolean;
+  isDisabled?: boolean;
+  categories: SelectOptions;
+  castMembers: SelectOptions;
+  genres: SelectOptions;
+  handleSubmitForm(data: VideoSchema): void;
 }
 
 export default function VideoForm({
@@ -44,18 +45,18 @@ export default function VideoForm({
   isDisabled,
   handleSubmitForm,
 }: VideoFormProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const formMethods = useForm<VideoFormValues, unknown, VideoSchema>({
     resolver: zodResolver(videoSchema),
     defaultValues: formatVideoDataToForm(video),
-  })
+  });
 
-  const { handleSubmit, control, reset } = formMethods
+  const { handleSubmit, control, reset } = formMethods;
 
   useEffect(() => {
-    reset(formatVideoDataToForm(video))
-  }, [video, reset])
+    reset(formatVideoDataToForm(video));
+  }, [video, reset]);
 
   return (
     <FormProvider {...formMethods}>
@@ -298,8 +299,40 @@ export default function VideoForm({
                   />
                 </FormGroup>
               </Grid>
+
             </>
           )}
+
+          {([
+            { name: "video", label: "Vídeo", accept: "video/*" },
+            { name: "trailer", label: "Trailer", accept: "video/*" },
+            { name: "banner", label: "Banner", accept: "image/jpeg,image/png,image/gif" },
+            { name: "thumbnail", label: "Thumbnail", accept: "image/*" },
+            { name: "thumbnail_half", label: "Thumbnail half", accept: "image/*" },
+          ] as const).map(({ name, label, accept }) => (
+            <Grid size={12} key={name}>
+              <Controller
+                name={name}
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <FileInput
+                    name={field.name}
+                    label={label}
+                    accept={accept}
+                    value={field.value ?? undefined}
+                    existingUrl={field.value === null ? undefined : video?.[name] ?? undefined}
+                    onRemoveUploaded={() => field.onChange(null)}
+                    onAddFiles={files => field.onChange(files?.[0])}
+                    onBlur={field.onBlur}
+                    inputRef={field.ref}
+                    disabled={isDisabled || isLoading}
+                    error={!!error}
+                    helperText={error?.message ?? (field.value === null ? "O arquivo será removido ao salvar." : name === "banner" ? "JPEG, PNG ou GIF. Máximo de 2 MB." : undefined)}
+                  />
+                )}
+              />
+            </Grid>
+          ))}
 
           <Grid size={12}>
             <Box sx={{ display: "flex", gap: 2 }}>
@@ -321,5 +354,5 @@ export default function VideoForm({
         </Grid>
       </form>
     </FormProvider>
-  )
+  );
 }

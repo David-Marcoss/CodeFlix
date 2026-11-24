@@ -51,6 +51,12 @@ export interface CreateVideo {
 }
 
 export interface UpdateVideo extends CreateVideo {
+  banner?: null;
+  thumbnail?: null;
+  thumbnail_half?: null;
+  video?: null;
+  trailer?: null;
+
   id: string;
 }
 
