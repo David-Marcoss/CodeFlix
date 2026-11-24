@@ -1,3 +1,4 @@
+import { NotFoundError } from '../../../../shared/domain/errors/notFoundError';
 import { Video, VideoId } from '../../../domain/video.aggregate';
 import { Uuid } from '../../../../shared/domain/value-objects/uuid.vo';
 import { InMemorySearchableRepository } from '../../../../shared/infra/db/in-memory.repository';
@@ -10,6 +11,16 @@ export class VideoInMemoryRepository
   extends InMemorySearchableRepository<Video, Uuid, VideoFilter>
   implements IVideoRepository
 {
+  async updateMedia(
+    entity: Video,
+    field: 'banner' | 'thumbnail' | 'thumbnail_half' | 'video' | 'trailer',
+  ): Promise<void> {
+    const current = await this.getById(entity.video_id);
+    if (!current) throw new NotFoundError(entity.video_id.id, Video);
+    current[field] = entity[field] as any;
+    await this.update(current);
+  }
+
   findByIds(ids: VideoId[]): Promise<Video[]> {
     throw new Error('Method not implemented.');
   }

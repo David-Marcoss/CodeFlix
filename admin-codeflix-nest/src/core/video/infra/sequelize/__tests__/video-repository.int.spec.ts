@@ -23,6 +23,7 @@ import {
   VideoGenresModel,
   VideoModel,
 } from '../video-model';
+import { VideoOutputMapper } from '../../../application/use-cases/common/video.output';
 import { VideoModelMapper } from '../video-model-mapper';
 import { VideoSequelizeRepository } from '../video-sequelize.repository';
 
@@ -40,6 +41,44 @@ describe('VideoSequelizeRepository Integration Tests', () => {
     categoryRepo = new CategorySequelizeRepository(CategoryModel);
     genreRepo = new GenreSequelizeRepository(GenreModel, uow);
     castMemberRepo = new CastMemberSequelizeRepository(CastMemberModel);
+  });
+
+  it('preserves all URLs when uploads save independently loaded snapshots', async () => {
+    const { category, genre, castMember } = await createRelations();
+    const video = Video.fake()
+      .aVideoWithAllMedias()
+      .addCategoryId(category.category_id)
+      .addGenreId(genre.genre_id)
+      .addCastMemberId(castMember.cast_member_id)
+      .build();
+    await videoRepo.create(video);
+    const fields = [
+      'banner',
+      'thumbnail',
+      'thumbnail_half',
+      'video',
+      'trailer',
+    ] as const;
+    // All requests read before any upload finishes (the lost-update scenario).
+    const snapshots = await Promise.all(
+      fields.map(() => videoRepo.getById(video.video_id)),
+    );
+    for (const [index, field] of fields.entries()) {
+      snapshots[index]![field]!.remote_url = `https://cdn.example.com/${field}`;
+      await uow.do(() => videoRepo.updateMedia(snapshots[index]!, field));
+    }
+    const saved = (await videoRepo.getById(video.video_id))!;
+    const output = VideoOutputMapper.toOutput({
+      video: saved,
+      allCategoriesOfVideoAndGenre: [category],
+      genres: [genre],
+      cast_members: [castMember],
+    });
+    for (const field of fields)
+      expect(output[field]).toBe(`https://cdn.example.com/${field}`);
+    expect(await ImageMediaModel.count()).toBe(3);
+    expect(await AudioVideoMediaModel.count()).toBe(2);
+    expect(saved.categories_id.has(category.category_id.id)).toBe(true);
   });
 
   it('should creates a new entity without medias', async () => {

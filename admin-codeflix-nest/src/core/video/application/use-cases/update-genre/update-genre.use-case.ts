@@ -98,6 +98,10 @@ export class UpdateVideoUseCase implements IUseCase<
       );
     }
 
+    for (const field of ['banner', 'thumbnail', 'thumbnail_half', 'video', 'trailer'] as const) {
+      if (input[field] === null) existingVideo[field] = null;
+    }
+
     if (existingVideo.notification.hasErrors()) {
       throw new EntityValidationError(existingVideo.notification.toJSON());
     }

@@ -45,3 +45,49 @@ describe('CloudnaryStorage upload', () => {
     ).rejects.toThrow('Cloudinary unavailable');
   });
 });
+
+describe('CloudnaryStorage delete', () => {
+  it.each(['ok', 'not found'])(
+    'accepts %s for an image deletion',
+    async (result) => {
+      const destroy = jest.fn().mockResolvedValue({ result });
+      const storage = new CloudnaryStorage({
+        uploader: { destroy },
+      } as unknown as typeof cloudinary);
+      await expect(
+        storage.deleteFile('videos/id/images/hash.png', 'image/png'),
+      ).resolves.toBeUndefined();
+      expect(destroy).toHaveBeenCalledWith(
+        'uploads/videos/id/images/hash.png',
+        { resource_type: 'image', type: 'upload', invalidate: true },
+      );
+    },
+  );
+  it('uses the video resource type', async () => {
+    const destroy = jest.fn().mockResolvedValue({ result: 'ok' });
+    const storage = new CloudnaryStorage({
+      uploader: { destroy },
+    } as unknown as typeof cloudinary);
+    await storage.deleteFile('videos/id/videos/hash.mp4', 'video/mp4');
+    expect(destroy).toHaveBeenCalledWith(
+      'uploads/videos/id/videos/hash.mp4',
+      expect.objectContaining({ resource_type: 'video' }),
+    );
+  });
+  it('propagates remote failures', async () => {
+    const destroy = jest.fn().mockRejectedValue(new Error('offline'));
+    const storage = new CloudnaryStorage({
+      uploader: { destroy },
+    } as unknown as typeof cloudinary);
+    await expect(storage.deleteFile('id')).rejects.toThrow('offline');
+  });
+  it('rejects unexpected deletion results', async () => {
+    const destroy = jest.fn().mockResolvedValue({ result: 'error' });
+    const storage = new CloudnaryStorage({
+      uploader: { destroy },
+    } as unknown as typeof cloudinary);
+    await expect(storage.deleteFile('id')).rejects.toThrow(
+      'Não foi possível excluir',
+    );
+  });
+});

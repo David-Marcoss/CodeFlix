@@ -3,7 +3,7 @@ import { ImageMedia } from '../../shared/domain/value-objects/image-media.vo';
 import { VideoId } from './video.aggregate';
 
 export class Thumbnail extends ImageMedia {
-  static max_size = 1024 * 1014 * 2; // 2MB
+  static max_size = 1024 * 1014 * 10; // 2MB
   static mime_types = ['image/jpeg', 'image/png', 'image/gif'];
 
   constructor({ name, location }: { name: string; location: string }) {

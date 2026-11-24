@@ -1,3 +1,4 @@
+import { DeleteVideoUseCase } from '../../core/video/application/use-cases/delete-video/delete-video.use-case';
 import { SearchVideosDto } from './dto/search-videos.dto';
 import { VideoCollectionPresenter } from './video.presenter';
 import { CategoryId } from '../../core/category/domain/category.aggregate';
@@ -5,6 +6,8 @@ import { GenreId } from '../../core/genre/domain/genre.aggregate';
 import { CastMemberId } from '../../core/cast-member/domain/cast-member.aggregate';
 import { ListVideosUseCase } from '../../core/video/application/use-cases/list-videos/list-videos.use-case';
 import {
+  Delete,
+  HttpCode,
   Controller,
   Query,
   Get,
@@ -39,6 +42,8 @@ import { CheckIsAdminGuard } from '../auth-module/check-is-admin.guard';
 @Controller({ path: 'videos', scope: Scope.REQUEST })
 export class VideoController {
   constructor(
+    @Inject(DeleteVideoUseCase)
+    private readonly deleteUseCase: DeleteVideoUseCase,
     @Inject(ListVideosUseCase)
     private readonly listUseCase: ListVideosUseCase,
     @Inject(CreateVideoUseCase)
@@ -52,6 +57,12 @@ export class VideoController {
     @Inject(UploadImageMediaUseCase)
     private readonly uploadImageMediaUseCase: UploadImageMediaUseCase,
   ) {}
+
+  @Delete(':id')
+  @HttpCode(204)
+  async remove(@Param('id') id: string) {
+    await this.deleteUseCase.execute({ video_id: id });
+  }
 
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {

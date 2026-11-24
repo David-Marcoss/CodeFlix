@@ -51,7 +51,9 @@ export class UploadImageMediaUseCase implements IUseCase<
 
     image.remote_url = url;
 
-    await this.uow.do(async () => await this.videoRepo.update(existingVideo));
+    await this.uow.do(
+      async () => await this.videoRepo.updateMedia(existingVideo, input.field),
+    );
   }
 }
 

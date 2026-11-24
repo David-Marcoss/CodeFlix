@@ -9,6 +9,10 @@ export class StorageInMemory implements IStorage {
     }
   >();
 
+  async deleteFile(id: string): Promise<void> {
+    this.storage.delete(id);
+  }
+
   async get(
     id: string,
   ): Promise<{ data: Buffer; name: string; mime_type?: string }> {

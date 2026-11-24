@@ -1,3 +1,4 @@
+import { DeleteVideoUseCase } from '../../core/video/application/use-cases/delete-video/delete-video.use-case';
 import { ListVideosUseCase } from '../../core/video/application/use-cases/list-videos/list-videos.use-case';
 import { getModelToken } from '@nestjs/sequelize';
 import { CreateVideoUseCase } from '../../core/video/application/use-cases/create-video/create-video.use-case';
@@ -70,6 +71,13 @@ export const VALIDATIONS = {
 };
 
 export const USE_CASES = {
+  DELETE_VIDEO_USE_CASE: {
+    provide: DeleteVideoUseCase,
+    useFactory: (uow: IUnitOfWork, repo: IVideoRepository, storage: IStorage) =>
+      new DeleteVideoUseCase(uow, repo, storage),
+    scope: Scope.REQUEST,
+    inject: ['UnitOfWork', REPOSITORIES.VIDEO_REPOSITORY.provide, 'IStorage'],
+  },
   LIST_VIDEOS_USE_CASE: {
     provide: ListVideosUseCase,
     useFactory: (repo: IVideoRepository, find: FindVideoUseCase) =>

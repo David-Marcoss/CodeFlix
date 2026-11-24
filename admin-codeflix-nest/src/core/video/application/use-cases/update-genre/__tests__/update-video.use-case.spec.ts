@@ -59,6 +59,32 @@ describe('Update Video use-case integration tests', () => {
     );
   });
 
+  it.each(['banner', 'thumbnail', 'thumbnail_half', 'video', 'trailer'] as const)(
+    'removes only %s and preserves other uploaded files', async (field) => {
+      const category = CategoryFakeBuilder.aCategory().build();
+      const castMember = CastMemberFakeBuilder.aCastMember().build();
+      const genre = GenreFakeBuilder.aGenre().addCategoryId(category.category_id).build();
+      await categoryRepository.create(category);
+      await castMemberRepository.create(castMember);
+      await genreRepository.create(genre);
+      const video = VideoFakeBuilder.aVideoWithAllMedias()
+        .addCategoryId(category.category_id).addCastMemberId(castMember.cast_member_id)
+        .addGenreId(genre.genre_id).build();
+      const fields = ['banner', 'thumbnail', 'thumbnail_half', 'video', 'trailer'] as const;
+      for (const name of fields) video[name]!.remote_url = `https://cdn.example.com/${name}`;
+      await videoRepository.create(video);
+      const useCase = new UpdateVideoUseCase(unitOfWOrk, videoRepository, categoryRepository,
+        validateCategoriesIds, genreRepository, validateGenresIds, castMemberRepository, validateCastMembersIds);
+      const output = await useCase.execute(new UpdateVideoInput({ video_id: video.video_id.id, [field]: null }));
+      expect(output[field]).toBeNull();
+      const saved = (await videoRepository.getById(video.video_id))!;
+      expect(saved[field]).toBeNull();
+      for (const name of fields.filter(name => name !== field)) {
+        expect(saved[name]!.url).toBe(`https://cdn.example.com/${name}`);
+      }
+    },
+  );
+
   it('should update a new video', async () => {
     const createUseCase = new CreateVideoUseCase(
       unitOfWOrk,

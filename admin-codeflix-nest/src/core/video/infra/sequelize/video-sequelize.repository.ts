@@ -56,6 +56,31 @@ export class VideoSequelizeRepository implements IVideoRepository {
     entity.forEach((e) => this.unitOfWork?.addAggregateRoot(e));
   }
 
+  // Uploads persist only their own field, preserving concurrent media updates.
+  async updateMedia(
+    entity: Video,
+    field: 'banner' | 'thumbnail' | 'thumbnail_half' | 'video' | 'trailer',
+  ): Promise<void> {
+    const data = VideoModelMapper.toModelProps(entity);
+    const isImage = ['banner', 'thumbnail', 'thumbnail_half'].includes(field);
+    const relation = isImage ? 'image_medias' : 'audio_video_medias';
+    const fieldColumn = isImage
+      ? 'image_media_related_field'
+      : 'audio_video_related_field';
+    const fieldValue = field === 'thumbnail_half' ? 'thumbnail_HALF' : field;
+    const media = data[relation].find(
+      (item) => item.get(fieldColumn) === fieldValue,
+    )!;
+    const mediaModel = this.videoModel.associations[relation].target;
+    const transaction = this.unitOfWork?.getTransaction();
+    await mediaModel.destroy({
+      where: { video_id: entity.video_id.id, [fieldColumn]: fieldValue },
+      transaction,
+    });
+    await media.save({ transaction });
+    this.unitOfWork?.addAggregateRoot(entity);
+  }
+
   async update(entity: Video): Promise<void> {
     const id = entity.video_id.id;
     const model = await this._get(id);

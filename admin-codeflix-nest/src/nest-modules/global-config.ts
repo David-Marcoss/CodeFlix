@@ -1,3 +1,4 @@
+import { MediaFileValidationErrorFilter } from './shared-module/filters/media-file-validation-error.filter';
 import {
   ClassSerializerInterceptor,
   INestApplication,
@@ -23,6 +24,7 @@ export function applyGlobalConfig(app: INestApplication) {
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
   app.useGlobalFilters(
+    new MediaFileValidationErrorFilter(),
     new EntityValidationErrorFilter(),
     new NotFoundErrorFilter(),
     new UuidValidationErrorFilter(),

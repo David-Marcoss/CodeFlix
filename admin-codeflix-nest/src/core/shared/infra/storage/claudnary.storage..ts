@@ -1,4 +1,4 @@
-import { v2 as Cloudinary, type DeleteApiResponse } from 'cloudinary';
+import { v2 as Cloudinary } from 'cloudinary';
 import { IStorage } from '../../application/storage.interface';
 import { Config } from '../config';
 
@@ -83,11 +83,15 @@ export class CloudnaryStorage implements IStorage {
     });
   }
 
-  deleteFile(id: string, mimeType?: string): Promise<DeleteApiResponse> {
-    return this.cloudinary.uploader.destroy(this.getPublicId(id), {
+  async deleteFile(id: string, mimeType?: string): Promise<void> {
+    // Match the folder and public_id used by store(), including the filename extension.
+    const result = await this.cloudinary.uploader.destroy(`uploads/${id}`, {
       resource_type: this.getResourceType(mimeType),
       type: 'upload',
       invalidate: true,
     });
+    if (result.result !== 'ok' && result.result !== 'not found') {
+      throw new Error('Não foi possível excluir o arquivo do Cloudinary.');
+    }
   }
 }

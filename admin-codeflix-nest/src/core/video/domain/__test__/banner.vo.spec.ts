@@ -21,6 +21,13 @@ describe('Banner Unit Tests', () => {
     expect(banner.location).toBe(`videos/${videoId.id}/images`);
   });
 
+  it('accepts a banner at the documented 2 MiB limit', () => {
+    expect(() => Banner.createFromFile({
+      raw_name: 'banner.png', mime_type: 'image/png', size: 2 * 1024 * 1024,
+      video_id: new VideoId(),
+    })).not.toThrow();
+  });
+
   it('should throw an error if the file size is too large', () => {
     const data = Buffer.alloc(Banner.max_size + 1);
     const videoId = new VideoId();

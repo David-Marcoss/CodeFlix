@@ -184,12 +184,12 @@ describe('Direct image upload', () => {
     const video = Video.fake().aVideoWithoutMedias().build();
     const storage = new StorageInMemory();
     jest.spyOn(storage, 'store').mockResolvedValue({ url: 'https://res.cloudinary.com/demo/image/upload/image.png' });
-    const repo = { getById: jest.fn().mockResolvedValue(video), update: jest.fn() } as unknown as IVideoRepository;
+    const repo = { getById: jest.fn().mockResolvedValue(video), updateMedia: jest.fn() } as unknown as IVideoRepository;
     const useCase = new UploadImageMediaUseCase(new UnitOfWorkFakeInMemory(), repo, storage);
     await useCase.execute({ video_id: video.video_id.id, field, file: {
       raw_name: 'image.png', data: Buffer.from('image'), mime_type: 'image/png', size: 5,
     } });
     expect(video[field]?.url).toBe('https://res.cloudinary.com/demo/image/upload/image.png');
-    expect(repo.update).toHaveBeenCalledWith(video);
+    expect(repo.updateMedia).toHaveBeenCalledWith(video, field);
   });
 });

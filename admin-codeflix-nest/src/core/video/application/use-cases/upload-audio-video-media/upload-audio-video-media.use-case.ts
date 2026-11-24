@@ -51,7 +51,9 @@ export class UploadAudioVideoMediaUseCase implements IUseCase<
     media instanceof Trailer && existingVideo.replaceTrailer(media);
     media instanceof VideoMedia && existingVideo.replaceVideo(media);
 
-    await this.uow.do(async () => await this.videoRepo.update(existingVideo));
+    await this.uow.do(
+      async () => await this.videoRepo.updateMedia(existingVideo, input.field),
+    );
   }
 }
 

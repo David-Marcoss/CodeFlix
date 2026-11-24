@@ -85,4 +85,9 @@ export interface IVideoRepository extends ISearchableRepository<
   VideoFilter,
   VideoSearchParams,
   VideoSearchResult
-> {}
+> {
+  updateMedia(
+    entity: Video,
+    field: 'banner' | 'thumbnail' | 'thumbnail_half' | 'video' | 'trailer',
+  ): Promise<void>;
+}

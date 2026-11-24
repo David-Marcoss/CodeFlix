@@ -18,7 +18,7 @@ describe('UploadAudioVideoMediaUseCase', () => {
         });
       const repo = {
         getById: jest.fn().mockResolvedValue(video),
-        update: jest.fn(),
+        updateMedia: jest.fn(),
       } as unknown as IVideoRepository;
       const useCase = new UploadAudioVideoMediaUseCase(
         new UnitOfWorkFakeInMemory(),
@@ -39,7 +39,7 @@ describe('UploadAudioVideoMediaUseCase', () => {
         'https://res.cloudinary.com/demo/video/upload/file.mp4',
       );
       expect(video[field]?.status).toBe('completed');
-      expect(repo.update).toHaveBeenCalledWith(video);
+      expect(repo.updateMedia).toHaveBeenCalledWith(video, field);
       expect(video.events.size).toBe(0);
     },
   );
@@ -51,7 +51,7 @@ describe('UploadAudioVideoMediaUseCase', () => {
     jest.spyOn(storage, 'store').mockRejectedValue(new Error('upload failed'));
     const repo = {
       getById: jest.fn().mockResolvedValue(video),
-      update: jest.fn(),
+      updateMedia: jest.fn(),
     } as unknown as IVideoRepository;
     const useCase = new UploadAudioVideoMediaUseCase(
       new UnitOfWorkFakeInMemory(),
@@ -70,6 +70,6 @@ describe('UploadAudioVideoMediaUseCase', () => {
         },
       }),
     ).rejects.toThrow('upload failed');
-    expect(repo.update).not.toHaveBeenCalled();
+    expect(repo.updateMedia).not.toHaveBeenCalled();
   });
 });

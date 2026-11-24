@@ -1,4 +1,5 @@
 import {
+  Equals,
   IsBoolean,
   IsNotEmpty,
   IsString,
@@ -13,6 +14,11 @@ import { RatingValues } from '../../../domain/rating.vo';
 
 export type UpdateVideoInputConstructorProps = {
   video_id: string;
+  banner?: null;
+  thumbnail?: null;
+  thumbnail_half?: null;
+  video?: null;
+  trailer?: null;
   title?: string;
   description?: string;
   year_launched?: number;
@@ -29,6 +35,26 @@ export class UpdateVideoInput {
   @IsUUID()
   @IsNotEmpty()
   video_id!: string;
+
+  @IsOptional()
+  @Equals(null)
+  banner?: null;
+
+  @IsOptional()
+  @Equals(null)
+  thumbnail?: null;
+
+  @IsOptional()
+  @Equals(null)
+  thumbnail_half?: null;
+
+  @IsOptional()
+  @Equals(null)
+  video?: null;
+
+  @IsOptional()
+  @Equals(null)
+  trailer?: null;
 
   @IsString()
   @IsNotEmpty()
@@ -83,6 +109,11 @@ export class UpdateVideoInput {
   constructor(props?: UpdateVideoInputConstructorProps) {
     if (!props) return;
     this.video_id = props.video_id;
+    this.banner = props.banner;
+    this.thumbnail = props.thumbnail;
+    this.thumbnail_half = props.thumbnail_half;
+    this.video = props.video;
+    this.trailer = props.trailer;
     this.title = props.title;
     this.description = props.description;
     this.year_launched = props.year_launched;

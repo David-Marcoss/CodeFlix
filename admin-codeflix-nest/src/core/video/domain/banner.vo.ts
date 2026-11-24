@@ -3,7 +3,7 @@ import { ImageMedia } from '../../shared/domain/value-objects/image-media.vo';
 import { VideoId } from './video.aggregate';
 
 export class Banner extends ImageMedia {
-  static max_size = 1024 * 1014 * 2; // 2MB
+  static max_size = 1024 * 1024 * 12; // 2MB
   static mime_types = ['image/jpeg', 'image/png', 'image/gif'];
 
   constructor({ name, location }: { name: string; location: string }) {

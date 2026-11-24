@@ -1,3 +1,8 @@
+import { DeleteVideoUseCase } from '../../core/video/application/use-cases/delete-video/delete-video.use-case';
+import {
+  InvalidMediaFileSizeError,
+  InvalidMediaFileMimeTypeError,
+} from '../../core/shared/domain/validators/media-file-validator';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { VideoController } from './video.controller';
@@ -26,6 +31,7 @@ describe('VideoController GET /videos', () => {
     const module = await Test.createTestingModule({
       controllers: [VideoController],
       providers: [
+        DeleteVideoUseCase,
         CreateVideoUseCase,
         FindVideoUseCase,
         ListVideosUseCase,
@@ -64,6 +70,93 @@ describe('VideoController GET /videos', () => {
       });
       for (const field of ['categories_id', 'genres_id', 'cast_members_id'])
         expect(input.filter[field][0].id).toBe(category);
+    } finally {
+      await app.close();
+    }
+  });
+});
+
+describe('VideoController invalid banner upload', () => {
+  it.each([
+    new InvalidMediaFileSizeError(3 * 1024 * 1024, 2 * 1024 * 1024),
+    new InvalidMediaFileMimeTypeError('image/webp', [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+    ]),
+  ])('returns 400 instead of 500 for %s', async (error) => {
+    const module = await Test.createTestingModule({
+      controllers: [VideoController],
+      providers: [
+        DeleteVideoUseCase,
+        CreateVideoUseCase,
+        FindVideoUseCase,
+        ListVideosUseCase,
+        UpdateVideoUseCase,
+        UploadAudioVideoMediaUseCase,
+        UploadImageMediaUseCase,
+      ].map((provide) => ({
+        provide,
+        useValue: { execute: jest.fn().mockRejectedValue(error) },
+      })),
+    })
+      .overrideGuard(AuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(CheckIsAdminGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
+    const app = module.createNestApplication();
+    applyGlobalConfig(app);
+    await app.init();
+    try {
+      await request(app.getHttpServer())
+        .patch('/videos/123e4567-e89b-42d3-a456-426614174000')
+        .attach('banner', Buffer.from('image'), {
+          filename: 'banner.png',
+          contentType: 'image/png',
+        })
+        .expect(400)
+        .expect({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: error.message,
+        });
+    } finally {
+      await app.close();
+    }
+  });
+});
+
+describe('VideoController DELETE /videos/:id', () => {
+  it('removes a video and responds with 204', async () => {
+    const execute = jest.fn().mockResolvedValue(undefined);
+    const module = await Test.createTestingModule({
+      controllers: [VideoController],
+      providers: [
+        DeleteVideoUseCase,
+        CreateVideoUseCase,
+        FindVideoUseCase,
+        ListVideosUseCase,
+        UpdateVideoUseCase,
+        UploadAudioVideoMediaUseCase,
+        UploadImageMediaUseCase,
+      ].map((provide) => ({ provide, useValue: { execute } })),
+    })
+      .overrideGuard(AuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(CheckIsAdminGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
+    const app = module.createNestApplication();
+    applyGlobalConfig(app);
+    await app.init();
+    try {
+      const id = '123e4567-e89b-42d3-a456-426614174000';
+      const response = await request(app.getHttpServer())
+        .delete(`/videos/${id}`)
+        .expect(204);
+      expect(response.text).toBe('');
+      expect(execute).toHaveBeenCalledWith({ video_id: id });
     } finally {
       await app.close();
     }
