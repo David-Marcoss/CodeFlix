@@ -6,11 +6,13 @@ import castMemberReducer from "../features/castMembers/castMemberSlice";
 import { apiSlice } from "../features/api/apiSlice";
 import { uploadReducer } from "../features/uploads/uploadSlice";
 import { uploadsQueeMiddleware } from "../shared/middleware/uploadsMiddleware";
+import { authReducer } from "../features/auth/authSlice";
 
 const rootReducer = combineSlices({
   category: categoryReducer,
   castMember: castMemberReducer,
   uploads: uploadReducer,
+  auth: authReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 

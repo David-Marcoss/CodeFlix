@@ -74,6 +74,14 @@ services:
       timeout: 5s
       retries: 20
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1
+    command: start-dev
+    ports:
+      - 8080:8080
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
   portal:
     build: ./user-portal-codeflix-next
     ports:

@@ -10,6 +10,9 @@ import Brightness3Icon from "@mui/icons-material/Brightness3";
 import { useToogleThreme } from "../shared/hooks/useToogleThreme";
 import { drawerWidth } from "./MenuDrawer";
 import { Box } from "@mui/material";
+import { useAppSelector } from "../app/hooks";
+import { logout, selectAuth } from "../features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 type HeaderProps = {
   handleDrawerClose?: () => void;
@@ -17,6 +20,9 @@ type HeaderProps = {
 
 export default function Header({ handleDrawerClose }: HeaderProps) {
   const { theme, onThremeChange } = useToogleThreme();
+
+  const authState = useAppSelector(selectAuth);
+  const dispatch = useDispatch();
 
   return (
     <AppBar
@@ -71,12 +77,15 @@ export default function Header({ handleDrawerClose }: HeaderProps) {
               {theme === "dark" ? <BrightnessHighIcon /> : <Brightness3Icon />}
             </IconButton>
           </Tooltip>
-          <Button
-            color="inherit"
-            sx={{ textTransform: "none", fontWeight: 600 }}
-          >
-            Login
-          </Button>
+          {!authState.isAuthenticated && (
+            <Button
+              color="inherit"
+              sx={{ textTransform: "none", fontWeight: 600 }}
+              onClick={() => dispatch(logout())}
+            >
+              Sair
+            </Button>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
