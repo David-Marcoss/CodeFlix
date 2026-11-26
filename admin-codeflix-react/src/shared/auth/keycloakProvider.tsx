@@ -1,46 +1,60 @@
-import { useDispatch } from "react-redux"
-import { initializeKeycloak, keycloak } from "./keycloackConfig"
+import { useEffect, useState } from "react"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import {
+  subscribeAuth,
+  getAuthSession,
+  loginWithPassword,
+} from "./keycloackConfig"
+import {
+  logout,
+  selectAuth,
   setAuthToken,
   setIsAuthenticated,
+  setIsLoading,
   setUserDetails,
 } from "../../features/auth/authSlice"
-import { useEffect } from "react"
+import { apiSlice } from "../../features/api/apiSlice"
+import { LoginPage } from "../../features/login/LoginPage"
 
-interface KeycloakProviderProps {
-  children: React.ReactNode
-}
-
-export function KeycloakProvider({ children }: KeycloakProviderProps) {
-  const dispatch = useDispatch()
-
+export function KeycloakProvider({ children }: { children: React.ReactNode }) {
+  const dispatch = useAppDispatch()
+  const auth = useAppSelector(selectAuth)
+  const [error, setError] = useState<string>()
   useEffect(() => {
-    let active = true
-
-    const initKeycloak = async () => {
-      try {
-        const authenticated = await initializeKeycloak()
-        if (!active) return
-
-        if (authenticated && keycloak.token) {
-          dispatch(setAuthToken(keycloak.token))
-          dispatch(setIsAuthenticated(true))
-          dispatch(setUserDetails(keycloak.userInfo))
-        } else {
-          dispatch(setIsAuthenticated(false))
-        }
-      } catch (error) {
-        if (!active) return
-        console.log("Error on Auth: ", error)
-        dispatch(setIsAuthenticated(false))
+    const syncSession = () => {
+      const session = getAuthSession()
+      if (!session) {
+        dispatch(logout())
+        dispatch(apiSlice.util.resetApiState())
+        return
       }
+      dispatch(setAuthToken(session.token))
+      dispatch(setUserDetails(session.userDetails))
+      dispatch(setIsAuthenticated(true))
     }
-
-    initKeycloak()
-    return () => {
-      active = false
-    }
+    const unsubscribe = subscribeAuth(syncSession)
+    syncSession()
+    return unsubscribe
   }, [dispatch])
 
-  return <>{children}</>
+  const handleLogin = async (email: string, password: string) => {
+    dispatch(setIsLoading(true))
+    setError(undefined)
+    try {
+      await loginWithPassword(email, password)
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível entrar. Tente novamente.",
+      )
+    } finally {
+      dispatch(setIsLoading(false))
+    }
+  }
+  return auth.isAuthenticated ? (
+    <>{children}</>
+  ) : (
+    <LoginPage login={handleLogin} isLoading={auth.isLoading} error={error} />
+  )
 }

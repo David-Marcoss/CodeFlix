@@ -1,3 +1,4 @@
+import { getAccessToken } from "../../shared/auth/keycloackConfig"
 import { Enviroment } from "../../shared/environments/environment"
 import type { UploadState } from "./uploadSlice"
 import axios, { type AxiosProgressEvent } from "axios"
@@ -26,11 +27,13 @@ export const uploadProgress = (progressEvent: AxiosProgressEvent) => {
 }
 
 // faz a chamada da api
-export const uploadVideoService = (params: UploadVideo) => {
+export const uploadVideoService = async (params: UploadVideo) => {
   const { onUploadProgress, signal, ...rest } = params
 
+  const token = await getAccessToken()
   const data = formatData(rest)
   return axios.patch(`${apiEndponit}/${params.videoId}`, data, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     onUploadProgress,
     signal,
   })

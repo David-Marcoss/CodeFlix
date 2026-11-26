@@ -9,7 +9,7 @@ module.exports = {
     "^@mswjs/interceptors/fetch$": "@mswjs/interceptors/fetch/web",
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!(msw|@mswjs/interceptors|@msw/url|@open-draft/until|until-async|rettime|cookie)/)",
+    "/node_modules/(?!(keycloak-js|msw|@mswjs/interceptors|@msw/url|@open-draft/until|until-async|rettime|cookie)/)",
   ],
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   testMatch: ["<rootDir>/src/**/?(*.)+(spec|test).[tj]s?(x)"],
@@ -20,7 +20,10 @@ module.exports = {
         // MSW's Node interceptor uses import.meta.url to locate its WASM asset.
         plugins: [require.resolve("./jest.import-meta-plugin.cjs")],
         presets: [
-          ["@babel/preset-env", { targets: { node: "current" }, modules: "commonjs" }],
+          [
+            "@babel/preset-env",
+            { targets: { node: "current" }, modules: "commonjs" },
+          ],
           ["@babel/preset-react", { runtime: "automatic" }],
           "@babel/preset-typescript",
         ],

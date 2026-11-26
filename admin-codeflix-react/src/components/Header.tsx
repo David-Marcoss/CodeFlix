@@ -1,28 +1,26 @@
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import MenuIcon from "@mui/icons-material/Menu";
-import BrightnessHighIcon from "@mui/icons-material/BrightnessHigh";
-import Brightness3Icon from "@mui/icons-material/Brightness3";
-import { useToogleThreme } from "../shared/hooks/useToogleThreme";
-import { drawerWidth } from "./MenuDrawer";
-import { Box } from "@mui/material";
-import { useAppSelector } from "../app/hooks";
-import { logout, selectAuth } from "../features/auth/authSlice";
-import { useDispatch } from "react-redux";
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
+import Button from "@mui/material/Button"
+import IconButton from "@mui/material/IconButton"
+import Tooltip from "@mui/material/Tooltip"
+import MenuIcon from "@mui/icons-material/Menu"
+import BrightnessHighIcon from "@mui/icons-material/BrightnessHigh"
+import Brightness3Icon from "@mui/icons-material/Brightness3"
+import { useToogleThreme } from "../shared/hooks/useToogleThreme"
+import { drawerWidth } from "./MenuDrawer"
+import { Box } from "@mui/material"
+import { useAppSelector } from "../app/hooks"
+import { selectAuth } from "../features/auth/authSlice"
+import { logoutFromKeycloak } from "../shared/auth/keycloackConfig"
 
 type HeaderProps = {
-  handleDrawerClose?: () => void;
-};
+  handleDrawerClose?: () => void
+}
 
 export default function Header({ handleDrawerClose }: HeaderProps) {
-  const { theme, onThremeChange } = useToogleThreme();
+  const { theme, onThremeChange } = useToogleThreme()
 
-  const authState = useAppSelector(selectAuth);
-  const dispatch = useDispatch();
+  const authState = useAppSelector(selectAuth)
 
   return (
     <AppBar
@@ -77,11 +75,15 @@ export default function Header({ handleDrawerClose }: HeaderProps) {
               {theme === "dark" ? <BrightnessHighIcon /> : <Brightness3Icon />}
             </IconButton>
           </Tooltip>
-          {!authState.isAuthenticated && (
+          {authState.isAuthenticated && (
             <Button
               color="inherit"
               sx={{ textTransform: "none", fontWeight: 600 }}
-              onClick={() => dispatch(logout())}
+              onClick={() => {
+                void logoutFromKeycloak().catch(() =>
+                  window.alert("Não foi possível sair. Tente novamente."),
+                )
+              }}
             >
               Sair
             </Button>
@@ -89,5 +91,5 @@ export default function Header({ handleDrawerClose }: HeaderProps) {
         </Box>
       </Toolbar>
     </AppBar>
-  );
+  )
 }
